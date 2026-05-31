@@ -122,16 +122,13 @@ export default function App() {
     <div style={{ fontFamily:"'Jost',sans-serif", backgroundColor:C.bg, minHeight:"100vh", color:C.green }}>
 
       {/* HEADER */}
-      <header style={{ backgroundColor:C.green, position:"sticky", top:0, zIndex:50, boxShadow:"0 2px 24px rgba(0,0,0,0.25)" }}>
-        <div style={{ maxWidth:980, margin:"0 auto", padding:"0 20px", display:"flex", alignItems:"center", justifyContent:"space-between", height:64 }}>
-          <button onClick={() => navigate("home")} style={{ background:"none", border:"none", cursor:"pointer", padding:0, fontFamily:"'Cormorant Garamond',serif", fontSize:24, fontWeight:400, fontStyle:"italic", letterSpacing:"0.07em", color:"#FAF8F3" }}>
-            Oriane & Louis
-          </button>
+      <header style={{ backgroundColor:"rgba(250,248,243,0.85)", backdropFilter:"blur(8px)", position:"sticky", top:0, zIndex:50 }}>
+        <div style={{ maxWidth:980, margin:"0 auto", padding:"0 20px", display:"flex", alignItems:"center", justifyContent:"center", height:64 }}>
           <nav style={{ display:"flex" }} className="hidden md:flex">
             {TABS.map(t => (
               <button key={t.id} onClick={() => navigate(t.id)} style={{
                 background:"none", border:"none", cursor:"pointer",
-                color: tab===t.id ? C.goldMed : "rgba(250,248,243,0.68)",
+                color: tab===t.id ? C.gold : "#1C3320",
                 fontFamily:"'Jost',sans-serif", fontSize:11, fontWeight:400,
                 letterSpacing:"0.2em", textTransform:"uppercase", padding:"10px 14px",
                 borderBottom: tab===t.id ? `2px solid ${C.goldMed}` : "2px solid transparent",
@@ -139,7 +136,7 @@ export default function App() {
               }}>{t.label}</button>
             ))}
           </nav>
-          <button onClick={() => setMobileMenu(!mobileMenu)} className="flex md:hidden" style={{ background:"none", border:"none", cursor:"pointer", color:"#FAF8F3", fontSize:22, padding:"4px 0", lineHeight:1 }}>
+          <button onClick={() => setMobileMenu(!mobileMenu)} className="hidden" style={{ background:"none", border:"none", cursor:"pointer", color:"#FAF8F3", fontSize:22, padding:"4px 0", lineHeight:1 }}>
             {mobileMenu ? "✕" : "☰"}
           </button>
         </div>
@@ -168,8 +165,8 @@ export default function App() {
 
       {/* FOOTER */}
       <footer style={{ textAlign:"center", padding:"24px 16px", borderTop:`1px solid ${C.border}` }}>
-        <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:16, fontStyle:"italic", color:C.light, marginBottom:12 }}>
-          Fait avec ♡ — Oriane &amp; Louis 2025
+        <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontStyle:"italic", color:C.light, marginBottom:12 }}>
+          Oriane &amp; Louis 2027
         </p>
         {!adminUnlocked && (
           <button onClick={() => { setAdminUnlocked(true); navigate("admin"); }} title="Espace admin" style={{ background:"none", border:"none", cursor:"pointer", color:C.border, fontSize:13, letterSpacing:"0.3em", padding:"4px 8px" }}>
@@ -194,57 +191,47 @@ export default function App() {
 function HomePage({ countdown, navigate }) {
   return (
     <div>
-      <div style={{ textAlign:"center", padding:"64px 20px 36px" }}>
-        <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:12, letterSpacing:"0.45em", color:C.goldMed, textTransform:"uppercase", fontWeight:300, marginBottom:24 }}>
-          Nous avons le bonheur de vous annoncer
-        </p>
-        <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(56px,13vw,100px)", fontWeight:300, lineHeight:1, letterSpacing:"0.03em", color:C.green, margin:"0 0 4px" }}>
-          Oriane
-        </h1>
-        <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(24px,5vw,42px)", color:C.goldMed, fontWeight:300, fontStyle:"italic", letterSpacing:"0.12em", margin:"4px 0" }}>
-          &amp;
+      <div style={{ display:"grid", gridTemplateColumns:"22% 1fr 22%", alignItems:"flex-start", gap:0, padding:"0 2%", overflow:"hidden", marginLeft:"calc(-50vw + 50%)", marginRight:"calc(-50vw + 50%)", width:"100vw" }}>
+        <div style={{ height:"85vh", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
+          <img src="/photo-gauche.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => e.target.style.display="none"} />
         </div>
-        <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(56px,13vw,100px)", fontWeight:300, lineHeight:1, letterSpacing:"0.03em", color:C.green, margin:"4px 0 0" }}>
-          Louis
-        </h1>
-        <div style={{ width:56, height:1, backgroundColor:C.gold, margin:"28px auto" }} />
-        <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(16px,3vw,22px)", fontWeight:300, fontStyle:"italic", color:C.muted, letterSpacing:"0.08em" }}>
-          Se disent OUI
-        </p>
-        <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(15px,2.5vw,20px)", fontWeight:400, color:C.greenMid, marginTop:10, letterSpacing:"0.06em" }}>
-          Le 27 Septembre 2025
-        </p>
-      </div>
 
-      {countdown && (
-        <div style={{ maxWidth:540, margin:"0 auto 48px", backgroundColor:C.green, borderRadius:18, padding:"30px 20px", display:"flex", justifyContent:"center", gap:"clamp(20px,6vw,60px)" }}>
-          {[{v:countdown.d,l:"Jours"},{v:countdown.h,l:"Heures"},{v:countdown.m,l:"Minutes"},{v:countdown.s,l:"Secondes"}].map(({v,l}) => (
-            <div key={l} style={{ textAlign:"center" }}>
-              <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(38px,9vw,64px)", fontWeight:300, color:"#FAF8F3", lineHeight:1 }}>
-                {String(v).padStart(2,"0")}
-              </div>
-              <div style={{ fontSize:9, color:C.goldMed, letterSpacing:"0.28em", textTransform:"uppercase", marginTop:8 }}>{l}</div>
+        <div style={{ textAlign:"center", display:"flex", flexDirection:"column", justifyContent:"flex-start", paddingTop:"0", alignItems:"center", gap:32, padding:"0 24px" }}>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, marginBottom:"auto" }}>
+            <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,6vw,86px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap" }}>
+              Oriane & Louis
+            </h1>
+            <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(14px,1.8vw,22px)", color:C.goldMed, letterSpacing:"0.2em", margin:0 }}>
+              19 Juin 2027
+            </p>
+          </div>
+
+          {countdown && (
+            <div style={{ backgroundColor:C.green, borderRadius:14, marginTop:"10%", padding:"16px 20px", display:"flex", justifyContent:"center", gap:"clamp(12px,2vw,32px)", width:"100%" }}>
+              {[{v:countdown.d,l:"Jours"},{v:countdown.h,l:"Heures"},{v:countdown.m,l:"Minutes"},{v:countdown.s,l:"Secondes"}].map(({v,l}) => (
+                <div key={l} style={{ textAlign:"center" }}>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(24px,3.5vw,48px)", fontWeight:300, color:"#FAF8F3", lineHeight:1 }}>
+                    {String(v).padStart(2,"0")}
+                  </div>
+                  <div style={{ fontSize:"clamp(7px,0.8vw,9px)", color:C.goldMed, letterSpacing:"0.2em", textTransform:"uppercase", marginTop:6 }}>{l}</div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          <button onClick={() => navigate("gifts")} style={{
+            backgroundColor:C.gold, color:"#FAF8F3", border:"none", cursor:"pointer",
+            padding:"clamp(14px,1.2vw,18px) clamp(32px,3vw,60px)",
+            fontFamily:"'Jost',sans-serif", fontSize:"clamp(12px,1.1vw,14px)",
+            letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4, marginTop:80,
+          }}>
+            Voir la liste de mariage
+          </button>
         </div>
-      )}
 
-      <div style={{ textAlign:"center", marginBottom:56 }}>
-        <button onClick={() => navigate("gifts")} style={{
-          backgroundColor:C.gold, color:"#FAF8F3", border:"none", cursor:"pointer",
-          padding:"15px 44px", fontFamily:"'Jost',sans-serif", fontSize:11,
-          letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4,
-        }}>
-          Voir la liste de mariage
-        </button>
-      </div>
-
-      <div style={{ maxWidth:560, margin:"0 auto", textAlign:"center", padding:"40px 20px", borderTop:`1px solid ${C.border}` }}>
-        <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(17px,3vw,22px)", fontStyle:"italic", fontWeight:300, lineHeight:2, color:C.greenMid }}>
-          « Votre présence est notre plus beau cadeau.<br/>
-          Mais si vous souhaitez nous gâter un peu,<br/>
-          voici quelques idées qui nous feraient très plaisir. »
-        </p>
+        <div style={{ height:"85vh", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
+          <img src="/photo-droite.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => e.target.style.display="none"} />
+        </div>
       </div>
     </div>
   );
@@ -289,10 +276,10 @@ function GiftsPage({ contribs, loaded, openGift, setOpenGift, payMethod, setPayM
           <div key={cat.name} style={{ marginBottom:56 }}>
             <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:20, paddingBottom:14, borderBottom:`2px solid ${C.green}` }}>
               <span style={{ fontSize:22 }}>{cat.icon}</span>
-              <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:28, fontWeight:400, margin:0, color:C.green }}>{cat.name}</h2>
+              <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:34, fontWeight:400, margin:0, color:C.green }}>{cat.name}</h2>
               <span style={{ marginLeft:"auto", fontSize:12, color:C.muted }}>{Math.round(collected)} / {totalCat} €</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap:16 }}>
+            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap:28 }}>
               {gifts.map(gift => {
                 const contrib = contribs[gift.id] || 0;
                 const pct     = Math.min(100, Math.round(contrib/gift.amount*100));
