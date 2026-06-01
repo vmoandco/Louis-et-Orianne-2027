@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -38,7 +38,7 @@ const GIFTS = [
 ];
 
 const C = {
-  bg:"#FAF8F3", card:"#FFFFFF", green:"#1C3320", greenMid:"#3A5C3C",
+  bg:"#FFFFFF", card:"#FFFFFF", green:"#1C3320", greenMid:"#3A5C3C",
   gold:"#AD8540", goldMed:"#C49A50", cream:"#EDE4CC", border:"#DCCFB5",
   muted:"#7A8A7B", light:"#A8BDA9", success:"#3D7A3D",
 };
@@ -289,17 +289,146 @@ function HomePage({ countdown, navigate }) {
 }
 
 function StoryPage() {
+  const events = [
+    {
+      date: "14 Septembre 2023 - Vendée",
+      photo: "/histoire-1.png",
+      text: "Première rencontre — Nous ne nous connaissions pas encore au moment de cette photo 👫🏻",
+    },
+    {
+      date: "Novembre 2023 - Florence",
+      photo: "/histoire-2.jpg",
+      text: "Notre premier weekend ensemble 🇮🇹",
+    },
+    {
+      date: "Janvier 2024 - Auron",
+      photo: "/histoire-3.jpg",
+      text: "Premier séjour au ski avec nos amis ⛷️",
+    },
+    {
+      date: "Avril 2024 - Roumanie",
+      photo: "/histoire-4.jpg",
+      text: "Première vraies vacances à deux 🇷🇴",
+    },
+    {
+      date: "Aout 2024 - Cap d'Ail",
+      photo: "/histoire-5.jpeg",
+      text: "Anniversaire d'Oriane sur la Côte d'Azur 🎂",
+    },
+    {
+      date: "Octobre 2024 - Île de la Réunion",
+      photo: "/histoire-6.png",
+      text: "Voyage en famille à la Réunion 🇷🇪",
+      ratio: "3:4",
+    },
+    {
+      date: "Nouvel An 2024 / 2025",
+      photo: "/histoire-7.png",
+      text: "Nouvel An entre bon copains, qui dit nouvelle année dit...",
+    },
+    {
+      date: "Janvier 2025 - Paris",
+      photo: "/histoire-8.jpg",
+      text: "... emménagement ensemble à Paris ! 🗼",
+    },
+  ];
+
   return (
-    <div style={{ maxWidth:700, margin:"0 auto", padding:"60px 20px" }}>
+    <div style={{ maxWidth:900, margin:"0 auto", padding:"60px 20px", backgroundColor:C.bg }}>
       <SectionTitle title="Notre Histoire" />
-      <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(17px,3vw,21px)", fontWeight:300, lineHeight:1.95, color:C.greenMid }}>
-        <p style={{ marginBottom:28 }}>
-          ✍️ <em>Personnalisez cette page avec votre histoire — comment vous vous êtes rencontrés,
-          vos moments forts, vos projets communs...</em>
-        </p>
-        <p>
-          <em>Remplacez ce texte dans le fichier App.jsx, section StoryPage.</em>
-        </p>
+      <div style={{ position:"relative", paddingTop:40 }}>
+
+        {/* Ligne centrale */}
+        <div style={{
+          position:"absolute", left:"50%", top:0, bottom:0,
+          width:1, backgroundColor:C.border, transform:"translateX(-50%)"
+        }} />
+
+        {events.map((event, i) => (
+          <TimelineItem key={i} event={event} index={i} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function TimelineItem({ event, index }) {
+  const [visible, setVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const ref = useRef(null);
+  const isLeft = index % 2 === 0;
+
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.2 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  if (isMobile) return (
+    <div ref={ref} style={{
+      marginBottom:48,
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(30px)",
+      transition:"opacity 0.6s ease, transform 0.6s ease", willChange:"opacity, transform",
+    }}>
+      <div style={{ backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, boxShadow:"0 2px 16px rgba(0,0,0,0.08)", borderRadius:14, overflow:"hidden", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+        <div style={{ padding:"14px 20px 0" }}>
+          <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, color:C.gold, letterSpacing:"0.15em", margin:0, fontWeight:400, textAlign:"center" }}>
+            {event.date}
+          </p>
+        </div>
+        <div style={{ height: event.ratio === "3:4" ? 400 : 260, backgroundColor:C.cream, overflow:"hidden", margin:"12px 0 0" }}>
+          <img src={event.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}
+            onError={e => e.target.style.display="none"} />
+        </div>
+        <div style={{ padding:"14px 20px 18px" }}>
+          <p style={{ fontSize:14, color:C.muted, lineHeight:1.75, margin:0, textAlign:"center" }}>{event.text}</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div ref={ref} style={{
+      display:"flex",
+      justifyContent: isLeft ? "flex-start" : "flex-end",
+      marginBottom:60,
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(30px)",
+      transition:"opacity 0.6s ease, transform 0.6s ease", willChange:"opacity, transform",
+    }}>
+      <div style={{
+        position:"absolute", left:"50%", transform:"translateX(-50%)",
+        width:12, height:12, borderRadius:"50%",
+        backgroundColor:C.gold, border:`2px solid ${C.bg}`,
+        marginTop:20, zIndex:1
+      }} />
+      <div style={{
+        width:"44%",
+        marginLeft: isLeft ? 0 : "auto",
+        marginRight: isLeft ? "auto" : 0,
+        paddingLeft: isLeft ? 0 : 24,
+        paddingRight: isLeft ? 24 : 0,
+      }}>
+        <div style={{ backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, boxShadow:"0 2px 16px rgba(0,0,0,0.08)", borderRadius:14, overflow:"hidden", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+          <div style={{ height: event.ratio === "3:4" ? 293 : 220, backgroundColor:C.cream, overflow:"hidden" }}>
+            <img src={event.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }}
+              onError={e => e.target.style.display="none"} />
+          </div>
+          <div style={{ padding:"16px 20px" }}>
+            <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:16, color:C.gold, letterSpacing:"0.15em", marginBottom:8, fontWeight:400 }}>{event.date}</p>
+            <p style={{ fontSize:14, color:C.muted, lineHeight:1.75 }}>{event.text}</p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -452,7 +581,7 @@ function InfoPage() {
       <SectionTitle title="Infos pratiques" />
       <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
         {infos.map(info => (
-          <div key={info.title} style={{ display:"flex", gap:20, backgroundColor:C.card, border:`1px solid ${C.border}`, borderRadius:14, padding:"20px 24px" }}>
+          <div key={info.title} style={{ display:"flex", gap:20, backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, boxShadow:"0 2px 16px rgba(0,0,0,0.08)", borderRadius:14, padding:"20px 24px" }}>
             <div style={{ fontSize:26, flexShrink:0, marginTop:3 }}>{info.icon}</div>
             <div>
               <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:500, color:C.green, marginBottom:8 }}>{info.title}</h3>
