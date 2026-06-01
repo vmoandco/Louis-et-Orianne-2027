@@ -211,7 +211,7 @@ function HomePage({ countdown, navigate }) {
 
   if (isMobile) return (
     <div style={{ textAlign:"center", padding:"40px 24px" }}>
-      <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0 }}>
+      <h1 style={{ fontFamily:"'Cormorant Garamond',serif",  fontSize:"clamp(32px,8vw,52px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap"}}>
         Oriane & Louis
       </h1>
       <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, color:C.goldMed, letterSpacing:"0.2em", margin:"8px 0 32px" }}>
@@ -276,7 +276,7 @@ function HomePage({ countdown, navigate }) {
             fontFamily:"'Jost',sans-serif", fontSize:"clamp(12px,1vw,14px)",
             letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4, marginTop:32,
           }}>
-            Voir la liste de mariage
+            Voir notre liste de mariage
           </button>
         </div>
 
