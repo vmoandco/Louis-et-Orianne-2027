@@ -301,8 +301,15 @@ function StoryPage() {
     { date:"Nouvel An 2024 / 2025", photo:"/histoire-7.png", text:"Nouvel An entre bons copains, qui dit nouvelle année dit..." },
     { type:"year", year:"2025" },
     { date:"Janvier 2025 - Paris", photo:"/histoire-8.jpg", text:"... emménagement ensemble à Paris ! 🗼" },
-    { date:"Mars 2025 - Thaïlande / Hong Kong", photo:"/histoire-9.png", text:"Voyage avec la famille de Louis en Asie 🇹🇭 🇭🇰", ratio:"3:4"},
-    { date:"Avril 2025 - Varengeville", photo:"/histoire-10.jpg", text:"A la découverte des falaises Normandes" },
+    { date:"Mars 2025 - Thaïlande / Hong Kong", photo:"/histoire-9.png", text:"Voyage en Asie 🇹🇭 🇭🇰", ratio:"3:4"},
+    { date:"Avril 2025 - Varengeville", photo:"/histoire-10.jpg", text:"Découverte de la Normandie d'Oriane 🌊" },
+    { date:"Avril 2025 - Beaune", photo:"/histoire-11.jpg", text:"Route des vins de bourgogne 🍷", ratio:"3:4" },
+    { date:"Mai 2025 - Boston & New York", photo:"/histoire-12.jpg", text:"Voyage dans la famille américaine de Louis 🇺🇸" },
+    { date:"Juillet 2025 - La Ronze", photo:"/histoire-13.png", text:"80 ans du grand-père de Louis 🎂" },
+    { date:"Août 2025 - Le Guillier", photo:"/histoire-14.png", text:"Parenthèse bretonne pour l'été 🌿", ratio:"3:4" },
+    { date:"Novembre 2025", photo:"/histoire-15.png", text:"Oriane découvre le plus beau stade de France 🔵⚪" },
+    { type:"year", year:"2026" },
+    { date:"Janvier 2026", photo:"/histoire-15.png", text:"Oriane découvre le plus beau stade de France 🔵⚪" },
   ];
 
   return (
