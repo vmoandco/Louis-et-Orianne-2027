@@ -346,9 +346,9 @@ function StoryPage() {
     { date:"Photo 1", photo:"/histoire-17.jpg", text:"À compléter ✍️", ratio:"3:4" },
     { date:"Photo 2", photo:"/histoire-18.jpg", text:"À compléter ✍️", ratio:"3:4" },
     { date:"Photo 3", photo:"/histoire-19.jpg", text:"À compléter ✍️", ratio:"3:4" },
-    { date:"Photo 4", photo:"/histoire-20.jpg", text:"À compléter ✍️", ratio:"3:4", featured:true },
-    { type:"year", year:"... ils se sont dit OUI", mosaic:true },
-    { date:"Photo 5", photo:"/histoire-21.jpg", text:"À compléter ✍️", ratio:"3:4", featured:true },
+    { date:"Photo 4", photo:"/histoire-20.jpg", ratio:"3:4", fullWidth:true },
+    { type:"text", text:"Votre texte ici — à personnaliser ✍️" },
+    { date:"Photo 5", photo:"/histoire-21.jpg", ratio:"3:4", fullWidth:true },
   ];
 
   // Grouper par sections
@@ -367,58 +367,68 @@ function StoryPage() {
   return (
     <div style={{ maxWidth:1000, margin:"0 auto", padding:"60px 20px", backgroundColor:C.bg }}>
       <SectionTitle title="Notre Histoire" />
-      {sections.map((section, si) => (
-        <div key={si} style={{ marginBottom:60 }}>
-          {/* Titre année */}
-          <div style={{ textAlign:"center", margin:"40px 0 32px", position:"relative", zIndex:1, backgroundColor:C.bg }}>
-            <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>
-              {section.year}
-            </span>
-            <div style={{ width:60, height:1, backgroundColor:C.gold, margin:"8px auto 0" }} />
-          </div>
-
-          {/* Timeline ou Mosaïque */}
-          {section.mosaic ? (
-  (() => {
-    const photos = section.photos;
-    const centerIdx = photos.findIndex(p => p.featured);
-    const top = centerIdx >= 0 ? photos.slice(0, centerIdx) : photos;
-    const center = centerIdx >= 0 ? photos[centerIdx] : null;
-    const bottom = centerIdx >= 0 ? photos.slice(centerIdx + 1) : [];
-    return (
-      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
-        {top.length > 0 && (
-          <div style={{ display:"grid", gridTemplateColumns:`repeat(${Math.min(top.length, 3)}, 1fr)`, gap:12 }}>
-            {top.map((p, pi) => <MosaicItem key={pi} event={p} />)}
-          </div>
-        )}
-        {center && (
-          <div style={{ width:"100%", margin:"0 auto" }}>
-            <MosaicItem event={center} size="large" />
-          </div>
-        )}
-        {bottom.length > 0 && (
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:12 }}>
-            {bottom.map((p, pi) => <MosaicItem key={pi} event={p} />)}
-          </div>
-        )}
-      </div>
-    );
-  })()
-          ) : (
-            <div style={{ position:"relative" }}>
-              <div style={{ position:"absolute", left:"50%", top:0, bottom:0, width:1, backgroundColor:C.border, transform:"translateX(-50%)" }} />
-              {(() => {
-                let photoIndex = 0;
-                return section.photos.map((event, i) => {
-                  const idx = photoIndex++;
-                  return <TimelineItem key={i} event={event} index={idx} />;
-                });
-              })()}
+      {(() => {
+        let globalIdx = 0;
+        return sections.map((section, si) => (
+          <div key={si} style={{ marginBottom:60 }}>
+            <div style={{ textAlign:"center", margin:"40px 0 32px", position:"relative", zIndex:1, backgroundColor:C.bg }}>
+              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>
+                {section.year}
+              </span>
+              <div style={{ width:60, height:1, backgroundColor:C.gold, margin:"8px auto 0" }} />
             </div>
-          )}
-        </div>
-      ))}
+
+            {section.mosaic ? (
+              (() => {
+  const items = section.photos;
+  let row = [];
+  const blocks = [];
+  for (const item of items) {
+    if (item.type === "text" || item.fullWidth) {
+      if (row.length > 0) { blocks.push({ type:"grid", items:[...row] }); row = []; }
+      blocks.push(item.type === "text" ? { type:"text", text:item.text } : { type:"full", item });
+    } else {
+      row.push(item);
+      if (row.length === 3) { blocks.push({ type:"grid", items:[...row] }); row = []; }
+    }
+  }
+  if (row.length > 0) blocks.push({ type:"grid", items:[...row] });
+
+  return (
+    <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      {blocks.map((block, bi) => {
+        if (block.type === "grid") return (
+          <div key={bi} style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:12 }}>
+            {block.items.map((p, pi) => <MosaicItem key={pi} event={p} />)}
+          </div>
+        );
+        if (block.type === "full") return (
+          <div key={bi} style={{ width:"100%", borderRadius:12, overflow:"hidden", aspectRatio:"3/2" }}>
+            <img src={block.item.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+          </div>
+        );
+        if (block.type === "text") return (
+          <p key={bi} style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontStyle:"italic", color:C.greenMid, textAlign:"center", lineHeight:1.8, padding:"8px 40px" }}>
+            {block.text}
+          </p>
+        );
+        return null;
+      })}
+    </div>
+  );
+})()
+            ) : (
+              <div style={{ position:"relative" }}>
+                <div style={{ position:"absolute", left:"50%", top:0, bottom:0, width:1, backgroundColor:C.border, transform:"translateX(-50%)" }} />
+                {section.photos.map((event, i) => {
+                  const idx = globalIdx++;
+                  return <TimelineItem key={i} event={event} index={idx} />;
+                })}
+              </div>
+            )}
+          </div>
+        ));
+      })()}
     </div>
   );
 }
