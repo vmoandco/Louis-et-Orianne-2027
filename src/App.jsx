@@ -232,7 +232,7 @@ function HomePage({ countdown, navigate }) {
         padding:"16px 40px", fontFamily:"'Jost',sans-serif", fontSize:12,
         letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4, marginBottom:32,
       }}>
-        Voir la liste de mariage
+        Voir notre liste de mariage
       </button>
       <div style={{ borderRadius:16, overflow:"hidden", width:"100%" }}>
         <img src="/photo-droite.jpg" alt="" style={{ width:"100%", objectFit:"cover" }} />
