@@ -211,10 +211,10 @@ function HomePage({ countdown, navigate }) {
 
   if (isMobile) return (
     <div style={{ textAlign:"center", padding:"40px 24px" }}>
-      <h1 style={{ fontFamily:"'Cormorant Garamond',serif",  fontSize:"clamp(32px,8vw,52px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap"}}>
+      <h1 style={{ fontFamily:"'Cormorant Garamond',serif",  fontSize:"clamp(38px,10vw,60px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap"}}>
         Oriane & Louis
       </h1>
-      <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, color:C.goldMed, letterSpacing:"0.2em", margin:"8px 0 32px" }}>
+      <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, color:C.goldMed, letterSpacing:"0.2em", margin:"4px 0 32px" }}>
         19 Juin 2027
       </p>
       {countdown && (
