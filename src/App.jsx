@@ -202,6 +202,44 @@ export default function App() {
 }
 
 function HomePage({ countdown, navigate }) {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
+  if (isMobile) return (
+    <div style={{ textAlign:"center", padding:"40px 24px" }}>
+      <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0 }}>
+        Oriane & Louis
+      </h1>
+      <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, color:C.goldMed, letterSpacing:"0.2em", margin:"8px 0 32px" }}>
+        19 Juin 2027
+      </p>
+      {countdown && (
+        <div style={{ backgroundColor:C.green, borderRadius:14, padding:"20px", display:"flex", justifyContent:"center", gap:24, marginBottom:24 }}>
+          {[{v:countdown.d,l:"Jours"},{v:countdown.h,l:"Heures"},{v:countdown.m,l:"Minutes"},{v:countdown.s,l:"Secondes"}].map(({v,l}) => (
+            <div key={l} style={{ textAlign:"center" }}>
+              <div style={{ fontFamily:"'Jost',sans-serif", fontSize:32, fontWeight:300, color:"#FAF8F3", lineHeight:1 }}>{String(v).padStart(2,"0")}</div>
+              <div style={{ fontSize:8, color:C.goldMed, letterSpacing:"0.2em", textTransform:"uppercase", marginTop:6 }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      )}
+      <button onClick={() => navigate("gifts")} style={{
+        backgroundColor:C.gold, color:"#FAF8F3", border:"none", cursor:"pointer",
+        padding:"16px 40px", fontFamily:"'Jost',sans-serif", fontSize:12,
+        letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4, marginBottom:32,
+      }}>
+        Voir la liste de mariage
+      </button>
+      <div style={{ borderRadius:16, overflow:"hidden", width:"100%" }}>
+        <img src="/photo-droite.jpg" alt="" style={{ width:"100%", objectFit:"cover" }} />
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <div style={{ display:"grid", gridTemplateColumns:"22% 1fr 22%", alignItems:"center", gap:0, padding:"0 2%", overflow:"hidden", marginLeft:"calc(-50vw + 50%)", marginRight:"calc(-50vw + 50%)", width:"100vw" }}>
