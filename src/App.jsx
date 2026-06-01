@@ -290,63 +290,34 @@ function HomePage({ countdown, navigate }) {
 
 function StoryPage() {
   const events = [
-    {
-      date: "14 Septembre 2023 - Vendée",
-      photo: "/histoire-1.png",
-      text: "Première rencontre — Nous ne nous connaissions pas encore au moment de cette photo 👫🏻",
-    },
-    {
-      date: "Novembre 2023 - Florence",
-      photo: "/histoire-2.jpg",
-      text: "Notre premier weekend ensemble 🇮🇹",
-    },
-    {
-      date: "Janvier 2024 - Auron",
-      photo: "/histoire-3.jpg",
-      text: "Premier séjour au ski avec nos amis ⛷️",
-    },
-    {
-      date: "Avril 2024 - Roumanie",
-      photo: "/histoire-4.jpg",
-      text: "Première vraies vacances à deux 🇷🇴",
-    },
-    {
-      date: "Aout 2024 - Cap d'Ail",
-      photo: "/histoire-5.jpeg",
-      text: "Anniversaire d'Oriane sur la Côte d'Azur 🎂",
-    },
-    {
-      date: "Octobre 2024 - Île de la Réunion",
-      photo: "/histoire-6.png",
-      text: "Voyage en famille à la Réunion 🇷🇪",
-      ratio: "3:4",
-    },
-    {
-      date: "Nouvel An 2024 / 2025",
-      photo: "/histoire-7.png",
-      text: "Nouvel An entre bon copains, qui dit nouvelle année dit...",
-    },
-    {
-      date: "Janvier 2025 - Paris",
-      photo: "/histoire-8.jpg",
-      text: "... emménagement ensemble à Paris ! 🗼",
-    },
+    { type:"year", year:"2023" },
+    { date:"14 Septembre 2023 - Vendée", photo:"/histoire-1.png", text:"Première rencontre — Nous ne nous connaissions pas encore au moment de cette photo 👫🏻" },
+    { date:"Novembre 2023 - Florence", photo:"/histoire-2.jpg", text:"Notre premier weekend ensemble 🇮🇹" },
+    { type:"year", year:"2024" },
+    { date:"Janvier 2024 - Auron", photo:"/histoire-3.jpg", text:"Premier séjour au ski avec nos amis ⛷️" },
+    { date:"Avril 2024 - Roumanie", photo:"/histoire-4.jpg", text:"Première vraies vacances à deux 🇷🇴" },
+    { date:"Aout 2024 - Cap d'Ail", photo:"/histoire-5.jpeg", text:"Anniversaire d'Oriane sur la Côte d'Azur 🎂" },
+    { date:"Octobre 2024 - Île de la Réunion", photo:"/histoire-6.png", text:"Voyage en famille à la Réunion 🇷🇪", ratio:"3:4" },
+    { date:"Nouvel An 2024 / 2025", photo:"/histoire-7.png", text:"Nouvel An entre bons copains, qui dit nouvelle année dit..." },
+    { type:"year", year:"2025" },
+    { date:"Janvier 2025 - Paris", photo:"/histoire-8.jpg", text:"... emménagement ensemble à Paris ! 🗼" },
+    { date:"Mars 2025 - Thaïlande / Hong Kong", photo:"/histoire-9.png", text:"Voyage avec la famille de Louis en Asie 🇹🇭 🇭🇰", ratio:"3:4"},
+    { date:"Avril 2025 - Varengeville", photo:"/histoire-10.jpg", text:"A la découverte des falaises Normandes" },
   ];
 
   return (
     <div style={{ maxWidth:900, margin:"0 auto", padding:"60px 20px", backgroundColor:C.bg }}>
       <SectionTitle title="Notre Histoire" />
       <div style={{ position:"relative", paddingTop:40 }}>
-
-        {/* Ligne centrale */}
-        <div style={{
-          position:"absolute", left:"50%", top:0, bottom:0,
-          width:1, backgroundColor:C.border, transform:"translateX(-50%)"
-        }} />
-
-        {events.map((event, i) => (
-          <TimelineItem key={i} event={event} index={i} />
-        ))}
+        <div style={{ position:"absolute", left:"50%", top:0, bottom:0, width:1, backgroundColor:C.border, transform:"translateX(-50%)" }} />
+       {(() => {
+  let photoIndex = 0;
+  return events.map((event, i) => {
+    const idx = photoIndex;
+    if (event.type !== "year") photoIndex++;
+    return <TimelineItem key={i} event={event} index={idx} />;
+  });
+})()}
       </div>
     </div>
   );
@@ -373,6 +344,21 @@ function TimelineItem({ event, index }) {
     return () => observer.disconnect();
   }, []);
 
+  // Rendu des séparateurs d'année
+  if (event.type === "year") return (
+    <div ref={ref} style={{
+      textAlign:"center", margin:"20px 0 40px",
+      opacity: visible ? 1 : 0,
+      transition:"opacity 0.6s ease",
+      backgroundColor:C.bg, position:"relative", zIndex:1,
+    }}>
+      <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>
+        {event.year}
+      </span>
+      
+    </div>
+  );
+
   if (isMobile) return (
     <div ref={ref} style={{
       marginBottom:48,
@@ -380,7 +366,7 @@ function TimelineItem({ event, index }) {
       transform: visible ? "translateY(0)" : "translateY(30px)",
       transition:"opacity 0.6s ease, transform 0.6s ease", willChange:"opacity, transform",
     }}>
-      <div style={{ backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, boxShadow:"0 2px 16px rgba(0,0,0,0.08)", borderRadius:14, overflow:"hidden", boxShadow:"0 2px 12px rgba(0,0,0,0.06)" }}>
+      <div style={{ backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, borderRadius:14, overflow:"hidden", boxShadow:"0 2px 16px rgba(0,0,0,0.08)" }}>
         <div style={{ padding:"14px 20px 0" }}>
           <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, color:C.gold, letterSpacing:"0.15em", margin:0, fontWeight:400, textAlign:"center" }}>
             {event.date}
@@ -396,12 +382,11 @@ function TimelineItem({ event, index }) {
       </div>
     </div>
   );
-
   return (
     <div ref={ref} style={{
       display:"flex",
       justifyContent: isLeft ? "flex-start" : "flex-end",
-      marginBottom:60,
+      marginBottom:1,
       opacity: visible ? 1 : 0,
       transform: visible ? "translateY(0)" : "translateY(30px)",
       transition:"opacity 0.6s ease, transform 0.6s ease", willChange:"opacity, transform",
