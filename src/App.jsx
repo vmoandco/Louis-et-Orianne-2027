@@ -210,7 +210,7 @@ function HomePage({ countdown, navigate }) {
             <div style={{ backgroundColor:C.green, borderRadius:14, marginTop:"10%", padding:"16px 20px", display:"flex", justifyContent:"center", gap:"clamp(12px,2vw,32px)", width:"100%" }}>
               {[{v:countdown.d,l:"Jours"},{v:countdown.h,l:"Heures"},{v:countdown.m,l:"Minutes"},{v:countdown.s,l:"Secondes"}].map(({v,l}) => (
                 <div key={l} style={{ textAlign:"center" }}>
-                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(24px,3.5vw,48px)", fontWeight:300, color:"#FAF8F3", lineHeight:1 }}>
+                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(24px,3.5vw,48px)", fontWeight:300, color:"#FAF8F3", lineHeight:1, fontVariantNumeric:"lining-nums" }}>
                     {String(v).padStart(2,"0")}
                   </div>
                   <div style={{ fontSize:"clamp(7px,0.8vw,9px)", color:C.goldMed, letterSpacing:"0.2em", textTransform:"uppercase", marginTop:6 }}>{l}</div>
