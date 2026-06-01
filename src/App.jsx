@@ -309,7 +309,7 @@ function StoryPage() {
     { date:"Août 2025 - Le Guillier", photo:"/histoire-14.png", text:"Parenthèse bretonne pour l'été 🌿", ratio:"3:4" },
     { date:"Novembre 2025", photo:"/histoire-15.png", text:"Oriane découvre le plus beau stade de France 🔵⚪" },
     { type:"year", year:"2026" },
-    { date:"Janvier 2026", photo:"/histoire-15.png", text:"Oriane découvre le plus beau stade de France 🔵⚪" },
+    { date:"Janvier 2027 - Venise", photo:"/histoire-16.jpg", text:"Découverte de la ville des amoureux ❤️ 🇮🇹", ratio:"3:4" },
   ];
 
   return (
