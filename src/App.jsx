@@ -287,21 +287,53 @@ function HomePage({ countdown, navigate }) {
     </div>
   );
 }
+function MosaicItem({ event, size }) {
+  const [visible, setVisible] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.1 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} style={{
+      borderRadius:12, overflow:"hidden",
+      opacity: visible ? 1 : 0,
+      transform: visible ? "translateY(0)" : "translateY(20px)",
+      transition:"opacity 0.5s ease, transform 0.5s ease",
+      cursor:"pointer", position:"relative",
+      aspectRatio: size === "large" ? "16/9" : event.ratio === "3:4" ? "3/4" : "4/3",
+    }}
+    onMouseEnter={() => setHovered(true)}
+    onMouseLeave={() => setHovered(false)}
+    >
+      <img src={event.photo} alt="" style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
+        onError={e => e.target.style.display="none"} />
+    </div>
+  );
+}
 
 function StoryPage() {
+  
   const events = [
     { type:"year", year:"2023" },
     { date:"14 Septembre 2023 - Vendée", photo:"/histoire-1.png", text:"Première rencontre — Nous ne nous connaissions pas encore au moment de cette photo 👫🏻" },
     { date:"Novembre 2023 - Florence", photo:"/histoire-2.jpg", text:"Notre premier weekend ensemble 🇮🇹" },
     { type:"year", year:"2024" },
     { date:"Janvier 2024 - Auron", photo:"/histoire-3.jpg", text:"Premier séjour au ski avec nos amis ⛷️" },
-    { date:"Avril 2024 - Roumanie", photo:"/histoire-4.jpg", text:"Première vraies vacances à deux 🇷🇴" },
+    { date:"Avril 2024 - Roumanie", photo:"/histoire-4.jpg", text:"Première vacances à deux 🇷🇴" },
     { date:"Aout 2024 - Cap d'Ail", photo:"/histoire-5.jpeg", text:"Anniversaire d'Oriane sur la Côte d'Azur 🎂" },
     { date:"Octobre 2024 - Île de la Réunion", photo:"/histoire-6.png", text:"Voyage en famille à la Réunion 🇷🇪", ratio:"3:4" },
     { date:"Nouvel An 2024 / 2025", photo:"/histoire-7.png", text:"Nouvel An entre bons copains, qui dit nouvelle année dit..." },
     { type:"year", year:"2025" },
     { date:"Janvier 2025 - Paris", photo:"/histoire-8.jpg", text:"... emménagement ensemble à Paris ! 🗼" },
-    { date:"Mars 2025 - Thaïlande / Hong Kong", photo:"/histoire-9.png", text:"Voyage en Asie 🇹🇭 🇭🇰", ratio:"3:4"},
+    { date:"Mars 2025 - Thaïlande / Hong Kong", photo:"/histoire-9.png", text:"Voyage en Asie 🇹🇭 🇭🇰", ratio:"3:4" },
     { date:"Avril 2025 - Varengeville", photo:"/histoire-10.jpg", text:"Découverte de la Normandie d'Oriane 🌊" },
     { date:"Avril 2025 - Beaune", photo:"/histoire-11.jpg", text:"Route des vins de bourgogne 🍷", ratio:"3:4" },
     { date:"Mai 2025 - Boston & New York", photo:"/histoire-12.jpg", text:"Voyage dans la famille américaine de Louis 🇺🇸" },
@@ -310,22 +342,83 @@ function StoryPage() {
     { date:"Novembre 2025", photo:"/histoire-15.png", text:"Oriane découvre le plus beau stade de France 🔵⚪" },
     { type:"year", year:"2026" },
     { date:"Janvier 2027 - Venise", photo:"/histoire-16.jpg", text:"Découverte de la ville des amoureux ❤️ 🇮🇹", ratio:"3:4" },
+    { type:"year", year:"Et après un fabuleux voyage en Arménie et en Géorgie...", mosaic:true },
+    { date:"Photo 1", photo:"/histoire-17.jpg", text:"À compléter ✍️", ratio:"3:4" },
+    { date:"Photo 2", photo:"/histoire-18.jpg", text:"À compléter ✍️", ratio:"3:4" },
+    { date:"Photo 3", photo:"/histoire-19.jpg", text:"À compléter ✍️", ratio:"3:4" },
+    { date:"Photo 4", photo:"/histoire-20.jpg", text:"À compléter ✍️", ratio:"3:4", featured:true },
+    { type:"year", year:"... ils se sont dit OUI", mosaic:true },
+    { date:"Photo 5", photo:"/histoire-21.jpg", text:"À compléter ✍️", ratio:"3:4", featured:true },
   ];
 
+  // Grouper par sections
+  const sections = [];
+  let current = null;
+  for (const e of events) {
+    if (e.type === "year") {
+      if (current) sections.push(current);
+      current = { year: e.year, mosaic: e.mosaic || false, photos: [] };
+    } else if (current) {
+      current.photos.push(e);
+    }
+  }
+  if (current) sections.push(current);
+
   return (
-    <div style={{ maxWidth:900, margin:"0 auto", padding:"60px 20px", backgroundColor:C.bg }}>
+    <div style={{ maxWidth:1000, margin:"0 auto", padding:"60px 20px", backgroundColor:C.bg }}>
       <SectionTitle title="Notre Histoire" />
-      <div style={{ position:"relative", paddingTop:40 }}>
-        <div style={{ position:"absolute", left:"50%", top:0, bottom:0, width:1, backgroundColor:C.border, transform:"translateX(-50%)" }} />
-       {(() => {
-  let photoIndex = 0;
-  return events.map((event, i) => {
-    const idx = photoIndex;
-    if (event.type !== "year") photoIndex++;
-    return <TimelineItem key={i} event={event} index={idx} />;
-  });
-})()}
+      {sections.map((section, si) => (
+        <div key={si} style={{ marginBottom:60 }}>
+          {/* Titre année */}
+          <div style={{ textAlign:"center", margin:"40px 0 32px", position:"relative", zIndex:1, backgroundColor:C.bg }}>
+            <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>
+              {section.year}
+            </span>
+            <div style={{ width:60, height:1, backgroundColor:C.gold, margin:"8px auto 0" }} />
+          </div>
+
+          {/* Timeline ou Mosaïque */}
+          {section.mosaic ? (
+  (() => {
+    const photos = section.photos;
+    const centerIdx = photos.findIndex(p => p.featured);
+    const top = centerIdx >= 0 ? photos.slice(0, centerIdx) : photos;
+    const center = centerIdx >= 0 ? photos[centerIdx] : null;
+    const bottom = centerIdx >= 0 ? photos.slice(centerIdx + 1) : [];
+    return (
+      <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
+        {top.length > 0 && (
+          <div style={{ display:"grid", gridTemplateColumns:`repeat(${Math.min(top.length, 3)}, 1fr)`, gap:12 }}>
+            {top.map((p, pi) => <MosaicItem key={pi} event={p} />)}
+          </div>
+        )}
+        {center && (
+          <div style={{ width:"100%", margin:"0 auto" }}>
+            <MosaicItem event={center} size="large" />
+          </div>
+        )}
+        {bottom.length > 0 && (
+          <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:12 }}>
+            {bottom.map((p, pi) => <MosaicItem key={pi} event={p} />)}
+          </div>
+        )}
       </div>
+    );
+  })()
+          ) : (
+            <div style={{ position:"relative" }}>
+              <div style={{ position:"absolute", left:"50%", top:0, bottom:0, width:1, backgroundColor:C.border, transform:"translateX(-50%)" }} />
+              {(() => {
+                let photoIndex = 0;
+                return section.photos.map((event, i) => {
+                  const idx = photoIndex++;
+                  return <TimelineItem key={i} event={event} index={idx} />;
+                });
+              })()}
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }
