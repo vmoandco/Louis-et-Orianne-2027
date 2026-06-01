@@ -191,12 +191,12 @@ export default function App() {
 function HomePage({ countdown, navigate }) {
   return (
     <div>
-      <div style={{ display:"grid", gridTemplateColumns:"22% 1fr 22%", alignItems:"flex-start", gap:0, padding:"0 2%", overflow:"hidden", marginLeft:"calc(-50vw + 50%)", marginRight:"calc(-50vw + 50%)", width:"100vw" }}>
-        <div style={{ height:"85vh", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"22% 1fr 22%", alignItems:"center", gap:0, padding:"0 2%", overflow:"hidden", marginLeft:"calc(-50vw + 50%)", marginRight:"calc(-50vw + 50%)", width:"100vw" }}>
+        <div style={{ height:"29vw", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
           <img src="/photo-gauche.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => e.target.style.display="none"} />
         </div>
 
-        <div style={{ textAlign:"center", display:"flex", flexDirection:"column", justifyContent:"flex-start", paddingTop:"0", alignItems:"center", gap:32, padding:"0 24px" }}>
+        <div style={{ textAlign:"center", display:"flex", flexDirection:"column", justifyContent:"flex-start", alignItems:"center", gap:32, padding:"0 24px" }}>
           <div style={{ display:"flex", flexDirection:"column", alignItems:"center", gap:4, marginBottom:"auto" }}>
             <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,6vw,86px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap" }}>
               Oriane & Louis
@@ -207,10 +207,10 @@ function HomePage({ countdown, navigate }) {
           </div>
 
           {countdown && (
-            <div style={{ backgroundColor:C.green, borderRadius:14, marginTop:"10%", padding:"16px 20px", display:"flex", justifyContent:"center", gap:"clamp(12px,2vw,32px)", width:"100%" }}>
+            <div style={{ backgroundColor:C.green, borderRadius:14, marginTop:"10%", padding:"16px 20px", display:"flex", justifyContent:"center", gap:"clamp(12px,2vw,32px)", width:"75%" }}>
               {[{v:countdown.d,l:"Jours"},{v:countdown.h,l:"Heures"},{v:countdown.m,l:"Minutes"},{v:countdown.s,l:"Secondes"}].map(({v,l}) => (
                 <div key={l} style={{ textAlign:"center" }}>
-                  <div style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(24px,3.5vw,48px)", fontWeight:300, color:"#FAF8F3", lineHeight:1, fontVariantNumeric:"lining-nums" }}>
+                  <div style={{ fontFamily:"'Jost',sans-serif", fontSize:"clamp(18px,2.5vw,36px)", fontWeight:300, color:"#FAF8F3", lineHeight:1, fontVariantNumeric:"lining-nums" }}>
                     {String(v).padStart(2,"0")}
                   </div>
                   <div style={{ fontSize:"clamp(7px,0.8vw,9px)", color:C.goldMed, letterSpacing:"0.2em", textTransform:"uppercase", marginTop:6 }}>{l}</div>
@@ -222,14 +222,14 @@ function HomePage({ countdown, navigate }) {
           <button onClick={() => navigate("gifts")} style={{
             backgroundColor:C.gold, color:"#FAF8F3", border:"none", cursor:"pointer",
             padding:"clamp(14px,1.2vw,18px) clamp(32px,3vw,60px)",
-            fontFamily:"'Jost',sans-serif", fontSize:"clamp(12px,1.1vw,14px)",
-            letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4, marginTop:80,
+            fontFamily:"'Jost',sans-serif", fontSize:"clamp(12px,1vw,14px)",
+            letterSpacing:"0.26em", textTransform:"uppercase", fontWeight:400, borderRadius:4, marginTop:32,
           }}>
             Voir la liste de mariage
           </button>
         </div>
 
-        <div style={{ height:"85vh", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
+        <div style={{ height:"29vw", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
           <img src="/photo-droite.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => e.target.style.display="none"} />
         </div>
       </div>
