@@ -10,7 +10,6 @@ const supabase = createClient(
 // │  ⚙️  CONFIG — Modifiez ces valeurs pour personnaliser       │
 // └─────────────────────────────────────────────────────────────┘
 const DATE_MARIAGE = new Date("2027-06-19T14:00:00"); // ← MODIFIER
-const MDP_ADMIN    = "OrianeLouisAdmin2025";           // ← MODIFIER
 const IBAN_INFO    = {
   iban : "FR76 XXXX XXXX XXXX XXXX XXXX XXX",         // ← MODIFIER
   bic  : "XXXXXXXX",                                   // ← MODIFIER
@@ -98,6 +97,16 @@ export default function App() {
     return () => clearInterval(id);
   }, []);
 
+  // Rester connecté en admin
+  useEffect(() => {
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) {
+      setAdminAuthed(true);
+      setAdminUnlocked(true);
+    }
+  });
+}, []);
+
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(null), 3000); };
 
   const saveContrib = async (id, val) => {
@@ -160,7 +169,11 @@ export default function App() {
         {tab==="story" && <StoryPage />}
         {tab==="gifts" && <GiftsPage contribs={contribs} loaded={loaded} openGift={openGift} setOpenGift={setOpenGift} payMethod={payMethod} setPayMethod={setPayMethod} />}
         {tab==="info"  && <InfoPage />}
-        {tab==="admin" && <AdminPage authed={adminAuthed} pwd={adminPwd} setPwd={setAdminPwd} onAuth={() => { adminPwd===MDP_ADMIN ? setAdminAuthed(true) : showToast("❌ Mot de passe incorrect"); }} contribs={contribs} editVals={editVals} setEditVals={setEditVals} onSave={saveContrib} />}
+        {tab==="admin" && <AdminPage authed={adminAuthed} pwd={adminPwd} setPwd={setAdminPwd} onAuth={async () => {
+          const { error } = await supabase.auth.signInWithPassword({ email: "losigaud@gmail.com", password: adminPwd });
+            if (error) showToast("❌ Mot de passe incorrect");
+            else setAdminAuthed(true);
+            }} contribs={contribs} editVals={editVals} setEditVals={setEditVals} onSave={saveContrib} onSignOut={async () => { await supabase.auth.signOut(); setAdminAuthed(false); setAdminUnlocked(false); navigate("home"); }} />}
       </main>
 
       {/* FOOTER */}
@@ -414,7 +427,7 @@ function InfoPage() {
   );
 }
 
-function AdminPage({ authed, pwd, setPwd, onAuth, contribs, editVals, setEditVals, onSave }) {
+function AdminPage({ authed, pwd, setPwd, onAuth, onSignOut, contribs, editVals, setEditVals, onSave }) {
   return (
     <div style={{ maxWidth:720, margin:"0 auto", padding:"60px 20px" }}>
       <SectionTitle title="Espace Admin" />
@@ -429,8 +442,13 @@ function AdminPage({ authed, pwd, setPwd, onAuth, contribs, editVals, setEditVal
         </div>
       ) : (
         <div>
+          <div style={{ display:"flex", justifyContent:"flex-end", marginBottom:16 }}>
+            <button onClick={onSignOut} style={{ background:"none", border:`1px solid ${C.border}`, cursor:"pointer", padding:"8px 16px", borderRadius:6, fontSize:12, color:C.muted }}>
+              Se déconnecter
+            </button>
+          </div>
           <div style={{ backgroundColor:C.cream, borderRadius:12, padding:"16px 20px", marginBottom:32, fontSize:14, lineHeight:1.75, color:C.greenMid }}>
-            Saisissez le montant <em>total collecté</em> pour chaque cadeau (Wero + virements reçus). Cliquez ✓ pour sauvegarder — la mise à jour est visible immédiatement pour tous les visiteurs.
+            Saisissez le montant <em>total collecté</em> pour chaque cadeau. Cliquez ✓ pour sauvegarder.
           </div>
           {GIFTS.map(gift => {
             const current = contribs[gift.id] || 0;
