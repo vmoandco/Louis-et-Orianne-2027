@@ -347,7 +347,7 @@ function StoryPage() {
     { date:"Photo 2", photo:"/histoire-18.jpg", text:"À compléter ✍️", ratio:"3:4" },
     { date:"Photo 3", photo:"/histoire-19.jpg", text:"À compléter ✍️", ratio:"3:4" },
     { date:"Photo 4", photo:"/histoire-20.jpg", ratio:"3:4", fullWidth:true },
-    { type:"text", text:"Votre texte ici — à personnaliser ✍️" },
+    { type:"text", text:"... ils se sont dit OUI" },
     { date:"Photo 5", photo:"/histoire-21.jpg", ratio:"3:4", fullWidth:true },
   ];
 
@@ -372,7 +372,7 @@ function StoryPage() {
         return sections.map((section, si) => (
           <div key={si} style={{ marginBottom:60 }}>
             <div style={{ textAlign:"center", margin:"40px 0 32px", position:"relative", zIndex:1, backgroundColor:C.bg }}>
-              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:52, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>
+              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:40, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>
                 {section.year}
               </span>
               <div style={{ width:60, height:1, backgroundColor:C.gold, margin:"8px auto 0" }} />
@@ -408,7 +408,7 @@ function StoryPage() {
           </div>
         );
         if (block.type === "text") return (
-          <p key={bi} style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontStyle:"italic", color:C.greenMid, textAlign:"center", lineHeight:1.8, padding:"8px 40px" }}>
+          <p key={bi} style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:40, fontWeight:300, color:C.green, letterSpacing:"0.1em", textAlign:"center", lineHeight:1.8, padding:"8px 40px" }}>
             {block.text}
           </p>
         );
