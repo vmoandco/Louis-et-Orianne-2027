@@ -26,7 +26,7 @@ const TR = {
     },
     gifts: {
       title: "Liste de mariage",
-      subtitle: "Participez à la mesure qui vous convient — chaque contribution est précieuse ♡",
+      subtitle: "Merci beaucoup de nous aider dans notre future vie de jeunes mariés ♡",
       loading: "Chargement...",
       participate: "Participer →",
       close: "Fermer ×",
@@ -47,7 +47,7 @@ const TR = {
     info: {
       title: "Infos pratiques",
       sections: [
-        { icon:"📍", title:"Lieu de la cérémonie",  content:"Nom de l'église / mairie\nAdresse complète\nCode postal, Ville" },
+        { icon:"📍", title:"Lieu de la cérémonie",  content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds" },
         { icon:"🎉", title:"Lieu de la réception",   content:"Nom du domaine / château\nAdresse complète\nCode postal, Ville" },
         { icon:"🛌", title:"Hébergement",             content:"Hôtels recommandés à proximité...\nBloc de chambres réservé à tarif préférentiel." },
         { icon:"👗", title:"Dress code",              content:"Tenue de soirée / cocktail." },
@@ -67,7 +67,7 @@ const TR = {
     },
     gifts: {
       title: "Gift Registry",
-      subtitle: "Contribute as much as you like — every gift is treasured ♡",
+      subtitle: "Thank you so much for helping us begin our life as newlyweds ♡",
       loading: "Loading...",
       participate: "Contribute →",
       close: "Close ×",
@@ -88,7 +88,7 @@ const TR = {
     info: {
       title: "Practical Info",
       sections: [
-        { icon:"📍", title:"Ceremony venue",    content:"Church / Town Hall name\nFull address\nCity, Postcode" },
+        { icon:"📍", title:"Ceremony venue",    content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds" },
         { icon:"🎉", title:"Reception venue",   content:"Venue / Château name\nFull address\nCity, Postcode" },
         { icon:"🛌", title:"Accommodation",      content:"Recommended nearby hotels...\nRoom block reserved at preferential rate." },
         { icon:"👗", title:"Dress code",         content:"Black tie / cocktail attire." },
@@ -221,7 +221,7 @@ export default function App() {
     <div style={{ fontFamily:"'Jost',sans-serif", backgroundColor:C.bg, minHeight:"100vh", color:C.green }}>
 
       {/* HEADER */}
-      <header style={{ backgroundColor:"rgba(255,255,255,0.92)", backdropFilter:"blur(8px)", position:"sticky", top:0, zIndex:50, borderBottom:`1px solid ${C.border}` }}>
+      <header style={{ backgroundColor:"rgba(255,255,255,0.92)", backdropFilter:"blur(8px)", position: window.innerWidth < 768 ? "static" : "sticky", top:0, zIndex:50, borderBottom: window.innerWidth < 768 ? "none" : `1px solid ${C.border}` }}>
         <div style={{ maxWidth:980, margin:"0 auto", padding:"0 20px", display:"flex", alignItems:"center", justifyContent:"center", height:64, position:"relative" }}>
           {/* Nav desktop */}
           <nav style={{ display: window.innerWidth < 768 ? "none" : "flex" }}>
@@ -287,7 +287,7 @@ export default function App() {
       </main>
 
       {/* FOOTER */}
-      <footer style={{ textAlign:"center", padding:"24px 16px", borderTop:`1px solid ${C.border}` }}>
+      <footer style={{ textAlign:"center", padding:"24px 16px", borderTop:`1px solid ${C.border}`, display: window.innerWidth < 768 ? "none" : "block" }}>
         <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:20, fontStyle:"italic", color:C.light, marginBottom:12 }}>
           {t.footer}
         </p>
@@ -349,7 +349,7 @@ function HomePage({ countdown, navigate, t, lang }) {
   const cdLabels = t.home.countdown;
 
   if (isMobile) return (
-    <div style={{ textAlign:"center", padding:"40px 24px" }}>
+    <div style={{ textAlign:"center", padding:"0 24px" }}>
       <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(38px,10vw,60px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap" }}>
         Oriane & Louis
       </h1>
@@ -475,7 +475,7 @@ const events = [
   if (current) sections.push(current);
 
   return (
-    <div style={{ maxWidth:1000, margin:"0 auto", padding:"60px 20px", backgroundColor:C.bg }}>
+    <div style={{ maxWidth:1000, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px", backgroundColor:C.bg }}>
       <SectionTitle title={t.story.title} />
       {(() => {
         let globalIdx = 0;
@@ -604,7 +604,7 @@ function GiftsPage({ contribs, loaded, openGift, setOpenGift, payMethod, setPayM
   );
 
   return (
-    <div style={{ padding:"40px 0" }}>
+    <div style={{ padding: window.innerWidth < 768 ? "8px 0" : "40px 0" }}>
       <SectionTitle title={tg.title} subtitle={tg.subtitle} />
       {cats.map(cat => {
         const gifts    = GIFTS.filter(g => (lang==="fr" ? g.cat.fr : g.catEn) === cat.name);
@@ -715,7 +715,7 @@ function PayBtn({ icon, label, sub, onClick, primary, active }) {
 // └─────────────────────────────────────────────────────────────┘
 function InfoPage({ t }) {
   return (
-    <div style={{ maxWidth:700, margin:"0 auto", padding:"60px 20px" }}>
+    <div style={{ maxWidth:700, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px" }}>
       <SectionTitle title={t.info.title} />
       <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
         {t.info.sections.map(info => (
@@ -821,8 +821,8 @@ function MobileBottomNav({ tab, navigate, lang, setLang }) {
 }
 function SectionTitle({ title, subtitle }) {
   return (
-    <div style={{ textAlign:"center", marginBottom:44 }}>
-      <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(30px,6vw,52px)", fontWeight:300, color:C.green, margin:0 }}>{title}</h2>
+    <div style={{ textAlign:"center", marginBottom:32, paddingTop: 0 }}>
+      <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(38px,8vw,52px)", fontWeight:300, color:C.green, margin:0 }}>{title}</h2>
       {subtitle && <p style={{ fontSize:13, color:C.muted, maxWidth:480, margin:"10px auto 0", lineHeight:1.75, fontStyle:"italic" }}>{subtitle}</p>}
       <div style={{ width:52, height:1, backgroundColor:C.gold, margin:"22px auto 0" }} />
     </div>
