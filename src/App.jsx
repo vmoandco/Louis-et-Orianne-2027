@@ -31,7 +31,7 @@ const TR = {
       participate: "Participer →",
       close: "Fermer ×",
       collected: "€ collectés",
-      completed: "Cadeau complété — merci infiniment ♡",
+      completed: "Cadeau offert — merci infiniment ♡",
       payIntro: "Choisissez votre mode de paiement. Vous pouvez aussi participer partiellement !",
       stripeLabel: "Payer par carte (Stripe)", stripeSub: "Paiement sécurisé · Visa / CB / Mastercard",
       weroLabel: "Payer via Wero", weroSub: "Envoi instantané au",
@@ -224,7 +224,7 @@ export default function App() {
       <header style={{ backgroundColor:"rgba(255,255,255,0.92)", backdropFilter:"blur(8px)", position:"sticky", top:0, zIndex:50, borderBottom:`1px solid ${C.border}` }}>
         <div style={{ maxWidth:980, margin:"0 auto", padding:"0 20px", display:"flex", alignItems:"center", justifyContent:"center", height:64, position:"relative" }}>
           {/* Nav desktop */}
-          <nav style={{ display:"flex" }} className="hidden md:flex">
+          <nav style={{ display: window.innerWidth < 768 ? "none" : "flex" }}>
             {TABS.map(t => (
               <button key={t.id} onClick={() => navigate(t.id)} style={{
                 background:"none", border:"none", cursor:"pointer",
@@ -238,18 +238,18 @@ export default function App() {
           </nav>
 
           {/* Toggle langue desktop — à droite */}
-          <div className="hidden md:flex" style={{ position:"absolute", right:20, top:"50%", transform:"translateY(-50%)" }}>
+          <div style={{ position:"absolute", right:20, top:"50%", transform:"translateY(-50%)", display: window.innerWidth < 768 ? "none" : "flex" }}>
             <LangToggle />
           </div>
 
           {/* Hamburger mobile */}
-          <button onClick={() => setMobileMenu(!mobileMenu)} className="flex md:hidden" style={{ background:"none", border:"none", cursor:"pointer", color:C.green, fontSize:22, padding:"4px 0", lineHeight:1, position:"absolute", right:20 }}>
+          <button onClick={() => setMobileMenu(!mobileMenu)} className="hidden" style={{ background:"none", border:"none", cursor:"pointer", color:C.green, fontSize:22, padding:"4px 0", lineHeight:1, position:"absolute", right:20 }}>
             {mobileMenu ? "✕" : "☰"}
           </button>
         </div>
 
         {/* Menu mobile */}
-        {mobileMenu && (
+        {false && (
           <nav style={{ backgroundColor:"#273E29", borderTop:"1px solid rgba(255,255,255,0.08)" }}>
             {TABS.map(t => (
               <button key={t.id} onClick={() => navigate(t.id)} style={{
@@ -269,7 +269,7 @@ export default function App() {
       </header>
 
       {/* CONTENU */}
-      <main style={{ maxWidth:980, margin:"0 auto", padding:"0 16px 80px" }}>
+      <main style={{ maxWidth:980, margin:"0 auto", padding:"0 16px 100px" }}>
         {tab==="home"  && <HomePage  countdown={countdown} navigate={navigate} t={t} lang={lang} />}
         {tab==="story" && <StoryPage t={t} lang={lang} />}
         {tab==="gifts" && <GiftsPage contribs={contribs} loaded={loaded} openGift={openGift} setOpenGift={setOpenGift} payMethod={payMethod} setPayMethod={setPayMethod} t={t} lang={lang} />}
@@ -323,6 +323,7 @@ export default function App() {
     </div>
   </div>
 )}
+<MobileBottomNav tab={tab} navigate={navigate} lang={lang} setLang={setLang} />
 
       {/* TOAST */}
       {toast && (
@@ -456,7 +457,7 @@ const events = [
   { date:{fr:"Novembre 2025",                    en:"November 2025"},                     photo:"/histoire-15.png", text:{fr:"Oriane découvre le plus beau stade de France 🔵⚪", en:"Oriane discovers the finest stadium in France 🔵⚪"} },
   { type:"year", year:"2026" },
   { date:{fr:"Janvier 2027 - Venise",            en:"January 2027 - Venice"},             photo:"/histoire-16.jpg", text:{fr:"Découverte de la ville des amoureux ❤️ 🇮🇹", en:"Discovering the city of love ❤️ 🇮🇹"}, ratio:"3:4" },
-  { type:"year", year:"Et après un fabuleux voyage en Arménie et en Géorgie...", mosaic:true },
+  { type:"year", year:{fr:"Et après un fabuleux voyage en Arménie et en Géorgie...", en:"And after a fabulous trip to Armenia and Georgia..."}, mosaic:true },
   { date:{fr:"Photo 1", en:"Photo 1"}, photo:"/histoire-17.jpg", text:{fr:"À compléter ✍️", en:"To be completed ✍️"}, ratio:"3:4" },
   { date:{fr:"Photo 2", en:"Photo 2"}, photo:"/histoire-18.jpg", text:{fr:"À compléter ✍️", en:"To be completed ✍️"}, ratio:"3:4" },
   { date:{fr:"Photo 3", en:"Photo 3"}, photo:"/histoire-19.jpg", text:{fr:"À compléter ✍️", en:"To be completed ✍️"}, ratio:"3:4" },
@@ -481,7 +482,7 @@ const events = [
         return sections.map((section, si) => (
           <div key={si} style={{ marginBottom:60 }}>
             <div style={{ textAlign:"center", margin:"40px 0 32px", position:"relative", zIndex:1, backgroundColor:C.bg }}>
-              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:40, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>{section.year}</span>
+              <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:40, fontWeight:300, color:C.green, letterSpacing:"0.1em" }}>{typeof section.year === "object" ? section.year[lang] : section.year}</span>
               <div style={{ width:60, height:1, backgroundColor:C.gold, margin:"8px auto 0" }} />
             </div>
             {section.mosaic ? (
@@ -790,7 +791,34 @@ function AdminPage({ authed, pwd, setPwd, onAuth, onSignOut, contribs, editVals,
     </div>
   );
 }
-
+function MobileBottomNav({ tab, navigate, lang, setLang }) {
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  if (!isMobile) return null;
+  return (
+    <nav style={{ position:"fixed", bottom:0, left:0, right:0, backgroundColor:"rgba(255,255,255,0.96)", backdropFilter:"blur(8px)", borderTop:`1px solid ${C.border}`, zIndex:49, display:"flex", paddingBottom:"env(safe-area-inset-bottom)" }}>
+      {[
+        { id:"home",  icon:"♡", label:{fr:"Accueil", en:"Home"} },
+        { id:"story", icon:"◎", label:{fr:"Histoire", en:" Our Story"} },
+        { id:"gifts", icon:"◇", label:{fr:"Cadeaux", en:"Gifts"} },
+        { id:"info",  icon:"○", label:{fr:"Infos", en:"Info"} },
+      ].map(item => (
+        <button key={item.id} onClick={() => navigate(item.id)} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"10px 0", background:"none", border:"none", cursor:"pointer", color: tab===item.id ? C.gold : C.muted, transition:"color 0.2s" }}>
+          <span style={{ fontSize:22, lineHeight:1 }}>{item.icon}</span>
+          <span style={{ fontSize:9, letterSpacing:"0.1em", textTransform:"uppercase", marginTop:4, fontFamily:"'Jost',sans-serif" }}>{item.label[lang]}</span>
+        </button>
+      ))}
+      <button onClick={() => setLang(lang==="fr"?"en":"fr")} style={{ flex:0.7, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:"10px 0", background:"none", border:"none", cursor:"pointer" }}>
+        <span style={{ fontSize:22 }}>{lang==="fr"?"🇫🇷":"🇬🇧"}</span>
+        <span style={{ fontSize:9, letterSpacing:"0.1em", textTransform:"uppercase", marginTop:4, color:C.muted, fontFamily:"'Jost',sans-serif" }}>{lang==="fr"?"FR":"EN"}</span>
+      </button>
+    </nav>
+  );
+}
 function SectionTitle({ title, subtitle }) {
   return (
     <div style={{ textAlign:"center", marginBottom:44 }}>
