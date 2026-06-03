@@ -47,8 +47,8 @@ const TR = {
     info: {
       title: "Infos pratiques",
       sections: [
-        { icon:"📍", title:"Lieu de la cérémonie",  content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds" },
-        { icon:"🎉", title:"Lieu de la réception",   content:"Château de Pierrefonds\nrue Viollet le Duc\n60350 Pierrefonds" },
+        { icon:"⛪", title:"Lieu de la cérémonie", content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds", link:"https://maps.google.com/?q=Église+Saint-Sulpice+de+Pierrefonds,+2+Chemin+Eglise,+60350+Pierrefonds" },
+        { icon:"🎉", title:"Lieu de la réception", content:"Château de Pierrefonds\nRue Viollet le Duc\n60350 Pierrefonds", link:"https://maps.google.com/?q=Château+de+Pierrefonds,+Rue+Viollet+le+Duc,+60350+Pierrefonds" },
         { icon:"🛌", title:"Hébergement",             content:"Hôtels recommandés à proximité...\nBloc de chambres réservé à tarif préférentiel." },
         { icon:"👗", title:"Dress code",              content:"Tenue de soirée / cocktail." },
         { icon:"🚗", title:"Accès & parking",         content:"En voiture : depuis Paris, prendre l'A6...\nParking gratuit sur place." },
@@ -88,8 +88,8 @@ const TR = {
     info: {
       title: "Practical Info",
       sections: [
-        { icon:"📍", title:"Ceremony venue",    content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds" },
-        { icon:"🎉", title:"Reception venue",   content:"Venue / Château name\nFull address\nCity, Postcode" },
+        { icon:"⛪", title:"Ceremony venue", content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds", link:"https://maps.google.com/?q=Église+Saint-Sulpice+de+Pierrefonds,+2+Chemin+Eglise,+60350+Pierrefonds" },
+        { icon:"🎉", title:"Reception venue", content:"Château de Pierrefonds\nRue Viollet le Duc\n60350 Pierrefonds", link:"https://maps.google.com/?q=Château+de+Pierrefonds,+Rue+Viollet+le+Duc,+60350+Pierrefonds" },
         { icon:"🛌", title:"Accommodation",      content:"Recommended nearby hotels...\nRoom block reserved at preferential rate." },
         { icon:"👗", title:"Dress code",         content:"Black tie / cocktail attire." },
         { icon:"🚗", title:"Access & parking",   content:"By car: from Paris, take the A6...\nFree parking on site." },
@@ -451,8 +451,8 @@ const events = [
   { date:{fr:"Mars 2025 - Thaïlande / Hong Kong",en:"March 2025 - Thailand / Hong Kong"}, photo:"/histoire-9.png",  text:{fr:"Voyage en Asie 🇹🇭 🇭🇰", en:"Trip to Asia 🇹🇭 🇭🇰"}, ratio:"3:4" },
   { date:{fr:"Avril 2025 - Varengeville",        en:"April 2025 - Varengeville"},         photo:"/histoire-10.jpg", text:{fr:"Découverte de la Normandie d'Oriane 🌊", en:"Discovering Oriane's Normandy 🌊"} },
   { date:{fr:"Avril 2025 - Beaune",              en:"April 2025 - Beaune"},               photo:"/histoire-11.jpg", text:{fr:"Route des vins de bourgogne 🍷", en:"Burgundy wine route 🍷"}, ratio:"3:4" },
-  { date:{fr:"Mai 2025 - Boston & New York",     en:"May 2025 - Boston & New York"},      photo:"/histoire-12.jpg", text:{fr:"Voyage dans la famille américaine de Louis 🇺🇸", en:"Visiting Louis's American family 🇺🇸"} },
-  { date:{fr:"Juillet 2025 - La Ronze",          en:"July 2025 - La Ronze"},              photo:"/histoire-13.png", text:{fr:"80 ans du grand-père de Louis 🎂", en:"Louis's grandfather's 80th birthday 🎂"} },
+  { date:{fr:"Mai 2025 - Boston & New York",     en:"May 2025 - Boston & New York"},      photo:"/histoire-12.jpg", text:{fr:"Voyage dans la famille américaine de Louis 🇺🇸", en:"Visiting Louis' American family 🇺🇸"} },
+  { date:{fr:"Juillet 2025 - La Ronze",          en:"July 2025 - La Ronze"},              photo:"/histoire-13.png", text:{fr:"80 ans du grand-père de Louis 🎂", en:"Louis' grandfather's 80th birthday 🎂"} },
   { date:{fr:"Août 2025 - Le Guillier",          en:"August 2025 - Le Guillier"},         photo:"/histoire-14.png", text:{fr:"Parenthèse bretonne pour l'été 🌿", en:"A Breton summer escape 🌿"}, ratio:"3:4" },
   { date:{fr:"Novembre 2025",                    en:"November 2025"},                     photo:"/histoire-15.png", text:{fr:"Oriane découvre le plus beau stade de France 🔵⚪", en:"Oriane discovers the finest stadium in France 🔵⚪"} },
   { type:"year", year:"2026" },
@@ -724,6 +724,11 @@ function InfoPage({ t }) {
             <div>
               <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:500, color:C.green, marginBottom:8 }}>{info.title}</h3>
               <p style={{ fontSize:14, color:C.muted, lineHeight:1.85, whiteSpace:"pre-line" }}>{info.content}</p>
+{info.link && (
+  <a href={info.link} target="_blank" rel="noopener noreferrer" style={{ display:"inline-block", marginTop:10, fontSize:12, color:C.gold, letterSpacing:"0.1em", textTransform:"uppercase", textDecoration:"none", borderBottom:`1px solid ${C.gold}`, paddingBottom:1 }}>
+    📍 Google Maps
+  </a>
+)}
             </div>
           </div>
         ))}
