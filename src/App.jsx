@@ -48,7 +48,7 @@ const TR = {
       title: "Infos pratiques",
       sections: [
         { icon:"📍", title:"Lieu de la cérémonie",  content:"Église Saint-Sulpice de Pierrefonds\n2 Chemin Eglise\n60350 Pierrefonds" },
-        { icon:"🎉", title:"Lieu de la réception",   content:"Nom du domaine / château\nAdresse complète\nCode postal, Ville" },
+        { icon:"🎉", title:"Lieu de la réception",   content:"Château de Pierrefonds\nrue Viollet le Duc\n60350 Pierrefonds" },
         { icon:"🛌", title:"Hébergement",             content:"Hôtels recommandés à proximité...\nBloc de chambres réservé à tarif préférentiel." },
         { icon:"👗", title:"Dress code",              content:"Tenue de soirée / cocktail." },
         { icon:"🚗", title:"Accès & parking",         content:"En voiture : depuis Paris, prendre l'A6...\nParking gratuit sur place." },
@@ -377,7 +377,7 @@ function HomePage({ countdown, navigate, t, lang }) {
 
   return (
     <div>
-      <div style={{ display:"grid", gridTemplateColumns:"22% 1fr 22%", alignItems:"center", gap:0, padding:"0 2%", overflow:"hidden", marginLeft:"calc(-50vw + 50%)", marginRight:"calc(-50vw + 50%)", width:"100vw" }}>
+      <div style={{ display:"grid", gridTemplateColumns:"22% 1fr 22%", alignItems:"center", gap:0, padding:"40px 2% 0", overflow:"hidden", marginLeft:"calc(-50vw + 50%)", marginRight:"calc(-50vw + 50%)", width:"100vw" }}>
         <div style={{ height:"29vw", borderRadius:12, backgroundColor:C.cream, overflow:"hidden" }}>
           <img src="/photo-gauche.jpg" alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} onError={e => e.target.style.display="none"} />
         </div>
@@ -386,7 +386,7 @@ function HomePage({ countdown, navigate, t, lang }) {
             <h1 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(28px,6vw,86px)", fontWeight:300, letterSpacing:"0.05em", color:C.green, margin:0, whiteSpace:"nowrap" }}>
               Oriane & Louis
             </h1>
-            <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(14px,1.8vw,22px)", color:C.goldMed, letterSpacing:"0.2em", margin:0 }}>
+            <p style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:"clamp(16px,2.2vw,28px)", color:C.goldMed, letterSpacing:"0.2em", margin:0 }}>
               {t.home.date}
             </p>
           </div>
@@ -717,10 +717,10 @@ function InfoPage({ t }) {
   return (
     <div style={{ maxWidth:700, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px" }}>
       <SectionTitle title={t.info.title} />
-      <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
         {t.info.sections.map(info => (
-          <div key={info.title} style={{ display:"flex", gap:20, backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, boxShadow:"0 2px 16px rgba(0,0,0,0.08)", borderRadius:14, padding:"20px 24px" }}>
-            <div style={{ fontSize:26, flexShrink:0, marginTop:3 }}>{info.icon}</div>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center", gap:12, backgroundColor:"#FFFFFF", border:`1px solid ${C.border}`, boxShadow:"0 2px 16px rgba(0,0,0,0.08)", borderRadius:14, padding:"20px 16px" }}>
+            <div style={{ fontSize:26 }}>{info.icon}</div>
             <div>
               <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:21, fontWeight:500, color:C.green, marginBottom:8 }}>{info.title}</h3>
               <p style={{ fontSize:14, color:C.muted, lineHeight:1.85, whiteSpace:"pre-line" }}>{info.content}</p>
