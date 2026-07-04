@@ -206,7 +206,14 @@ export default function App() {
     showToast("✓ Contribution sauvegardée !");
   };
 
-  const navigate = (tab) => { setTab(tab); setMobileMenu(false); setOpenGift(null); window.scrollTo(0, 0); };
+  const navigate = (tab) => {
+  setTab(tab);
+  setMobileMenu(false);
+  setOpenGift(null);
+  window.scrollTo({ top: 0, behavior: "instant" });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+};
 
   const TABS = [
     { id:"home",  label: t.nav.home },
