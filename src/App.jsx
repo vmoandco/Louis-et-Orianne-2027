@@ -105,20 +105,27 @@ const TR = {
 // │  🎁  LISTE DE CADEAUX (bilingue)                            │
 // └─────────────────────────────────────────────────────────────┘
 const GIFTS = [
-  { id:"vn1", cat:{fr:"Voyage de noces",icon:"✈️"}, catEn:"Honeymoon",     name:{fr:"Une nuit en palace",              en:"A night in a palace"},          desc:{fr:"Offrez-nous une nuit inoubliable lors de notre voyage de noces",    en:"Offer us an unforgettable night during our honeymoon"},      amount:250, stripe:"" },
-  { id:"vn2", cat:{fr:"Voyage de noces",icon:"✈️"}, catEn:"Honeymoon",     name:{fr:"Dîner gastronomique",              en:"Fine dining experience"},        desc:{fr:"Un repas romantique dans un grand restaurant étoilé",               en:"A romantic dinner at a Michelin-starred restaurant"},         amount:150, stripe:"" },
-  { id:"vn3", cat:{fr:"Voyage de noces",icon:"✈️"}, catEn:"Honeymoon",     name:{fr:"Activité découverte",              en:"Discovery activity"},            desc:{fr:"Plongée, randonnée ou balade en bateau — une aventure à deux",     en:"Diving, hiking or a boat trip — an adventure for two"},       amount:80,  stripe:"" },
-  { id:"vn4", cat:{fr:"Voyage de noces",icon:"✈️"}, catEn:"Honeymoon",     name:{fr:"Séance spa & détente",             en:"Spa & wellness session"},        desc:{fr:"Un moment de bien-être rien que pour nous",                        en:"A moment of relaxation just for the two of us"},              amount:120, stripe:"" },
-  { id:"nn1", cat:{fr:"Notre nid",      icon:"🏡"}, catEn:"Our Home",      name:{fr:"Robot pâtissier",                  en:"Stand mixer"},                   desc:{fr:"Pour les futures pâtisseries du dimanche matin",                   en:"For future Sunday morning baking sessions"},                  amount:350, stripe:"" },
-  { id:"nn2", cat:{fr:"Notre nid",      icon:"🏡"}, catEn:"Our Home",      name:{fr:"Cave à vins",                      en:"Wine rack"},                     desc:{fr:"Pour conserver nos bouteilles préférées",                          en:"To store our favourite bottles"},                             amount:300, stripe:"" },
-  { id:"nn3", cat:{fr:"Notre nid",      icon:"🏡"}, catEn:"Our Home",      name:{fr:"Batterie de cuisine Le Creuset",   en:"Le Creuset cookware set"},       desc:{fr:"Des cocottes et poêles de qualité pour cuisiner ensemble",         en:"Quality casseroles and pans for cooking together"},           amount:280, stripe:"" },
-  { id:"nn4", cat:{fr:"Notre nid",      icon:"🏡"}, catEn:"Our Home",      name:{fr:"Robot aspirateur",                 en:"Robot vacuum cleaner"},          desc:{fr:"Un peu d'aide bien méritée pour le quotidien !",                   en:"A little well-deserved help with daily chores!"},             amount:200, stripe:"" },
-  { id:"at1", cat:{fr:"Art de la table",icon:"🍽️"}, catEn:"Table Arts",    name:{fr:"Service de table complet",         en:"Complete tableware set"},        desc:{fr:"Une belle vaisselle pour recevoir nos proches",                    en:"Beautiful crockery for hosting our loved ones"},              amount:400, stripe:"" },
-  { id:"at2", cat:{fr:"Art de la table",icon:"🍽️"}, catEn:"Table Arts",    name:{fr:"Verres à vin & champagne",          en:"Wine & champagne glasses"},     desc:{fr:"Pour trinquer à toutes nos futures occasions",                     en:"For toasting all our future celebrations"},                   amount:180, stripe:"" },
-  { id:"at3", cat:{fr:"Art de la table",icon:"🍽️"}, catEn:"Table Arts",    name:{fr:"Couverts premium",                 en:"Premium cutlery"},               desc:{fr:"Une argenterie moderne pour une belle table",                      en:"Modern silverware for a beautiful table setting"},            amount:220, stripe:"" },
-  { id:"ex1", cat:{fr:"Expériences",    icon:"🎭"}, catEn:"Experiences",   name:{fr:"Weekend gastronomique",             en:"Gastronomic weekend"},           desc:{fr:"Un weekend gourmand en amoureux dans une belle région",            en:"A foodie weekend away for two in a beautiful region"},        amount:350, stripe:"" },
-  { id:"ex2", cat:{fr:"Expériences",    icon:"🎭"}, catEn:"Experiences",   name:{fr:"Cours de cuisine",                 en:"Cooking class"},                 desc:{fr:"Apprendre ensemble de nouvelles recettes avec un chef",            en:"Learning new recipes together with a chef"},                  amount:120, stripe:"" },
-  { id:"ex3", cat:{fr:"Expériences",    icon:"🎭"}, catEn:"Experiences",   name:{fr:"Soirée à l'opéra",                 en:"Opera evening"},                 desc:{fr:"Une belle soirée culturelle pour nous deux",                       en:"A wonderful cultural evening for the two of us"},             amount:150, stripe:"" },
+  { id:"c1",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Robot cuisine", en:"Food processor"}, desc:{fr:"Pour préparer de bons petits plats ensemble", en:"For preparing great meals together"}, amount:500, stripe:"" },
+  { id:"c2",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Air fryer", en:"Air fryer"}, desc:{fr:"Pour cuisiner sain et sans effort", en:"For healthy, effortless cooking"}, amount:200, stripe:"" },
+  { id:"c3",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Set casseroles", en:"Saucepan set"}, desc:{fr:"Des casseroles de qualité pour notre cuisine", en:"Quality saucepans for our kitchen"}, amount:150, stripe:"" },
+  { id:"c4",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Set poêles", en:"Frying pan set"}, desc:{fr:"Des poêles de qualité pour cuisiner ensemble", en:"Quality pans for cooking together"}, amount:150, stripe:"" },
+  { id:"c5",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Assemblage set verres à vin & eau", en:"Wine & water glasses set"}, desc:{fr:"Pour trinquer à toutes nos futures occasions", en:"For toasting all our future celebrations"}, amount:200, stripe:"" },
+  { id:"c6",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Broc à eau", en:"Water carafe"}, desc:{fr:"Pour notre table du quotidien", en:"For our everyday table"}, amount:100, stripe:"" },
+  { id:"c7",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Lave vaisselle", en:"Dishwasher"}, desc:{fr:"Un peu d'aide bien méritée pour le quotidien !", en:"A little well-deserved help with daily chores!"}, amount:500, stripe:"" },
+  { id:"c8",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Cave à vin", en:"Wine fridge"}, desc:{fr:"Pour conserver nos bouteilles préférées", en:"To store our favourite bottles"}, amount:600, stripe:"" },
+  { id:"c9",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Vase", en:"Vase"}, desc:{fr:"Pour égayer notre intérieur", en:"To brighten up our home"}, amount:70, stripe:"" },
+  { id:"c10", cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Nappes", en:"Tablecloths"}, desc:{fr:"Pour une belle table en toutes occasions", en:"For a beautiful table on every occasion"}, amount:100, stripe:"" },
+  { id:"c11", cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Machine à pâtes", en:"Pasta maker"}, desc:{fr:"Pour faire des pâtes fraîches maison", en:"For making fresh homemade pasta"}, amount:50, stripe:"" },
+  { id:"m1",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Draps", en:"Bed sheets"}, desc:{fr:"Pour des nuits douces dans notre nid", en:"For cosy nights in our home"}, amount:150, stripe:"" },
+  { id:"m2",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Serviettes", en:"Towels"}, desc:{fr:"Pour notre salle de bain", en:"For our bathroom"}, amount:100, stripe:"" },
+  { id:"m3",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Peignoirs", en:"Bathrobes"}, desc:{fr:"Pour des moments cocooning à deux", en:"For cosy moments together"}, amount:200, stripe:"" },
+  { id:"m4",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Sèche linge", en:"Tumble dryer"}, desc:{fr:"Un peu d'aide bien méritée pour le quotidien !", en:"A little well-deserved help with daily chores!"}, amount:600, stripe:"" },
+  { id:"m5",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Table de salle à manger", en:"Dining table"}, desc:{fr:"Pour recevoir famille et amis", en:"For hosting family and friends"}, amount:500, stripe:"" },
+  { id:"m6",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Boîte à outils bricolage / perceuse", en:"Toolbox / drill"}, desc:{fr:"Pour bricoler dans notre nouveau nid", en:"For DIY projects in our new home"}, amount:150, stripe:"" },
+  { id:"m7",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Télé écran plat", en:"Flat-screen TV"}, desc:{fr:"Pour nos soirées films à la maison", en:"For our movie nights at home"}, amount:1000, stripe:"" },
+  { id:"m8",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Système son", en:"Sound system"}, desc:{fr:"Pour mettre de la musique chez nous", en:"For playing music at home"}, amount:300, stripe:"" },
+  { id:"m9",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Santons / crèche", en:"Nativity figurines"}, desc:{fr:"Pour nos futurs Noëls ensemble", en:"For our future Christmases together"}, amount:200, stripe:"" },
+  { id:"sp1", cat:{fr:"Sport",icon:"⛷️"}, catEn:"Sport", name:{fr:"Chaussures de ski", en:"Ski boots"}, desc:{fr:"Pour nos futures vacances au ski", en:"For our future ski holidays"}, amount:400, stripe:"" },
 ];
 
 const C = {
@@ -199,7 +206,7 @@ export default function App() {
     showToast("✓ Contribution sauvegardée !");
   };
 
-  const navigate = (tab) => { setTab(tab); setMobileMenu(false); setOpenGift(null); };
+  const navigate = (tab) => { setTab(tab); setMobileMenu(false); setOpenGift(null); window.scrollTo(0, 0); };
 
   const TABS = [
     { id:"home",  label: t.nav.home },
