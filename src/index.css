@@ -1,1 +1,14 @@
 @import "tailwindcss";
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Segoe UI Emoji';
+}
+
+* {
+  font-family: inherit;
+}
+
+.emoji {
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+}

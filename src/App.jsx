@@ -213,7 +213,7 @@ export default function App() {
   window.scrollTo({ top: 0, behavior: "instant" });
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
-};
+  };
 
   const TABS = [
     { id:"home",  label: t.nav.home },
@@ -283,7 +283,7 @@ export default function App() {
       </header>
 
       {/* CONTENU */}
-      <main style={{ maxWidth:980, margin:"0 auto", padding:"0 16px 100px" }}>
+      <main style={{ maxWidth:1200, margin:"0 auto", padding:"0 24px 100px" }}>
         {tab==="home"  && <HomePage  countdown={countdown} navigate={navigate} t={t} lang={lang} />}
         {tab==="story" && <StoryPage t={t} lang={lang} />}
         {tab==="gifts" && <GiftsPage contribs={contribs} loaded={loaded} openGift={openGift} setOpenGift={setOpenGift} payMethod={payMethod} setPayMethod={setPayMethod} t={t} lang={lang} />}
@@ -489,7 +489,7 @@ const events = [
   if (current) sections.push(current);
 
   return (
-    <div style={{ maxWidth:1000, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px", backgroundColor:C.bg }}>
+    <div style={{ maxWidth:1200, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px", backgroundColor:C.bg }}>
       <SectionTitle title={t.story.title} />
       {(() => {
         let globalIdx = 0;
@@ -729,7 +729,7 @@ function PayBtn({ icon, label, sub, onClick, primary, active }) {
 // └─────────────────────────────────────────────────────────────┘
 function InfoPage({ t }) {
   return (
-    <div style={{ maxWidth:700, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px" }}>
+    <div style={{ maxWidth:900, margin:"0 auto", padding: window.innerWidth < 768 ? "8px 20px" : "60px 20px" }}>
       <SectionTitle title={t.info.title} />
       <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
         {t.info.sections.map(info => (
