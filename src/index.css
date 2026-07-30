@@ -1,14 +1,41 @@
 @import "tailwindcss";
-@import "tailwindcss";
 
-@font-face {
-  font-family: 'Segoe UI Emoji';
+:root {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Jost", "Segoe UI", system-ui, sans-serif;
 }
 
-* {
+html {
+  /* Le clic sur un onglet remet le scroll en haut : pas d'animation intermédiaire. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #ffffff;
+  /* Évite le décalage horizontal dû à la section d'accueil en pleine largeur. */
+  overflow-x: hidden;
+}
+
+/* Les contrôles de formulaire n'héritent pas de la police par défaut. */
+button,
+input,
+select,
+textarea {
   font-family: inherit;
 }
 
-.emoji {
-  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+/* Cible tactile confortable sur mobile. */
+button {
+  touch-action: manipulation;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
