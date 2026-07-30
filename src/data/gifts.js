@@ -18,10 +18,12 @@ export const GIFTS = [
   { id: "m3",  img: "/gifts/m3.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Peignoirs", en: "Bathrobes" }, amount: 200, stripe: "" },
   { id: "m4",  img: "/gifts/m4.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Sèche linge", en: "Tumble dryer" }, amount: 600, stripe: "" },
   { id: "m5",  img: "/gifts/m5.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Table de salle à manger", en: "Dining table" }, amount: 500, stripe: "" },
-  { id: "m6",  img: "/gifts/m6.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Boîte à outils bricolage / perceuse", en: "Toolbox / drill" }, amount: 150, stripe: "" },
+  { id: "m6",  img: "/gifts/m6.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Perceuse / visseuse", en: "Drill / screwdriver" }, amount: 80, stripe: "" },
+  { id: "m7",  img: "/gifts/m7.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Kit d'outils", en: "Tool kit" }, amount: 50, stripe: "" },
   { id: "m9",  img: "/gifts/m9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Santons / crèche", en: "Nativity figurines" }, amount: 200, stripe: "" },
 
-  { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski", en: "Ski boots" }, amount: 400, stripe: "" },
+  { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski pour Louis", en: "Ski boots for Louis" }, amount: 300, stripe: "" },
+  { id: "sp2", img: "/gifts/sp2.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski pour Oriane", en: "Ski boots for Oriane" }, amount: 250, stripe: "" },
 
   { id: "hc1", img: "/gifts/hc1.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "TV OLED", en: "OLED TV" }, amount: 1500, stripe: "" },
   { id: "hc2", img: "/gifts/hc2.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Ampli AV", en: "AV receiver" }, amount: 750, stripe: "" },
