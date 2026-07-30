@@ -36,8 +36,39 @@ function LoginForm({ pwd, setPwd, onAuth, ta }) {
   );
 }
 
-function GiftRow({ gift, current, editVal, setEditVals, onSave, ta, lang }) {
-  const pct = Math.min(100, Math.round((current / gift.amount) * 100));
+/** Champ numerique + bouton de validation, partage par le prix et le collecte. */
+function EditField({ id, label, value, onChange, onSave, suffix, ariaLabel }) {
+  return (
+    <div style={{ flexShrink: 0 }}>
+      <label htmlFor={id} style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 5 }}>
+        {label}
+      </label>
+      <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+        <input
+          id={id}
+          type="number"
+          min="0"
+          step="1"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && onSave()}
+          style={{ width: 92, padding: "9px 10px", border: `1px solid ${C.border}`, borderRadius: 7, fontSize: 14, backgroundColor: C.card, color: C.green }}
+        />
+        <span style={{ fontSize: 13, color: C.muted, minWidth: 46 }}>{suffix}</span>
+        <button
+          onClick={onSave}
+          aria-label={ariaLabel}
+          style={{ backgroundColor: C.gold, color: C.offWhite, border: "none", borderRadius: 7, width: 38, height: 38, cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          ✓
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function GiftRow({ gift, price, current, editVal, editPrice, setEditVals, setEditPrices, onSave, onSavePrice, ta, lang }) {
+  const pct = Math.min(100, Math.round((current / price) * 100));
 
   return (
     <div style={{ padding: "18px 0", borderBottom: `1px solid ${C.border}` }}>
@@ -45,7 +76,7 @@ function GiftRow({ gift, current, editVal, setEditVals, onSave, ta, lang }) {
         <div style={{ flex: 1, minWidth: 200 }}>
           <div style={{ fontFamily: SERIF, fontSize: 17, fontWeight: 500, color: C.green, marginBottom: 4 }}>{gift.name[lang]}</div>
           <div style={{ fontSize: 12, color: C.muted, marginBottom: 8 }}>
-            {catName(gift, lang)} · {ta.target} : {gift.amount} €
+            {catName(gift, lang)} · {ta.target} : {price} €
           </div>
           <div style={{ height: 3, backgroundColor: C.cream, borderRadius: 2, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${pct}%`, backgroundColor: pct >= 100 ? C.success : C.gold, borderRadius: 2 }} />
@@ -56,32 +87,25 @@ function GiftRow({ gift, current, editVal, setEditVals, onSave, ta, lang }) {
           </div>
         </div>
 
-        <div style={{ flexShrink: 0 }}>
-          <label htmlFor={`amount-${gift.id}`} style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 5 }}>
-            {ta.amount}
-          </label>
-          <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-            <input
-              id={`amount-${gift.id}`}
-              type="number"
-              min="0"
-              max={gift.amount}
-              step="1"
-              value={editVal}
-              onChange={(e) => setEditVals((prev) => ({ ...prev, [gift.id]: e.target.value }))}
-              onKeyDown={(e) => e.key === "Enter" && onSave(gift.id, editVal)}
-              style={{ width: 92, padding: "9px 10px", border: `1px solid ${C.border}`, borderRadius: 7, fontSize: 14, backgroundColor: C.card, color: C.green }}
-            />
-            <span style={{ fontSize: 13, color: C.muted }}>/ {gift.amount} €</span>
-            <button
-              onClick={() => onSave(gift.id, editVal)}
-              aria-label={`${ta.amount} ${gift.name[lang]}`}
-              style={{ backgroundColor: C.gold, color: C.offWhite, border: "none", borderRadius: 7, width: 38, height: 38, cursor: "pointer", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}
-            >
-              ✓
-            </button>
-          </div>
-        </div>
+        <EditField
+          id={`price-${gift.id}`}
+          label={ta.price}
+          value={editPrice}
+          onChange={(v) => setEditPrices((prev) => ({ ...prev, [gift.id]: v }))}
+          onSave={() => onSavePrice(gift.id, editPrice)}
+          suffix="€"
+          ariaLabel={`${ta.price} ${gift.name[lang]}`}
+        />
+
+        <EditField
+          id={`amount-${gift.id}`}
+          label={ta.amount}
+          value={editVal}
+          onChange={(v) => setEditVals((prev) => ({ ...prev, [gift.id]: v }))}
+          onSave={() => onSave(gift.id, editVal)}
+          suffix={`/ ${price} €`}
+          ariaLabel={`${ta.amount} ${gift.name[lang]}`}
+        />
       </div>
     </div>
   );
@@ -93,12 +117,13 @@ function GiftRow({ gift, current, editVal, setEditVals, onSave, ta, lang }) {
  * Toute la logique Supabase (auth + écriture) vit ici pour que le SDK reste
  * hors du bundle initial — ce module est importé paresseusement par <App>.
  */
-export default function AdminPage({ contribs, onSaved, onClose, showToast, t, lang }) {
+export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onClose, showToast, t, lang }) {
   const ta = t.admin;
 
   const [authed, setAuthed] = useState(false);
   const [pwd, setPwd] = useState("");
   const [editVals, setEditVals] = useState({});
+  const [editPrices, setEditPrices] = useState({});
 
   // Reprend une session ouverte lors d'une visite précédente.
   useEffect(() => {
@@ -136,6 +161,18 @@ export default function AdminPage({ contribs, onSaved, onClose, showToast, t, la
     showToast(ta.saved);
   };
 
+  const savePrice = async (id, value) => {
+    const price = Math.max(0, parseFloat(value) || 0);
+    const { error } = await supabase.from("contributions").upsert({ id, price });
+
+    if (error) {
+      showToast(ta.saveError);
+      return;
+    }
+    onPriceSaved(id, price);
+    showToast(ta.priceSaved);
+  };
+
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 20px" }}>
       <SectionTitle title={ta.title} />
@@ -156,14 +193,19 @@ export default function AdminPage({ contribs, onSaved, onClose, showToast, t, la
 
           {GIFTS.map((gift) => {
             const current = contribs[gift.id] || 0;
+            const price = prices[gift.id] ?? gift.amount;
             return (
               <GiftRow
                 key={gift.id}
                 gift={gift}
+                price={price}
                 current={current}
                 editVal={editVals[gift.id] !== undefined ? editVals[gift.id] : current}
+                editPrice={editPrices[gift.id] !== undefined ? editPrices[gift.id] : price}
                 setEditVals={setEditVals}
+                setEditPrices={setEditPrices}
                 onSave={save}
+                onSavePrice={savePrice}
                 ta={ta}
                 lang={lang}
               />

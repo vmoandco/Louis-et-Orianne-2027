@@ -34,6 +34,9 @@ export default function App() {
   const [langChosen, setLangChosen] = useState(langWasChosenRecently);
 
   const [contribs, setContribs] = useState({});
+  // Prix courants : ceux de gifts.js, ecrases par la colonne `price` en base
+  // lorsqu'ils ont ete corriges depuis l'espace admin.
+  const [prices, setPrices] = useState(() => Object.fromEntries(GIFTS.map((g) => [g.id, g.amount])));
   const [loaded, setLoaded] = useState(false);
 
   const [openGift, setOpenGiftRaw] = useState(null);
@@ -51,8 +54,14 @@ export default function App() {
       .then((rows) => {
         if (cancelled) return;
         const amounts = Object.fromEntries(GIFTS.map((g) => [g.id, 0]));
-        for (const row of rows) amounts[row.id] = Number(row.amount);
+        const targets = Object.fromEntries(GIFTS.map((g) => [g.id, g.amount]));
+        for (const row of rows) {
+          amounts[row.id] = Number(row.amount);
+          // `price` est nulle tant que le prix n'a pas ete corrige en admin.
+          if (row.price != null) targets[row.id] = Number(row.price);
+        }
         setContribs(amounts);
+        setPrices(targets);
       })
       .catch((error) => console.error(error))
       .finally(() => {
@@ -99,6 +108,10 @@ export default function App() {
     setContribs((prev) => ({ ...prev, [id]: amount }));
   }, []);
 
+  const handlePriceSaved = useCallback((id, price) => {
+    setPrices((prev) => ({ ...prev, [id]: price }));
+  }, []);
+
   const closeAdmin = useCallback(() => navigate("home"), [navigate]);
 
   // ─── Rendu ──────────────────────────────────────────────────────────
@@ -129,6 +142,7 @@ export default function App() {
         {tab === "gifts" && (
           <GiftsPage
             contribs={contribs}
+            prices={prices}
             loaded={loaded}
             openGift={openGift}
             setOpenGift={setOpenGift}
@@ -141,7 +155,16 @@ export default function App() {
         {tab === "info" && <InfoPage t={t} />}
         {tab === "admin" && (
           <Suspense fallback={<div style={{ textAlign: "center", padding: "80px 20px", color: C.muted }}>{t.gifts.loading}</div>}>
-            <AdminPage contribs={contribs} onSaved={handleSaved} onClose={closeAdmin} showToast={showToast} t={t} lang={lang} />
+            <AdminPage
+              contribs={contribs}
+              prices={prices}
+              onSaved={handleSaved}
+              onPriceSaved={handlePriceSaved}
+              onClose={closeAdmin}
+              showToast={showToast}
+              t={t}
+              lang={lang}
+            />
           </Suspense>
         )}
       </main>

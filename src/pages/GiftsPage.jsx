@@ -1,10 +1,36 @@
+import { useState } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
 import { useIsMobile } from "../lib/useIsMobile";
 import { GIFTS, giftCategories, catName } from "../data/gifts";
 import { IBAN_INFO, WERO_TEL } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
 
-function PayBtn({ icon, label, sub, onClick, primary, active }) {
+// Participation minimale, et pas unique de la jauge.
+const MIN_GIFT = 40;
+const STEP_GIFT = 10;
+
+/**
+ * Bornes de la jauge pour un cadeau donne.
+ *
+ * On ne propose jamais plus que le reste a financer, sinon la barre de
+ * progression depasserait 100 %. Quand ce reste est trop faible pour une
+ * jauge (< 40 € ou un seul cran possible), le montant est impose.
+ */
+function giftRange(price, collected) {
+  const remaining = Math.max(0, price - collected);
+  const max = Math.max(MIN_GIFT, Math.floor(remaining / STEP_GIFT) * STEP_GIFT);
+  const fixed = remaining <= MIN_GIFT || max <= MIN_GIFT;
+
+  return {
+    remaining,
+    max,
+    fixed,
+    // Defaut volontairement modeste : le curseur ne suggere pas un gros don.
+    initial: fixed ? Math.min(remaining, MIN_GIFT) : Math.min(max, 50),
+  };
+}
+
+function PayBtn({ icon, label, sub, note, onClick, primary, active, children }) {
   return (
     <button
       onClick={onClick}
@@ -27,17 +53,106 @@ function PayBtn({ icon, label, sub, onClick, primary, active }) {
         <div style={{ fontFamily: SANS, fontSize: 13, fontWeight: primary || active ? 500 : 400, color: primary ? C.offWhite : C.green }}>
           {label}
         </div>
-        <div style={{ fontSize: 11, color: primary ? "rgba(250,248,243,0.65)" : C.muted, marginTop: 2 }}>{sub}</div>
+        <div style={{ fontSize: 11, color: primary ? "rgba(250,248,243,0.65)" : C.muted, marginTop: 2 }}>
+          {sub}
+          {note && <span style={{ color: primary ? "rgba(250,248,243,0.8)" : C.success, marginLeft: 5 }}>{note}</span>}
+        </div>
+        {children}
       </div>
       {!primary && <span style={{ fontSize: 11, color: C.light }}>{active ? "▲" : "▼"}</span>}
     </button>
   );
 }
 
+/** Pastilles CB / Visa / Mastercard, dessinees en CSS pour rester hors-ligne. */
+function CardBadges() {
+  const badge = {
+    fontFamily: SANS,
+    fontSize: 8.5,
+    letterSpacing: "0.08em",
+    fontWeight: 600,
+    color: C.offWhite,
+    border: "1px solid rgba(250,248,243,0.45)",
+    borderRadius: 3,
+    padding: "2px 5px",
+    lineHeight: 1.2,
+  };
+  return (
+    <div style={{ display: "flex", gap: 5, marginTop: 7 }}>
+      <span style={badge}>CB</span>
+      <span style={badge}>VISA</span>
+      <span style={badge}>MASTERCARD</span>
+    </div>
+  );
+}
+
 const detailBox = { marginTop: 14, backgroundColor: C.cream, borderRadius: 10, padding: "16px 18px" };
 const detailTitle = { fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.greenMid, fontWeight: 500 };
 
-function PaymentPanel({ gift, payMethod, setPayMethod, t, lang }) {
+/** Etape 1 — choix du montant. */
+function AmountStep({ range, amount, setAmount, onNext, tg }) {
+  const { fixed, max, remaining } = range;
+
+  return (
+    <div>
+      <p style={{ ...detailTitle, marginBottom: 4 }}>{tg.amountTitle}</p>
+      <p style={{ fontSize: 13, color: C.muted, marginBottom: 18, lineHeight: 1.65 }}>
+        {fixed ? tg.amountOnly.replace("{n}", remaining) : tg.amountIntro}
+      </p>
+
+      <div style={{ textAlign: "center", marginBottom: fixed ? 18 : 10 }}>
+        <span style={{ fontFamily: SERIF, fontSize: 44, color: C.gold, lineHeight: 1 }}>{amount}</span>
+        <span style={{ fontFamily: SERIF, fontSize: 26, color: C.gold, marginLeft: 4 }}>€</span>
+      </div>
+
+      {!fixed && (
+        <>
+          <input
+            className="gift-slider"
+            type="range"
+            min={MIN_GIFT}
+            max={max}
+            step={STEP_GIFT}
+            value={amount}
+            onChange={(e) => setAmount(Number(e.target.value))}
+            aria-label={tg.amountTitle}
+            aria-valuetext={`${amount} €`}
+          />
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted, marginTop: 2, marginBottom: 14 }}>
+            <span>{MIN_GIFT} €</span>
+            <span>
+              {tg.amountRemaining} {remaining} €
+            </span>
+            <span>{max} €</span>
+          </div>
+          <p style={{ fontSize: 11, color: C.light, textAlign: "center", marginBottom: 16 }}>{tg.amountMin}</p>
+        </>
+      )}
+
+      <button
+        onClick={onNext}
+        style={{
+          width: "100%",
+          padding: "13px 20px",
+          backgroundColor: C.green,
+          color: C.offWhite,
+          border: "none",
+          borderRadius: 8,
+          cursor: "pointer",
+          fontFamily: SANS,
+          fontSize: 11,
+          letterSpacing: "0.2em",
+          textTransform: "uppercase",
+        }}
+      >
+        {tg.amountNext}
+      </button>
+    </div>
+  );
+}
+
+/** Etape 2 — choix du moyen de paiement. */
+function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, t, lang }) {
   const tg = t.gifts;
   const toggle = (method) => setPayMethod(payMethod === method ? null : method);
 
@@ -45,19 +160,57 @@ function PaymentPanel({ gift, payMethod, setPayMethod, t, lang }) {
     [tg.ibanBene, IBAN_INFO.nom],
     ["IBAN", IBAN_INFO.iban],
     ["BIC / SWIFT", IBAN_INFO.bic],
+    [tg.amountRecap, `${amount} €`],
     [tg.ibanRef, gift.name[lang]],
   ];
 
   return (
-    <div style={{ borderTop: `1px solid ${C.cream}`, backgroundColor: "#F6F3EC", padding: "20px 20px 24px" }}>
+    <div>
+      <button
+        onClick={onBack}
+        style={{ background: "none", border: "none", padding: 0, cursor: "pointer", fontSize: 12, color: C.muted, marginBottom: 12 }}
+      >
+        {tg.amountBack}
+      </button>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          backgroundColor: C.cream,
+          borderRadius: 8,
+          padding: "10px 14px",
+          marginBottom: 16,
+        }}
+      >
+        <span style={{ fontSize: 12, color: C.greenMid }}>{tg.amountRecap}</span>
+        <span style={{ fontFamily: SERIF, fontSize: 22, color: C.gold }}>{amount} €</span>
+      </div>
+
       <p style={{ fontSize: 13, color: C.muted, marginBottom: 16, lineHeight: 1.65 }}>{tg.payIntro}</p>
 
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {gift.stripe && (
-          <PayBtn icon="💳" label={tg.stripeLabel} sub={tg.stripeSub} primary onClick={() => window.open(gift.stripe, "_blank", "noopener,noreferrer")} />
+          <PayBtn
+            icon="💳"
+            label={tg.stripeLabel}
+            sub={tg.stripeSub}
+            primary
+            onClick={() => window.open(gift.stripe, "_blank", "noopener,noreferrer")}
+          >
+            <CardBadges />
+          </PayBtn>
         )}
-        <PayBtn icon="📱" label={tg.weroLabel} sub={`${tg.weroSub} ${WERO_TEL}`} active={payMethod === "wero"} onClick={() => toggle("wero")} />
-        <PayBtn icon="🏦" label={tg.ibanLabel} sub={tg.ibanSub} active={payMethod === "iban"} onClick={() => toggle("iban")} />
+        <PayBtn
+          icon="📱"
+          label={tg.weroLabel}
+          sub={`${tg.weroSub} ${WERO_TEL}`}
+          note={tg.noFee}
+          active={payMethod === "wero"}
+          onClick={() => toggle("wero")}
+        />
+        <PayBtn icon="🏦" label={tg.ibanLabel} sub={tg.ibanSub} note={tg.noFee} active={payMethod === "iban"} onClick={() => toggle("iban")} />
       </div>
 
       {payMethod === "iban" && (
@@ -83,6 +236,9 @@ function PaymentPanel({ gift, payMethod, setPayMethod, t, lang }) {
           <p style={{ ...detailTitle, marginBottom: 10 }}>{tg.weroTitle}</p>
           <p style={{ fontSize: 13, color: C.greenMid, lineHeight: 1.75, marginBottom: 8 }}>{tg.weroText}</p>
           <p style={{ fontFamily: "monospace", fontSize: 20, color: C.green, fontWeight: 500, textAlign: "center", padding: "10px 0" }}>{WERO_TEL}</p>
+          <p style={{ fontSize: 13, color: C.greenMid, textAlign: "center", marginBottom: 8 }}>
+            {tg.amountRecap} : <strong style={{ color: C.gold }}>{amount} €</strong>
+          </p>
           <p style={{ fontSize: 11, color: C.muted, fontStyle: "italic" }}>{tg.weroNote}</p>
         </div>
       )}
@@ -90,9 +246,36 @@ function PaymentPanel({ gift, payMethod, setPayMethod, t, lang }) {
   );
 }
 
-function GiftCard({ gift, contrib, isOpen, onToggle, payMethod, setPayMethod, t, lang }) {
+function PaymentPanel({ gift, price, contrib, payMethod, setPayMethod, t, lang }) {
+  const range = giftRange(price, contrib);
+  const [amount, setAmount] = useState(range.initial);
+  const [step, setStep] = useState("amount");
+
+  return (
+    <div style={{ borderTop: `1px solid ${C.cream}`, backgroundColor: "#F6F3EC", padding: "20px 20px 24px" }}>
+      {step === "amount" ? (
+        <AmountStep range={range} amount={amount} setAmount={setAmount} onNext={() => setStep("method")} tg={t.gifts} />
+      ) : (
+        <MethodStep
+          gift={gift}
+          amount={amount}
+          onBack={() => {
+            setStep("amount");
+            setPayMethod(null);
+          }}
+          payMethod={payMethod}
+          setPayMethod={setPayMethod}
+          t={t}
+          lang={lang}
+        />
+      )}
+    </div>
+  );
+}
+
+function GiftCard({ gift, price, contrib, isOpen, onToggle, payMethod, setPayMethod, t, lang }) {
   const tg = t.gifts;
-  const pct = Math.min(100, Math.round((contrib / gift.amount) * 100));
+  const pct = Math.min(100, Math.round((contrib / price) * 100));
   const full = pct >= 100;
 
   return (
@@ -123,7 +306,7 @@ function GiftCard({ gift, contrib, isOpen, onToggle, payMethod, setPayMethod, t,
             {full && <span style={{ color: C.success }}>✓ </span>}
             {gift.name[lang]}
           </h3>
-          <span style={{ fontFamily: SERIF, fontSize: 18, color: C.gold, flexShrink: 0 }}>{gift.amount} €</span>
+          <span style={{ fontFamily: SERIF, fontSize: 18, color: C.gold, flexShrink: 0 }}>{price} €</span>
         </div>
 
         <div style={{ marginBottom: 12 }}>
@@ -162,14 +345,17 @@ function GiftCard({ gift, contrib, isOpen, onToggle, payMethod, setPayMethod, t,
         )}
       </div>
 
-      {isOpen && !full && <PaymentPanel gift={gift} payMethod={payMethod} setPayMethod={setPayMethod} t={t} lang={lang} />}
+      {isOpen && !full && (
+        <PaymentPanel gift={gift} price={price} contrib={contrib} payMethod={payMethod} setPayMethod={setPayMethod} t={t} lang={lang} />
+      )}
     </div>
   );
 }
 
-export default function GiftsPage({ contribs, loaded, openGift, setOpenGift, payMethod, setPayMethod, t, lang }) {
+export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenGift, payMethod, setPayMethod, t, lang }) {
   const isMobile = useIsMobile();
   const tg = t.gifts;
+  const priceOf = (gift) => prices[gift.id] ?? gift.amount;
 
   if (!loaded) {
     return (
@@ -185,7 +371,7 @@ export default function GiftsPage({ contribs, loaded, openGift, setOpenGift, pay
 
       {giftCategories(lang).map((cat) => {
         const gifts = GIFTS.filter((g) => catName(g, lang) === cat.name);
-        const target = gifts.reduce((sum, g) => sum + g.amount, 0);
+        const target = gifts.reduce((sum, g) => sum + priceOf(g), 0);
         const collected = gifts.reduce((sum, g) => sum + (contribs[g.id] || 0), 0);
 
         return (
@@ -203,6 +389,7 @@ export default function GiftsPage({ contribs, loaded, openGift, setOpenGift, pay
                 <GiftCard
                   key={gift.id}
                   gift={gift}
+                  price={priceOf(gift)}
                   contrib={contribs[gift.id] || 0}
                   isOpen={openGift === gift.id}
                   onToggle={() => setOpenGift(openGift === gift.id ? null : gift.id)}
