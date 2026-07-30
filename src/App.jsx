@@ -131,6 +131,7 @@ const GIFTS = [
   { id:"hc5", img:"/gifts/hc5.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Enceintes surround", en:"Surround speakers"}, amount:330, stripe:"" },
   { id:"hc6", img:"/gifts/hc6.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Caisson de basse", en:"Subwoofer"}, amount:700, stripe:"" },
   { id:"hc7", img:"/gifts/hc7.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Lecteur Blu-ray", en:"Blu-ray player"}, amount:400, stripe:"" },
+  { id:"in1", img:"/gifts/in1.png", cat:{fr:"Insolite",icon:"✨"}, catEn:"Something Fun", name:{fr:"Maillot de l'OM pour Oriane", en:"OM football shirt for Oriane"}, amount:100, stripe:"" },
 ];
 
 const C = {
