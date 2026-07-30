@@ -99,45 +99,39 @@ suivent.
 Ce module embarque le SDK Supabase et n'est chargé qu'à l'ouverture de l'onglet,
 pour que les invités ne le téléchargent pas.
 
-Côté Supabase, la table `contributions` (`id` texte, `amount` numérique) doit
-être en RLS : **lecture publique, écriture réservée aux utilisateurs
-authentifiés**. Sans cette règle, n'importe quel visiteur peut modifier les
-montants avec la clé publishable.
+La table `contributions` (`id` texte, `amount` numérique) doit être en RLS :
+**lecture publique, écriture réservée aux comptes connectés**. Sans cette
+règle, n'importe quel visiteur peut modifier les montants avec la clé
+publishable — voir ci-dessous.
 
 ## Avant la mise en ligne
 
-- [ ] **Fermer la table `contributions` en écriture** (voir ci-dessous) — urgent
-- [ ] Supprimer les lignes obsolètes de la table (`nn*`, `at*`, `ex*`, `vn*`, `__sonde_audit__`)
+- [ ] **Exécuter [`supabase/setup.sql`](supabase/setup.sql)** — urgent, voir ci-dessous
 - [ ] Renseigner l'IBAN, le BIC et le numéro Wero dans `src/data/config.js`
 - [ ] Compléter l'hébergement, l'accès et le contact dans `src/data/translations.js`
 - [ ] Remplacer les légendes « À compléter ✍️ » de la mosaïque dans `src/data/story.js`
 
-### Fermer la table en écriture
+### Verrouiller la base
 
-Vérifié le 30/07/2026 : avec la seule clé publishable, un visiteur anonyme peut
-**modifier et créer** des lignes (les suppressions, elles, sont bloquées).
-N'importe qui peut donc afficher « cadeau offert » sur toute la liste.
+Vérifié le 30/07/2026 : avec la seule clé publishable, un visiteur anonyme
+pouvait **modifier et créer** des lignes. N'importe qui pouvait donc afficher
+« cadeau offert » sur toute la liste de mariage.
 
-Dans le SQL editor Supabase :
+Le correctif tient en un fichier : ouvrir [`supabase/setup.sql`](supabase/setup.sql),
+copier son contenu dans **Supabase → SQL Editor → New query**, puis « Run ».
+Le script purge les lignes orphelines d'une ancienne liste de cadeaux, active
+RLS et pose les deux seules policies utiles. Il est idempotent.
 
-```sql
-alter table contributions enable row level security;
+Cette étape passe forcément par le dashboard : créer une policy est du DDL, que
+l'API REST n'exécute pas, quelle que soit la clé.
 
-drop policy if exists "lecture publique" on contributions;
-create policy "lecture publique" on contributions
-  for select to anon, authenticated using (true);
-
--- Aucune policy insert/update/delete pour `anon` : tout écrit lui est refusé.
-drop policy if exists "ecriture admin" on contributions;
-create policy "ecriture admin" on contributions
-  for all to authenticated using (true) with check (true);
-```
-
-Puis revérifier — la commande doit répondre `[]` et non la ligne modifiée :
+Pour vérifier après coup — la commande doit répondre `[]`, et non la ligne
+modifiée :
 
 ```bash
-curl -X PATCH "$VITE_SUPABASE_URL/rest/v1/contributions?id=eq.c1" \
+export $(grep -v '^#' .env.local | xargs)
+curl -s -X PATCH "$VITE_SUPABASE_URL/rest/v1/contributions?id=eq.c1" \
   -H "apikey: $VITE_SUPABASE_KEY" -H "Authorization: Bearer $VITE_SUPABASE_KEY" \
   -H "Content-Type: application/json" -H "Prefer: return=representation" \
-  -d '{"amount":0}'
+  -d '{"amount":999}'
 ```
