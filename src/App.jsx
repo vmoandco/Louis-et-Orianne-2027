@@ -105,27 +105,32 @@ const TR = {
 // │  🎁  LISTE DE CADEAUX (bilingue)                            │
 // └─────────────────────────────────────────────────────────────┘
 const GIFTS = [
-  { id:"c1",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Robot cuisine", en:"Food processor"}, desc:{fr:"Pour préparer de bons petits plats ensemble", en:"For preparing great meals together"}, amount:500, stripe:"" },
-  { id:"c2",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Air fryer", en:"Air fryer"}, desc:{fr:"Pour cuisiner sain et sans effort", en:"For healthy, effortless cooking"}, amount:200, stripe:"" },
-  { id:"c3",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Set casseroles", en:"Saucepan set"}, desc:{fr:"Des casseroles de qualité pour notre cuisine", en:"Quality saucepans for our kitchen"}, amount:150, stripe:"" },
-  { id:"c4",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Set poêles", en:"Frying pan set"}, desc:{fr:"Des poêles de qualité pour cuisiner ensemble", en:"Quality pans for cooking together"}, amount:150, stripe:"" },
-  { id:"c5",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Assemblage set verres à vin & eau", en:"Wine & water glasses set"}, desc:{fr:"Pour trinquer à toutes nos futures occasions", en:"For toasting all our future celebrations"}, amount:200, stripe:"" },
-  { id:"c6",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Broc à eau", en:"Water carafe"}, desc:{fr:"Pour notre table du quotidien", en:"For our everyday table"}, amount:100, stripe:"" },
-  { id:"c7",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Lave vaisselle", en:"Dishwasher"}, desc:{fr:"Un peu d'aide bien méritée pour le quotidien !", en:"A little well-deserved help with daily chores!"}, amount:500, stripe:"" },
-  { id:"c8",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Cave à vin", en:"Wine fridge"}, desc:{fr:"Pour conserver nos bouteilles préférées", en:"To store our favourite bottles"}, amount:600, stripe:"" },
-  { id:"c9",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Vase", en:"Vase"}, desc:{fr:"Pour égayer notre intérieur", en:"To brighten up our home"}, amount:70, stripe:"" },
-  { id:"c10", cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Nappes", en:"Tablecloths"}, desc:{fr:"Pour une belle table en toutes occasions", en:"For a beautiful table on every occasion"}, amount:100, stripe:"" },
-  { id:"c11", cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Machine à pâtes", en:"Pasta maker"}, desc:{fr:"Pour faire des pâtes fraîches maison", en:"For making fresh homemade pasta"}, amount:50, stripe:"" },
-  { id:"m1",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Draps", en:"Bed sheets"}, desc:{fr:"Pour des nuits douces dans notre nid", en:"For cosy nights in our home"}, amount:150, stripe:"" },
-  { id:"m2",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Serviettes", en:"Towels"}, desc:{fr:"Pour notre salle de bain", en:"For our bathroom"}, amount:100, stripe:"" },
-  { id:"m3",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Peignoirs", en:"Bathrobes"}, desc:{fr:"Pour des moments cocooning à deux", en:"For cosy moments together"}, amount:200, stripe:"" },
-  { id:"m4",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Sèche linge", en:"Tumble dryer"}, desc:{fr:"Un peu d'aide bien méritée pour le quotidien !", en:"A little well-deserved help with daily chores!"}, amount:600, stripe:"" },
-  { id:"m5",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Table de salle à manger", en:"Dining table"}, desc:{fr:"Pour recevoir famille et amis", en:"For hosting family and friends"}, amount:500, stripe:"" },
-  { id:"m6",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Boîte à outils bricolage / perceuse", en:"Toolbox / drill"}, desc:{fr:"Pour bricoler dans notre nouveau nid", en:"For DIY projects in our new home"}, amount:150, stripe:"" },
-  { id:"m7",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Télé écran plat", en:"Flat-screen TV"}, desc:{fr:"Pour nos soirées films à la maison", en:"For our movie nights at home"}, amount:1000, stripe:"" },
-  { id:"m8",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Système son", en:"Sound system"}, desc:{fr:"Pour mettre de la musique chez nous", en:"For playing music at home"}, amount:300, stripe:"" },
-  { id:"m9",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Santons / crèche", en:"Nativity figurines"}, desc:{fr:"Pour nos futurs Noëls ensemble", en:"For our future Christmases together"}, amount:200, stripe:"" },
-  { id:"sp1", cat:{fr:"Sport",icon:"⛷️"}, catEn:"Sport", name:{fr:"Chaussures de ski", en:"Ski boots"}, desc:{fr:"Pour nos futures vacances au ski", en:"For our future ski holidays"}, amount:400, stripe:"" },
+  { id:"c1", img:"/gifts/c1.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Robot cuisine", en:"Food processor"}, amount:500, stripe:"" },
+  { id:"c2", img:"/gifts/c2.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Air fryer", en:"Air fryer"}, amount:200, stripe:"" },
+  { id:"c3", img:"/gifts/c3.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Set casseroles", en:"Saucepan set"}, amount:150, stripe:"" },
+  { id:"c4", img:"/gifts/c4.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Set poêles", en:"Frying pan set"}, amount:150, stripe:"" },
+  { id:"c5", img:"/gifts/c5.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Assemblage set verres à vin & eau", en:"Wine & water glasses set"}, amount:200, stripe:"" },
+  { id:"c6", img:"/gifts/c6.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Broc à eau", en:"Water carafe"}, amount:100, stripe:"" },
+  { id:"c7", img:"/gifts/c7.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Lave vaisselle", en:"Dishwasher"}, amount:500, stripe:"" },
+  { id:"c8", img:"/gifts/c8.png",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Cave à vin", en:"Wine fridge"}, amount:600, stripe:"" },
+  { id:"c9", img:"/gifts/c9.jpg",  cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Vase", en:"Vase"}, amount:70, stripe:"" },
+  { id:"c10", img:"/gifts/c10.jpg", cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Nappes", en:"Tablecloths"}, amount:100, stripe:"" },
+  { id:"c11", img:"/gifts/c11.jpg", cat:{fr:"Cuisine",icon:"🍳"}, catEn:"Kitchen", name:{fr:"Machine à pâtes", en:"Pasta maker"}, amount:50, stripe:"" },
+  { id:"m1", img:"/gifts/m1.jpg",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Draps", en:"Bed sheets"}, amount:150, stripe:"" },
+  { id:"m2", img:"/gifts/m2.jpg",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Serviettes", en:"Towels"}, amount:100, stripe:"" },
+  { id:"m3", img:"/gifts/m3.jpg",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Peignoirs", en:"Bathrobes"}, amount:200, stripe:"" },
+  { id:"m4", img:"/gifts/m4.png",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Sèche linge", en:"Tumble dryer"}, amount:600, stripe:"" },
+  { id:"m5", img:"/gifts/m5.jpg",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Table de salle à manger", en:"Dining table"}, amount:500, stripe:"" },
+  { id:"m6", img:"/gifts/m6.jpg",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Boîte à outils bricolage / perceuse", en:"Toolbox / drill"}, amount:150, stripe:"" },
+  { id:"m9", img:"/gifts/m9.jpg",  cat:{fr:"Maison",icon:"🏡"}, catEn:"Home", name:{fr:"Santons / crèche", en:"Nativity figurines"}, amount:200, stripe:"" },
+  { id:"sp1", img:"/gifts/sp1.jpg", cat:{fr:"Sport",icon:"⛷️"}, catEn:"Sport", name:{fr:"Chaussures de ski", en:"Ski boots"}, amount:400, stripe:"" },
+  { id:"hc1", img:"/gifts/hc1.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"TV OLED", en:"OLED TV"}, amount:1500, stripe:"" },
+  { id:"hc2", img:"/gifts/hc2.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Ampli AV", en:"AV receiver"}, amount:750, stripe:"" },
+  { id:"hc3", img:"/gifts/hc3.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Enceintes frontales", en:"Front speakers"}, amount:1000, stripe:"" },
+  { id:"hc4", img:"/gifts/hc4.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Enceinte centrale", en:"Centre speaker"}, amount:350, stripe:"" },
+  { id:"hc5", img:"/gifts/hc5.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Enceintes surround", en:"Surround speakers"}, amount:330, stripe:"" },
+  { id:"hc6", img:"/gifts/hc6.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Caisson de basse", en:"Subwoofer"}, amount:700, stripe:"" },
+  { id:"hc7", img:"/gifts/hc7.jpg", cat:{fr:"Home cinéma",icon:"🎬"}, catEn:"Home Cinema", name:{fr:"Lecteur Blu-ray", en:"Blu-ray player"}, amount:400, stripe:"" },
 ];
 
 const C = {
@@ -631,27 +636,29 @@ function GiftsPage({ contribs, loaded, openGift, setOpenGift, payMethod, setPayM
               <h2 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:34, fontWeight:400, margin:0, color:C.green }}>{cat.name}</h2>
               <span style={{ marginLeft:"auto", fontSize:12, color:C.muted }}>{Math.round(collected)} / {totalCat} €</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap:28 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap:24, alignItems:"start" }}>
               {gifts.map(gift => {
                 const contrib = contribs[gift.id] || 0;
                 const pct     = Math.min(100, Math.round(contrib/gift.amount*100));
                 const full    = pct >= 100;
                 const isOpen  = openGift===gift.id;
                 return (
-                  <div key={gift.id} style={{ backgroundColor:C.card, border:`1px solid ${isOpen?C.gold:C.border}`, borderRadius:14, overflow:"hidden", transition:"border-color 0.2s", opacity:full?0.65:1 }}>
-                    <div style={{ padding:"20px 20px 16px" }}>
-                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:8 }}>
-                        <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, fontWeight:500, margin:0, color:C.green, flex:1, lineHeight:1.35 }}>
+                  <div key={gift.id} style={{ backgroundColor:C.card, border:`1px solid ${isOpen?C.gold:C.border}`, borderRadius:14, overflow:"hidden", transition:"border-color 0.2s, box-shadow 0.2s", opacity:full?0.65:1, boxShadow:isOpen?"0 6px 24px rgba(28,51,32,0.10)":"0 2px 10px rgba(28,51,32,0.04)" }}>
+                    <div style={{ aspectRatio:"4/3", backgroundColor:"#FFFFFF", borderBottom:`1px solid ${C.border}`, display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+                      <img src={gift.img} alt={gift.name[lang]} loading="lazy" style={{ width:"100%", height:"100%", objectFit:"contain", padding:14, boxSizing:"border-box", filter:full?"grayscale(60%)":"none" }} />
+                    </div>
+                    <div style={{ padding:"16px 18px 16px" }}>
+                      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline", gap:10, marginBottom:10 }}>
+                        <h3 style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, fontWeight:500, margin:0, color:C.green, lineHeight:1.3 }}>
                           {full && <span style={{ color:C.success }}>✓ </span>}{gift.name[lang]}
                         </h3>
-                        <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:19, color:C.gold, marginLeft:14, flexShrink:0 }}>{gift.amount} €</span>
+                        <span style={{ fontFamily:"'Cormorant Garamond',serif", fontSize:18, color:C.gold, flexShrink:0 }}>{gift.amount} €</span>
                       </div>
-                      <p style={{ fontSize:13, color:C.muted, lineHeight:1.65, marginBottom:14 }}>{gift.desc[lang]}</p>
-                      <div style={{ marginBottom:14 }}>
+                      <div style={{ marginBottom:12 }}>
                         <div style={{ height:3, backgroundColor:C.cream, borderRadius:2, overflow:"hidden" }}>
                           <div style={{ height:"100%", width:`${pct}%`, backgroundColor:full?C.success:C.gold, borderRadius:2, transition:"width 0.6s ease" }} />
                         </div>
-                        <div style={{ display:"flex", justifyContent:"space-between", marginTop:6, fontSize:11, color:C.muted }}>
+                        <div style={{ display:"flex", justifyContent:"space-between", marginTop:5, fontSize:11, color:C.muted }}>
                           <span>{Math.round(contrib)} {tg.collected}</span>
                           <span style={{ fontWeight:500, color:full?C.success:C.gold }}>{pct}%</span>
                         </div>
