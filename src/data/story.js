@@ -13,8 +13,8 @@ const EVENTS = [
 
   { type: "year", year: "2024" },
   { date: { fr: "Janvier 2024 - Auron", en: "January 2024 - Auron" }, photo: "/histoire-3.webp", text: { fr: "Premier séjour au ski avec nos amis ⛷️", en: "First ski trip with our friends ⛷️" } },
-  { date: { fr: "Avril 2024 - Roumanie", en: "April 2024 - Romania" }, photo: "/histoire-4.webp", text: { fr: "Première vacances à deux 🇷🇴", en: "Our first holiday just the two of us 🇷🇴" } },
-  { date: { fr: "Aout 2024 - Cap d'Ail", en: "August 2024 - Cap d'Ail" }, photo: "/histoire-5.webp", text: { fr: "Anniversaire d'Oriane sur la Côte d'Azur 🎂", en: "Oriane's birthday on the French Riviera 🎂" } },
+  { date: { fr: "Avril 2024 - Roumanie", en: "April 2024 - Romania" }, photo: "/histoire-4.webp", text: { fr: "Premières vacances à deux 🇷🇴", en: "Our first holiday just the two of us 🇷🇴" } },
+  { date: { fr: "Août 2024 - Cap d'Ail", en: "August 2024 - Cap d'Ail" }, photo: "/histoire-5.webp", text: { fr: "Anniversaire d'Oriane sur la Côte d'Azur 🎂", en: "Oriane's birthday on the French Riviera 🎂" } },
   { date: { fr: "Octobre 2024 - Île de la Réunion", en: "October 2024 - Réunion Island" }, photo: "/histoire-6.webp", text: { fr: "Voyage en famille à la Réunion 🇷🇪", en: "Family trip to Réunion Island 🇷🇪" }, ratio: "3:4" },
   { date: { fr: "Nouvel An 2024 / 2025", en: "New Year's Eve 2024/2025" }, photo: "/histoire-7.webp", text: { fr: "Nouvel An entre bons copains, qui dit nouvelle année dit...", en: "New Year's Eve with great friends, new year means..." } },
 
@@ -22,7 +22,7 @@ const EVENTS = [
   { date: { fr: "Janvier 2025 - Paris", en: "January 2025 - Paris" }, photo: "/histoire-8.webp", text: { fr: "... emménagement ensemble à Paris ! 🗼", en: "... moving in together in Paris! 🗼" } },
   { date: { fr: "Mars 2025 - Thaïlande / Hong Kong", en: "March 2025 - Thailand / Hong Kong" }, photo: "/histoire-9.webp", text: { fr: "Voyage en Asie 🇹🇭 🇭🇰", en: "Trip to Asia 🇹🇭 🇭🇰" }, ratio: "3:4" },
   { date: { fr: "Avril 2025 - Varengeville", en: "April 2025 - Varengeville" }, photo: "/histoire-10.webp", text: { fr: "Découverte de la Normandie d'Oriane 🌊", en: "Discovering Oriane's Normandy 🌊" } },
-  { date: { fr: "Avril 2025 - Beaune", en: "April 2025 - Beaune" }, photo: "/histoire-11.webp", text: { fr: "Route des vins de bourgogne 🍷", en: "Burgundy wine route 🍷" }, ratio: "3:4" },
+  { date: { fr: "Avril 2025 - Beaune", en: "April 2025 - Beaune" }, photo: "/histoire-11.webp", text: { fr: "Route des vins de Bourgogne 🍷", en: "Burgundy wine route 🍷" }, ratio: "3:4" },
   { date: { fr: "Mai 2025 - Boston & New York", en: "May 2025 - Boston & New York" }, photo: "/histoire-12.webp", text: { fr: "Voyage dans la famille américaine de Louis 🇺🇸", en: "Visiting Louis' American family 🇺🇸" } },
   { date: { fr: "Juillet 2025 - La Ronze", en: "July 2025 - La Ronze" }, photo: "/histoire-13.webp", text: { fr: "80 ans du grand-père de Louis 🎂", en: "Louis' grandfather's 80th birthday 🎂" } },
   { date: { fr: "Août 2025 - Le Guillier", en: "August 2025 - Le Guillier" }, photo: "/histoire-14.webp", text: { fr: "Parenthèse bretonne pour l'été 🌿", en: "A Breton summer escape 🌿" }, ratio: "3:4" },
