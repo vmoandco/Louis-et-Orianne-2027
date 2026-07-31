@@ -118,14 +118,13 @@ function AmountStep({ range, amount, setAmount, onNext, tg }) {
             aria-label={tg.amountTitle}
             aria-valuetext={`${amount} €`}
           />
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted, marginTop: 2, marginBottom: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted, marginTop: 2, marginBottom: 18 }}>
             <span>{MIN_GIFT} €</span>
             <span>
               {tg.amountRemaining} {remaining} €
             </span>
             <span>{max} €</span>
           </div>
-          <p style={{ fontSize: 11, color: C.light, textAlign: "center", marginBottom: 16 }}>{tg.amountMin}</p>
         </>
       )}
 
