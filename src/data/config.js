@@ -1,14 +1,17 @@
 // ─── Réglages du mariage ──────────────────────────────────────────────
 export const DATE_MARIAGE = new Date("2027-06-19T14:00:00");
 
-// TODO: renseigner les vraies coordonnées avant la mise en ligne.
+// ⚠️ COORDONNÉES FICTIVES — à remplacer par les vraies avant d'annoncer le site.
+// Le format est valide (l'IBAN est l'exemple de documentation de la Banque de
+// France) pour que l'affichage soit réaliste, mais aucun de ces comptes
+// n'existe : un virement envoyé ici n'arrivera nulle part.
 export const IBAN_INFO = {
-  iban: "FR76 XXXX XXXX XXXX XXXX XXXX XXX",
-  bic: "XXXXXXXX",
+  iban: "FR76 3000 6000 0112 3456 7890 189",
+  bic: "AGRIFRPP889",
   nom: "Louis SIGAUD",
 };
 
-export const WERO_TEL = "+33 6 XX XX XX XX";
+export const WERO_TEL = "+33 6 12 34 56 78";
 
 // Compte utilisé pour l'espace admin (auth Supabase).
 export const ADMIN_EMAIL = "losigaud@gmail.com";

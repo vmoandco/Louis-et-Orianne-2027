@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
 import { useIsMobile } from "../lib/useIsMobile";
+import { declareContribution } from "../lib/api";
 import { GIFTS, giftCategories, catName } from "../data/gifts";
 import { IBAN_INFO, WERO_TEL } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
 
-// Participation minimale, et pas unique de la jauge.
+// Participation minimale, et pas de la jauge.
 const MIN_GIFT = 40;
-const STEP_GIFT = 10;
+const STEP_GIFT = 5;
 
 /**
  * Bornes de la jauge pour un cadeau donne.
@@ -30,7 +31,11 @@ function giftRange(price, collected) {
   };
 }
 
-function PayBtn({ icon, label, sub, note, onClick, primary, active, children }) {
+const detailTitle = { fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.greenMid, fontWeight: 500 };
+
+/* ─── Briques d'interface ─────────────────────────────────────────────── */
+
+function MethodBtn({ icon, label, sub, onClick, children }) {
   return (
     <button
       onClick={onClick}
@@ -38,9 +43,9 @@ function PayBtn({ icon, label, sub, note, onClick, primary, active, children }) 
         display: "flex",
         alignItems: "center",
         gap: 14,
-        padding: "12px 16px",
-        backgroundColor: primary ? C.green : active ? C.cream : C.card,
-        border: `1px solid ${primary ? C.green : active ? C.gold : C.border}`,
+        padding: "13px 16px",
+        backgroundColor: C.card,
+        border: `1px solid ${C.border}`,
         borderRadius: 8,
         cursor: "pointer",
         textAlign: "left",
@@ -50,46 +55,155 @@ function PayBtn({ icon, label, sub, note, onClick, primary, active, children }) 
     >
       <span style={{ fontSize: 20 }}>{icon}</span>
       <div style={{ flex: 1 }}>
-        <div style={{ fontFamily: SANS, fontSize: 13, fontWeight: primary || active ? 500 : 400, color: primary ? C.offWhite : C.green }}>
-          {label}
-        </div>
-        <div style={{ fontSize: 11, color: primary ? "rgba(250,248,243,0.65)" : C.muted, marginTop: 2 }}>
-          {sub}
-          {note && <span style={{ color: primary ? "rgba(250,248,243,0.8)" : C.success, marginLeft: 5 }}>{note}</span>}
-        </div>
+        <div style={{ fontFamily: SANS, fontSize: 13, color: C.green }}>{label}</div>
+        <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{sub}</div>
         {children}
       </div>
-      {!primary && <span style={{ fontSize: 11, color: C.light }}>{active ? "▲" : "▼"}</span>}
+      <span style={{ fontSize: 13, color: C.light }}>›</span>
     </button>
   );
 }
 
-/** Pastilles CB / Visa / Mastercard, dessinees en CSS pour rester hors-ligne. */
+/** Pastilles des reseaux, dessinees en CSS pour ne dependre d'aucune image. */
 function CardBadges() {
   const badge = {
     fontFamily: SANS,
     fontSize: 8.5,
-    letterSpacing: "0.08em",
+    letterSpacing: "0.06em",
     fontWeight: 600,
-    color: C.offWhite,
-    border: "1px solid rgba(250,248,243,0.45)",
+    color: C.greenMid,
+    border: `1px solid ${C.border}`,
+    backgroundColor: C.offWhite,
     borderRadius: 3,
     padding: "2px 5px",
     lineHeight: 1.2,
   };
   return (
-    <div style={{ display: "flex", gap: 5, marginTop: 7 }}>
-      <span style={badge}>CB</span>
-      <span style={badge}>VISA</span>
-      <span style={badge}>MASTERCARD</span>
+    <div style={{ display: "flex", gap: 5, marginTop: 7, flexWrap: "wrap" }}>
+      {["VISA", "MASTERCARD", "AMEX", "CB"].map((n) => (
+        <span key={n} style={badge}>
+          {n}
+        </span>
+      ))}
     </div>
   );
 }
 
-const detailBox = { marginTop: 14, backgroundColor: C.cream, borderRadius: 10, padding: "16px 18px" };
-const detailTitle = { fontSize: 11, letterSpacing: "0.12em", textTransform: "uppercase", color: C.greenMid, fontWeight: 500 };
+/** Valeur mise en avant, avec copie en un clic. */
+function CopyRow({ value, mono, big, tg }) {
+  const [done, setDone] = useState(false);
 
-/** Etape 1 — choix du montant. */
+  const copy = () => {
+    navigator.clipboard?.writeText(value).then(
+      () => {
+        setDone(true);
+        setTimeout(() => setDone(false), 1800);
+      },
+      () => {}
+    );
+  };
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+      <span
+        style={{
+          fontFamily: mono ? "monospace" : SERIF,
+          fontSize: big ? 26 : 15,
+          color: C.green,
+          fontWeight: 500,
+          wordBreak: "break-all",
+          textAlign: "center",
+        }}
+      >
+        {value}
+      </span>
+      <button
+        onClick={copy}
+        style={{
+          background: "none",
+          border: `1px solid ${done ? C.success : C.border}`,
+          color: done ? C.success : C.muted,
+          borderRadius: 6,
+          padding: "4px 9px",
+          fontSize: 11,
+          cursor: "pointer",
+          flexShrink: 0,
+        }}
+      >
+        {done ? tg.copied : tg.copy}
+      </button>
+    </div>
+  );
+}
+
+/** Popup centre, ferme par Echap, par le fond ou par « Annuler ». */
+function Modal({ title, onClose, children }) {
+  useEffect(() => {
+    const onKey = (e) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    // Empeche la page de defiler derriere le popup.
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previous;
+    };
+  }, [onClose]);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        backgroundColor: "rgba(28,51,32,0.7)",
+        zIndex: 9997,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+        overflowY: "auto",
+      }}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          backgroundColor: "#FFFFFF",
+          borderRadius: 18,
+          padding: "32px 28px 26px",
+          maxWidth: 440,
+          width: "100%",
+          boxShadow: "0 8px 40px rgba(0,0,0,0.2)",
+          margin: "auto",
+        }}
+      >
+        <h3 style={{ fontFamily: SERIF, fontSize: 26, fontWeight: 400, color: C.green, margin: "0 0 6px", textAlign: "center" }}>{title}</h3>
+        <div style={{ width: 36, height: 1, backgroundColor: C.gold, margin: "0 auto 22px" }} />
+        {children}
+      </div>
+    </div>
+  );
+}
+
+const greenBtn = {
+  width: "100%",
+  padding: "14px 20px",
+  backgroundColor: C.success,
+  color: C.offWhite,
+  border: "none",
+  borderRadius: 9,
+  cursor: "pointer",
+  fontFamily: SANS,
+  fontSize: 12,
+  letterSpacing: "0.16em",
+  textTransform: "uppercase",
+};
+
+/* ─── Etape 1 : le montant ────────────────────────────────────────────── */
+
 function AmountStep({ range, amount, setAmount, onNext, tg }) {
   const { fixed, max, remaining } = range;
 
@@ -150,18 +264,133 @@ function AmountStep({ range, amount, setAmount, onNext, tg }) {
   );
 }
 
-/** Etape 2 — choix du moyen de paiement. */
-function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, t, lang }) {
-  const tg = t.gifts;
-  const toggle = (method) => setPayMethod(payMethod === method ? null : method);
+/* ─── Contenu des popups ──────────────────────────────────────────────── */
 
-  const ibanRows = [
-    [tg.ibanBene, IBAN_INFO.nom],
-    ["IBAN", IBAN_INFO.iban],
-    ["BIC / SWIFT", IBAN_INFO.bic],
-    [tg.amountRecap, `${amount} €`],
-    [tg.ibanRef, gift.name[lang]],
+function WeroModal({ amount, sending, onConfirm, onClose, tg }) {
+  return (
+    <Modal title={tg.weroTitle} onClose={onClose}>
+      <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.weroText}</p>
+
+      <div style={{ backgroundColor: C.cream, borderRadius: 12, padding: "20px 16px", marginBottom: 16 }}>
+        <CopyRow value={WERO_TEL} mono big tg={tg} />
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+        <span style={{ fontSize: 12, color: C.muted }}>{tg.amountRecap}</span>
+        <span style={{ fontFamily: SERIF, fontSize: 24, color: C.gold }}>{amount} €</span>
+      </div>
+      <p style={{ fontSize: 11, color: C.muted, fontStyle: "italic", marginBottom: 22 }}>{tg.weroNote}</p>
+
+      <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn, opacity: sending ? 0.6 : 1 }}>
+        {sending ? tg.sending : tg.doneWero}
+      </button>
+      <button
+        onClick={onClose}
+        style={{ width: "100%", background: "none", border: "none", color: C.muted, fontSize: 12, padding: "12px 0 0", cursor: "pointer" }}
+      >
+        {tg.cancel}
+      </button>
+    </Modal>
+  );
+}
+
+function IbanModal({ gift, amount, sending, onConfirm, onClose, tg, lang }) {
+  const rows = [
+    [tg.ibanBene, IBAN_INFO.nom, false],
+    ["BIC / SWIFT", IBAN_INFO.bic, true],
+    [tg.ibanRef, gift.name[lang], false],
   ];
+
+  return (
+    <Modal title={tg.ibanTitle} onClose={onClose}>
+      <div style={{ backgroundColor: C.cream, borderRadius: 12, padding: "18px 16px", marginBottom: 16 }}>
+        <p style={{ ...detailTitle, marginBottom: 10, textAlign: "center" }}>IBAN</p>
+        <CopyRow value={IBAN_INFO.iban} mono tg={tg} />
+      </div>
+
+      {rows.map(([key, value, mono]) => (
+        <div key={key} style={{ display: "flex", justifyContent: "space-between", marginBottom: 9, gap: 12 }}>
+          <span style={{ color: C.muted, flexShrink: 0, fontSize: 12 }}>{key}</span>
+          <span style={{ color: C.green, fontFamily: mono ? "monospace" : "inherit", fontSize: 13, wordBreak: "break-all", textAlign: "right" }}>
+            {value}
+          </span>
+        </div>
+      ))}
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.border}` }}>
+        <span style={{ fontSize: 12, color: C.muted }}>{tg.amountRecap}</span>
+        <span style={{ fontFamily: SERIF, fontSize: 24, color: C.gold }}>{amount} €</span>
+      </div>
+      <p style={{ fontSize: 11, color: C.muted, fontStyle: "italic", margin: "8px 0 22px" }}>{tg.ibanNote}</p>
+
+      <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn, opacity: sending ? 0.6 : 1 }}>
+        {sending ? tg.sending : tg.doneIban}
+      </button>
+      <button
+        onClick={onClose}
+        style={{ width: "100%", background: "none", border: "none", color: C.muted, fontSize: 12, padding: "12px 0 0", cursor: "pointer" }}
+      >
+        {tg.cancel}
+      </button>
+    </Modal>
+  );
+}
+
+function CardModal({ gift, amount, onClose, tg }) {
+  return (
+    <Modal title={tg.cardTitle} onClose={onClose}>
+      {gift.stripe ? (
+        <>
+          <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.cardText}</p>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
+            <CardBadges />
+          </div>
+          <button
+            onClick={() => {
+              window.open(gift.stripe, "_blank", "noopener,noreferrer");
+              onClose();
+            }}
+            style={{ ...greenBtn, backgroundColor: C.green }}
+          >
+            {tg.cardGo.replace("{n}", amount)}
+          </button>
+        </>
+      ) : (
+        <p style={{ fontSize: 13, color: C.muted, lineHeight: 1.75, marginBottom: 20, textAlign: "center" }}>{tg.cardSoon}</p>
+      )}
+      <button
+        onClick={onClose}
+        style={{ width: "100%", background: "none", border: "none", color: C.muted, fontSize: 12, padding: "12px 0 0", cursor: "pointer" }}
+      >
+        {tg.cancel}
+      </button>
+    </Modal>
+  );
+}
+
+/* ─── Etape 2 : le moyen de paiement ──────────────────────────────────── */
+
+function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared, showToast, onDone, t, lang }) {
+  const tg = t.gifts;
+  const [sending, setSending] = useState(false);
+
+  const confirm = async () => {
+    setSending(true);
+    try {
+      const total = await declareContribution(gift.id, amount);
+      onDeclared(gift.id, total);
+      setPayMethod(null);
+      onDone();
+      showToast(tg.thanks);
+    } catch (error) {
+      console.error(error);
+      showToast(tg.declareError);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const close = () => setPayMethod(null);
 
   return (
     <div>
@@ -187,65 +416,29 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, t, lang }) 
         <span style={{ fontFamily: SERIF, fontSize: 22, color: C.gold }}>{amount} €</span>
       </div>
 
-      <p style={{ fontSize: 13, color: C.muted, marginBottom: 16, lineHeight: 1.65 }}>{tg.payIntro}</p>
+      <p style={{ fontSize: 13, color: C.muted, marginBottom: 18, lineHeight: 1.65 }}>{tg.payIntro}</p>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {gift.stripe && (
-          <PayBtn
-            icon="💳"
-            label={tg.stripeLabel}
-            sub={tg.stripeSub}
-            primary
-            onClick={() => window.open(gift.stripe, "_blank", "noopener,noreferrer")}
-          >
-            <CardBadges />
-          </PayBtn>
-        )}
-        <PayBtn
-          icon="📱"
-          label={tg.weroLabel}
-          sub={`${tg.weroSub} ${WERO_TEL}`}
-          note={tg.noFee}
-          active={payMethod === "wero"}
-          onClick={() => toggle("wero")}
-        />
-        <PayBtn icon="🏦" label={tg.ibanLabel} sub={tg.ibanSub} note={tg.noFee} active={payMethod === "iban"} onClick={() => toggle("iban")} />
+      <p style={{ ...detailTitle, color: C.success, marginBottom: 9 }}>{tg.groupFree}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
+        <MethodBtn icon="📱" label={tg.weroLabel} sub={tg.weroSub} onClick={() => setPayMethod("wero")} />
+        <MethodBtn icon="🏦" label={tg.ibanLabel} sub={tg.ibanSub} onClick={() => setPayMethod("iban")} />
       </div>
 
-      {payMethod === "iban" && (
-        <div style={detailBox}>
-          <p style={{ ...detailTitle, marginBottom: 12 }}>{tg.ibanTitle}</p>
-          {ibanRows.map(([key, value]) => {
-            const mono = key === "IBAN" || key === "BIC / SWIFT";
-            return (
-              <div key={key} style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, gap: 12 }}>
-                <span style={{ color: C.muted, flexShrink: 0, fontSize: 12 }}>{key}</span>
-                <span style={{ color: C.green, fontFamily: mono ? "monospace" : "inherit", fontSize: key === "IBAN" ? 11 : 13, wordBreak: "break-all", textAlign: "right" }}>
-                  {value}
-                </span>
-              </div>
-            );
-          })}
-          <p style={{ fontSize: 11, color: C.muted, marginTop: 10, fontStyle: "italic" }}>{tg.ibanNote}</p>
-        </div>
-      )}
+      <p style={{ ...detailTitle, marginBottom: 9 }}>{tg.groupCard}</p>
+      <MethodBtn icon="💳" label={tg.stripeLabel} sub={tg.stripeSub} onClick={() => setPayMethod("card")}>
+        <CardBadges />
+      </MethodBtn>
 
-      {payMethod === "wero" && (
-        <div style={detailBox}>
-          <p style={{ ...detailTitle, marginBottom: 10 }}>{tg.weroTitle}</p>
-          <p style={{ fontSize: 13, color: C.greenMid, lineHeight: 1.75, marginBottom: 8 }}>{tg.weroText}</p>
-          <p style={{ fontFamily: "monospace", fontSize: 20, color: C.green, fontWeight: 500, textAlign: "center", padding: "10px 0" }}>{WERO_TEL}</p>
-          <p style={{ fontSize: 13, color: C.greenMid, textAlign: "center", marginBottom: 8 }}>
-            {tg.amountRecap} : <strong style={{ color: C.gold }}>{amount} €</strong>
-          </p>
-          <p style={{ fontSize: 11, color: C.muted, fontStyle: "italic" }}>{tg.weroNote}</p>
-        </div>
+      {payMethod === "wero" && <WeroModal amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} />}
+      {payMethod === "iban" && (
+        <IbanModal gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} />
       )}
+      {payMethod === "card" && <CardModal gift={gift} amount={amount} onClose={close} tg={tg} />}
     </div>
   );
 }
 
-function PaymentPanel({ gift, price, contrib, payMethod, setPayMethod, t, lang }) {
+function PaymentPanel({ gift, price, contrib, payMethod, setPayMethod, onDeclared, showToast, onDone, t, lang }) {
   const range = giftRange(price, contrib);
   const [amount, setAmount] = useState(range.initial);
   const [step, setStep] = useState("amount");
@@ -264,6 +457,9 @@ function PaymentPanel({ gift, price, contrib, payMethod, setPayMethod, t, lang }
           }}
           payMethod={payMethod}
           setPayMethod={setPayMethod}
+          onDeclared={onDeclared}
+          showToast={showToast}
+          onDone={onDone}
           t={t}
           lang={lang}
         />
@@ -272,7 +468,9 @@ function PaymentPanel({ gift, price, contrib, payMethod, setPayMethod, t, lang }
   );
 }
 
-function GiftCard({ gift, price, contrib, isOpen, onToggle, payMethod, setPayMethod, t, lang }) {
+/* ─── Carte cadeau et page ────────────────────────────────────────────── */
+
+function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, setPayMethod, onDeclared, showToast, t, lang }) {
   const tg = t.gifts;
   const pct = Math.min(100, Math.round((contrib / price) * 100));
   const full = pct >= 100;
@@ -345,13 +543,24 @@ function GiftCard({ gift, price, contrib, isOpen, onToggle, payMethod, setPayMet
       </div>
 
       {isOpen && !full && (
-        <PaymentPanel gift={gift} price={price} contrib={contrib} payMethod={payMethod} setPayMethod={setPayMethod} t={t} lang={lang} />
+        <PaymentPanel
+          gift={gift}
+          price={price}
+          contrib={contrib}
+          payMethod={payMethod}
+          setPayMethod={setPayMethod}
+          onDeclared={onDeclared}
+          showToast={showToast}
+          onDone={onClose}
+          t={t}
+          lang={lang}
+        />
       )}
     </div>
   );
 }
 
-export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenGift, payMethod, setPayMethod, t, lang }) {
+export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenGift, payMethod, setPayMethod, onDeclared, showToast, t, lang }) {
   const isMobile = useIsMobile();
   const tg = t.gifts;
   const priceOf = (gift) => prices[gift.id] ?? gift.amount;
@@ -392,8 +601,11 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
                   contrib={contribs[gift.id] || 0}
                   isOpen={openGift === gift.id}
                   onToggle={() => setOpenGift(openGift === gift.id ? null : gift.id)}
+                  onClose={() => setOpenGift(null)}
                   payMethod={payMethod}
                   setPayMethod={setPayMethod}
+                  onDeclared={onDeclared}
+                  showToast={showToast}
                   t={t}
                   lang={lang}
                 />

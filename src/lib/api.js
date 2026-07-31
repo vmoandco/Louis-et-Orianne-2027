@@ -20,6 +20,30 @@ const select = (columns) =>
  * répond 400. On retombe alors sur les seules colonnes historiques plutôt que
  * de laisser la liste de mariage bloquée sur « Chargement… ».
  */
+/**
+ * Déclare la participation d'un invité et renvoie le nouveau total du cadeau.
+ *
+ * Passe par la fonction `declare_contribution` (voir
+ * `supabase/declare-contribution.sql`) : la table reste fermée en écriture aux
+ * visiteurs, seul cet ajout borné leur est ouvert.
+ */
+export async function declareContribution(giftId, amount) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/declare_contribution`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ gift_id: giftId, delta: amount }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Déclaration de participation échouée (HTTP ${response.status})`);
+  }
+  return Number(await response.json());
+}
+
 export async function fetchContributions() {
   let response = await select("id,amount,price");
 

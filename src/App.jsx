@@ -112,6 +112,12 @@ export default function App() {
     setPrices((prev) => ({ ...prev, [id]: price }));
   }, []);
 
+  // Un invité vient de déclarer sa participation : la fonction SQL renvoie le
+  // nouveau total, on l'applique sans relire toute la liste.
+  const handleDeclared = useCallback((id, total) => {
+    setContribs((prev) => ({ ...prev, [id]: total }));
+  }, []);
+
   const closeAdmin = useCallback(() => navigate("home"), [navigate]);
 
   // ─── Rendu ──────────────────────────────────────────────────────────
@@ -148,6 +154,8 @@ export default function App() {
             setOpenGift={setOpenGift}
             payMethod={payMethod}
             setPayMethod={setPayMethod}
+            onDeclared={handleDeclared}
+            showToast={showToast}
             t={t}
             lang={lang}
           />
