@@ -2,6 +2,18 @@ import { C, SERIF } from "../lib/theme";
 import { useIsMobile } from "../lib/useIsMobile";
 import SectionTitle from "../components/SectionTitle";
 
+/**
+ * Lien Google Maps universel pour une adresse.
+ *
+ * Remplace l'ancienne forme `maps.google.com/?q=…`, qui restait sur le site
+ * mobile au lieu d'ouvrir l'application et supportait mal les accents non
+ * encodés (« Église », « Château »). Cette URL officielle est reconnue comme
+ * lien profond par les applications Maps iOS et Android, et retombe sur la
+ * page web quand l'application n'est pas installée.
+ */
+const mapsUrl = (address) =>
+  `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
 export default function InfoPage({ t }) {
   const isMobile = useIsMobile();
 
@@ -37,9 +49,9 @@ export default function InfoPage({ t }) {
             <div>
               <h3 style={{ fontFamily: SERIF, fontSize: 21, fontWeight: 500, color: C.green, marginBottom: 8 }}>{info.title}</h3>
               <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.85, whiteSpace: "pre-line" }}>{info.content}</p>
-              {info.link && (
+              {info.mapsQuery && (
                 <a
-                  href={info.link}
+                  href={mapsUrl(info.mapsQuery)}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{
