@@ -9,8 +9,8 @@ export const GIFTS = [
   { id: "c6",  img: "/gifts/c6.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Broc à eau", en: "Water carafe" }, amount: 100, stripe: "" },
   { id: "c7",  img: "/gifts/c7.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Lave vaisselle", en: "Dishwasher" }, amount: 500, stripe: "" },
   { id: "c8",  img: "/gifts/c8.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Cave à vin", en: "Wine fridge" }, amount: 600, stripe: "" },
-  { id: "c9",  img: "/gifts/c9.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Vase", en: "Vase" }, amount: 70, stripe: "" },
-  { id: "c10", img: "/gifts/c10.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Nappes", en: "Tablecloths" }, amount: 100, stripe: "" },
+  { id: "c9",  img: "/gifts/c9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Vase", en: "Vase" }, amount: 70, stripe: "" },
+  { id: "c10", img: "/gifts/c10.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Nappe", en: "Tablecloth" }, amount: 100, stripe: "" },
   { id: "c11", img: "/gifts/c11.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Machine à pâtes", en: "Pasta maker" }, amount: 50, stripe: "" },
 
   { id: "m1",  img: "/gifts/m1.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Draps", en: "Bed sheets" }, amount: 150, stripe: "" },
@@ -20,7 +20,6 @@ export const GIFTS = [
   { id: "m5",  img: "/gifts/m5.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Table de salle à manger", en: "Dining table" }, amount: 500, stripe: "" },
   { id: "m6",  img: "/gifts/m6.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Perceuse / visseuse", en: "Drill / screwdriver" }, amount: 80, stripe: "" },
   { id: "m7",  img: "/gifts/m7.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Kit d'outils", en: "Tool kit" }, amount: 50, stripe: "" },
-  { id: "m9",  img: "/gifts/m9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Santons / crèche", en: "Nativity figurines" }, amount: 200, stripe: "" },
 
   { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski pour Louis", en: "Ski boots for Louis" }, amount: 300, stripe: "" },
   { id: "sp2", img: "/gifts/sp2.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski pour Oriane", en: "Ski boots for Oriane" }, amount: 250, stripe: "" },
@@ -35,6 +34,12 @@ export const GIFTS = [
 
   { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 50, stripe: "" },
   { id: "in2", img: "/gifts/in2.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Abonnement Peuple Bleu & Blanc 2027/2028", en: "Peuple Bleu & Blanc season ticket 2027/2028" }, amount: 60, stripe: "" },
+
+  { id: "no1", img: "/gifts/no1.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Étable Crèche", en: "Nativity stable" }, amount: 55, stripe: "" },
+  { id: "no2", img: "/gifts/no2.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Santons", en: "Nativity figurines" }, amount: 150, stripe: "" },
+  { id: "no3", img: "/gifts/no3.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Tasses", en: "Mugs" }, amount: 60, stripe: "" },
+  { id: "no4", img: "/gifts/no4.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "\"Boules\" de Noël", en: "Christmas \"Baubles\"" }, amount: 50, stripe: "" },
+  { id: "no5", img: "/gifts/no5.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Verres", en: "Glasses" }, amount: 90, stripe: "" },
 ];
 
 /** Nom de catégorie d'un cadeau dans la langue courante. */
