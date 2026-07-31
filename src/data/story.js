@@ -29,7 +29,7 @@ const EVENTS = [
   { date: { fr: "Novembre 2025", en: "November 2025" }, photo: "/histoire-15.webp", text: { fr: "Oriane découvre le plus beau stade de France 🔵⚪", en: "Oriane discovers the finest stadium in France 🔵⚪" } },
 
   { type: "year", year: "2026" },
-  { date: { fr: "Janvier 2027 - Venise", en: "January 2027 - Venice" }, photo: "/histoire-16.webp", text: { fr: "Découverte de la ville des amoureux ❤️ 🇮🇹", en: "Discovering the city of love ❤️ 🇮🇹" }, ratio: "3:4" },
+  { date: { fr: "Janvier 2026 - Venise", en: "January 2026 - Venice" }, photo: "/histoire-16.webp", text: { fr: "Découverte de la ville des amoureux ❤️ 🇮🇹", en: "Discovering the city of love ❤️ 🇮🇹" }, ratio: "3:4" },
 
   { type: "year", year: { fr: "Et après un fabuleux voyage en Arménie et en Géorgie...", en: "And after a fabulous trip to Armenia and Georgia..." }, mosaic: true },
   { date: { fr: "Photo 1", en: "Photo 1" }, photo: "/histoire-17.webp", text: { fr: "À compléter ✍️", en: "To be completed ✍️" }, ratio: "3:4" },
