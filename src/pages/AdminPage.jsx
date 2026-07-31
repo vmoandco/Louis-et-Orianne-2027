@@ -67,6 +67,26 @@ function EditField({ id, label, value, onChange, onSave, suffix, ariaLabel }) {
   );
 }
 
+/** Bandeau des deux totaux, recalcule a chaque rendu depuis GIFTS + prices/contribs. */
+function TotalsBar({ totalPrice, totalCollected, ta }) {
+  const pct = totalPrice > 0 ? Math.min(100, Math.round((totalCollected / totalPrice) * 100)) : 0;
+
+  return (
+    <div style={{ display: "flex", gap: 16, marginBottom: 24, flexWrap: "wrap" }}>
+      <div style={{ flex: 1, minWidth: 200, backgroundColor: C.cream, borderRadius: 12, padding: "16px 20px" }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: C.greenMid, marginBottom: 6 }}>{ta.totalTarget}</div>
+        <div style={{ fontFamily: SERIF, fontSize: 28, color: C.green }}>{Math.round(totalPrice)} €</div>
+      </div>
+      <div style={{ flex: 1, minWidth: 200, backgroundColor: C.cream, borderRadius: 12, padding: "16px 20px" }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: C.greenMid, marginBottom: 6 }}>{ta.totalCollected}</div>
+        <div style={{ fontFamily: SERIF, fontSize: 28, color: C.gold }}>
+          {Math.round(totalCollected)} € <span style={{ fontSize: 15, color: C.muted }}>({pct}%)</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GiftRow({ gift, price, current, editVal, editPrice, setEditVals, setEditPrices, onSave, onSavePrice, ta, lang }) {
   const pct = Math.min(100, Math.round((current / price) * 100));
 
@@ -186,6 +206,12 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
               {ta.signout}
             </button>
           </div>
+
+          <TotalsBar
+            totalPrice={GIFTS.reduce((sum, g) => sum + (prices[g.id] ?? g.amount), 0)}
+            totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0)}
+            ta={ta}
+          />
 
           <div style={{ backgroundColor: C.cream, borderRadius: 12, padding: "16px 20px", marginBottom: 32, fontSize: 14, lineHeight: 1.75, color: C.greenMid }}>
             {ta.note}
