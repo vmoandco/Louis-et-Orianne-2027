@@ -40,6 +40,8 @@ export const GIFTS = [
 
   { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 50, stripe: "" },
   { id: "in2", img: "/gifts/in2.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Abonnement Peuple Bleu & Blanc 2027/2028", en: "Peuple Bleu & Blanc season ticket 2027/2028" }, amount: 60, stripe: "" },
+  { id: "in3", img: "/gifts/in3.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - La Famiglia", en: "Board Game - La Famiglia" }, amount: 80, stripe: "" },
+  { id: "in4", img: "/gifts/in4.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - Trône de Fer extension", en: "Board Game - Game of Thrones expansion" }, amount: 50, stripe: "" },
 ];
 
 /** Nom de catégorie d'un cadeau dans la langue courante. */

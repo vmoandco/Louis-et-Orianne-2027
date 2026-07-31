@@ -84,6 +84,10 @@ export const TR = {
       priceSaved: "✓ Prix sauvegardé !",
       saveError: "❌ Erreur de sauvegarde",
     },
+    chunkError: {
+      text: "Le site vient d'être mis à jour. Merci de recharger la page.",
+      button: "Recharger",
+    },
     footer: "Oriane & Louis 2027",
     gate: {
       eyebrow: "Oriane & Louis · 19.06.2027",
@@ -174,6 +178,10 @@ export const TR = {
       saved: "✓ Contribution saved!",
       priceSaved: "✓ Price saved!",
       saveError: "❌ Save failed",
+    },
+    chunkError: {
+      text: "The site was just updated. Please reload the page.",
+      button: "Reload",
     },
     footer: "Oriane & Louis 2027",
     gate: {

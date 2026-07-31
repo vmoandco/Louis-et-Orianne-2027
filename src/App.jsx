@@ -12,6 +12,7 @@ import Header from "./components/Header";
 import MobileBottomNav from "./components/MobileBottomNav";
 import LanguageGate from "./components/LanguageGate";
 import Toast from "./components/Toast";
+import ChunkErrorBoundary from "./components/ChunkErrorBoundary";
 
 import HomePage from "./pages/HomePage";
 import StoryPage from "./pages/StoryPage";
@@ -162,18 +163,20 @@ export default function App() {
         )}
         {tab === "info" && <InfoPage t={t} />}
         {tab === "admin" && (
-          <Suspense fallback={<div style={{ textAlign: "center", padding: "80px 20px", color: C.muted }}>{t.gifts.loading}</div>}>
-            <AdminPage
-              contribs={contribs}
-              prices={prices}
-              onSaved={handleSaved}
-              onPriceSaved={handlePriceSaved}
-              onClose={closeAdmin}
-              showToast={showToast}
-              t={t}
-              lang={lang}
-            />
-          </Suspense>
+          <ChunkErrorBoundary t={t}>
+            <Suspense fallback={<div style={{ textAlign: "center", padding: "80px 20px", color: C.muted }}>{t.gifts.loading}</div>}>
+              <AdminPage
+                contribs={contribs}
+                prices={prices}
+                onSaved={handleSaved}
+                onPriceSaved={handlePriceSaved}
+                onClose={closeAdmin}
+                showToast={showToast}
+                t={t}
+                lang={lang}
+              />
+            </Suspense>
+          </ChunkErrorBoundary>
         )}
       </main>
 
