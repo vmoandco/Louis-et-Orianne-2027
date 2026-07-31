@@ -32,14 +32,14 @@ export const GIFTS = [
   { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700, stripe: "" },
   { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400, stripe: "" },
 
-  { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 50, stripe: "" },
-  { id: "in2", img: "/gifts/in2.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Abonnement Peuple Bleu & Blanc 2027/2028", en: "Peuple Bleu & Blanc season ticket 2027/2028" }, amount: 60, stripe: "" },
-
   { id: "no1", img: "/gifts/no1.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Étable Crèche", en: "Nativity stable" }, amount: 55, stripe: "" },
   { id: "no2", img: "/gifts/no2.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Santons", en: "Nativity figurines" }, amount: 150, stripe: "" },
   { id: "no3", img: "/gifts/no3.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Tasses", en: "Mugs" }, amount: 60, stripe: "" },
   { id: "no4", img: "/gifts/no4.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "\"Boules\" de Noël", en: "Christmas \"Baubles\"" }, amount: 50, stripe: "" },
   { id: "no5", img: "/gifts/no5.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Verres", en: "Glasses" }, amount: 90, stripe: "" },
+
+  { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 50, stripe: "" },
+  { id: "in2", img: "/gifts/in2.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Abonnement Peuple Bleu & Blanc 2027/2028", en: "Peuple Bleu & Blanc season ticket 2027/2028" }, amount: 60, stripe: "" },
 ];
 
 /** Nom de catégorie d'un cadeau dans la langue courante. */
