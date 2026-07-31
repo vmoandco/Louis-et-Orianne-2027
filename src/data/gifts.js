@@ -44,7 +44,7 @@ export const GIFTS = [
   { id: "in3", img: "/gifts/in3.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - La Famiglia", en: "Board Game - La Famiglia" }, amount: 80, stripe: "" },
   { id: "in4", img: "/gifts/in4.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - Trône de Fer extension", en: "Board Game - Game of Thrones expansion" }, amount: 50, stripe: "" },
   { id: "in5", img: "/gifts/in5.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Magnum année de mariage", en: "Magnum wedding vintage" }, amount: 80, stripe: "" },
-  { id: "in6", img: "/gifts/in6.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Caisse de vin 2027", en: "2027 wine case" }, amount: 240, stripe: "" },
+  { id: "in6", img: "/gifts/in6.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Caisse de vin année de mariage", en: "Wedding vintage wine case" }, amount: 240, stripe: "" },
 ];
 
 /** Nom de catégorie d'un cadeau dans la langue courante. */
