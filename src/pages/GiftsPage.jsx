@@ -470,17 +470,22 @@ function PaymentPanel({ gift, price, contrib, payMethod, setPayMethod, onDeclare
 
 /* ─── Carte cadeau et page ────────────────────────────────────────────── */
 
-function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, setPayMethod, onDeclared, showToast, t, lang }) {
+function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, setPayMethod, onDeclared, showToast, t, lang, isMobile }) {
   const tg = t.gifts;
   const pct = Math.min(100, Math.round((contrib / price) * 100));
   const full = pct >= 100;
+  // Deux cartes par ligne sur mobile les rend etroites : une fois ouverte,
+  // la carte reprend toute la largeur pour laisser la place a la jauge et
+  // aux moyens de paiement. Fermee, elle reste compacte (textes reduits).
+  const compact = isMobile && !isOpen;
 
   return (
     <div
       style={{
+        gridColumn: isMobile && isOpen ? "1 / -1" : undefined,
         backgroundColor: C.card,
         border: `1px solid ${isOpen ? C.gold : C.border}`,
-        borderRadius: 14,
+        borderRadius: compact ? 10 : 14,
         overflow: "hidden",
         transition: "border-color 0.2s, box-shadow 0.2s",
         opacity: full ? 0.65 : 1,
@@ -493,48 +498,68 @@ function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, 
           alt={gift.name[lang]}
           loading="lazy"
           decoding="async"
-          style={{ width: "100%", height: "100%", objectFit: "contain", padding: 14, boxSizing: "border-box", filter: full ? "grayscale(60%)" : "none" }}
+          style={{ width: "100%", height: "100%", objectFit: "contain", padding: compact ? 8 : 14, boxSizing: "border-box", filter: full ? "grayscale(60%)" : "none" }}
         />
       </div>
 
-      <div style={{ padding: "16px 18px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 10 }}>
-          <h3 style={{ fontFamily: SERIF, fontSize: 18, fontWeight: 500, margin: 0, color: C.green, lineHeight: 1.3 }}>
+      <div style={{ padding: compact ? "10px 12px" : "16px 18px" }}>
+        <div style={{ display: compact ? "block" : "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: compact ? 4 : 10 }}>
+          <h3
+            style={{
+              fontFamily: SERIF,
+              fontSize: compact ? 14 : 18,
+              fontWeight: 500,
+              margin: 0,
+              color: C.green,
+              lineHeight: 1.25,
+              display: compact ? "-webkit-box" : "block",
+              WebkitLineClamp: compact ? 2 : undefined,
+              WebkitBoxOrient: compact ? "vertical" : undefined,
+              overflow: compact ? "hidden" : "visible",
+            }}
+          >
             {full && <span style={{ color: C.success }}>✓ </span>}
             {gift.name[lang]}
           </h3>
-          <span style={{ fontFamily: SERIF, fontSize: 18, color: C.gold, flexShrink: 0 }}>{price} €</span>
+          <span style={{ fontFamily: SERIF, fontSize: compact ? 14 : 18, color: C.gold, flexShrink: 0 }}>{price} €</span>
         </div>
 
-        <div style={{ marginBottom: 12 }}>
+        <div style={{ marginBottom: compact ? 6 : 12 }}>
           <div style={{ height: 3, backgroundColor: C.cream, borderRadius: 2, overflow: "hidden" }}>
             <div style={{ height: "100%", width: `${pct}%`, backgroundColor: full ? C.success : C.gold, borderRadius: 2, transition: "width 0.6s ease" }} />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5, fontSize: 11, color: C.muted }}>
-            <span>{Math.round(contrib)} {tg.collected}</span>
-            <span style={{ fontWeight: 500, color: full ? C.success : C.gold }}>{pct}%</span>
-          </div>
+          {!compact && (
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 5, fontSize: 11, color: C.muted }}>
+              <span>{Math.round(contrib)} {tg.collected}</span>
+              <span style={{ fontWeight: 500, color: full ? C.success : C.gold }}>{pct}%</span>
+            </div>
+          )}
         </div>
 
         {full ? (
-          <div style={{ textAlign: "center", fontSize: 14, color: C.success, fontStyle: "italic", fontFamily: SERIF }}>{tg.completed}</div>
+          <div style={{ textAlign: "center", fontSize: compact ? 10 : 14, color: C.success, fontStyle: "italic", fontFamily: SERIF }}>
+            {compact ? "✓" : tg.completed}
+          </div>
         ) : (
           <button
             onClick={onToggle}
             aria-expanded={isOpen}
             style={{
               width: "100%",
-              padding: "10px 16px",
+              padding: compact ? "8px 8px" : "10px 16px",
               backgroundColor: isOpen ? C.cream : C.green,
               color: isOpen ? C.green : C.offWhite,
               border: "none",
               cursor: "pointer",
-              borderRadius: 7,
+              borderRadius: compact ? 5 : 7,
               fontFamily: SANS,
-              fontSize: 11,
-              letterSpacing: "0.2em",
+              fontSize: compact ? 10 : 11,
+              letterSpacing: compact ? "0.1em" : "0.2em",
               textTransform: "uppercase",
               transition: "all 0.2s",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
           >
             {isOpen ? tg.close : tg.participate}
@@ -587,7 +612,7 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
               <h2 style={{ fontFamily: SERIF, fontSize: isMobile ? 26 : 34, fontWeight: 400, margin: 0, color: C.green }}>{cat.name}</h2>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 24, alignItems: "start" }}>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: isMobile ? 12 : 24, alignItems: "start" }}>
               {gifts.map((gift) => (
                 <GiftCard
                   key={gift.id}
@@ -603,6 +628,7 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
                   showToast={showToast}
                   t={t}
                   lang={lang}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
