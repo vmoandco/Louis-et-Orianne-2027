@@ -33,7 +33,7 @@ export const GIFTS = [
   { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700, stripe: "" },
   { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400, stripe: "" },
 
-  { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 100, stripe: "" },
+  { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 50, stripe: "" },
 ];
 
 /** Nom de catégorie d'un cadeau dans la langue courante. */

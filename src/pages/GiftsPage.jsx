@@ -579,17 +579,12 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
 
       {giftCategories(lang).map((cat) => {
         const gifts = GIFTS.filter((g) => catName(g, lang) === cat.name);
-        const target = gifts.reduce((sum, g) => sum + priceOf(g), 0);
-        const collected = gifts.reduce((sum, g) => sum + (contribs[g.id] || 0), 0);
 
         return (
           <div key={cat.name} style={{ marginBottom: 56 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, paddingBottom: 14, borderBottom: `2px solid ${C.green}` }}>
               <span style={{ fontSize: 22 }}>{cat.icon}</span>
               <h2 style={{ fontFamily: SERIF, fontSize: isMobile ? 26 : 34, fontWeight: 400, margin: 0, color: C.green }}>{cat.name}</h2>
-              <span style={{ marginLeft: "auto", fontSize: 12, color: C.muted, whiteSpace: "nowrap" }}>
-                {Math.round(collected)} / {target} €
-              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 24, alignItems: "start" }}>
