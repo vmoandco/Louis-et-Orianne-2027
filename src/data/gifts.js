@@ -12,6 +12,7 @@ export const GIFTS = [
   { id: "c9",  img: "/gifts/c9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Vase", en: "Vase" }, amount: 70, stripe: "" },
   { id: "c10", img: "/gifts/c10.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Nappe", en: "Tablecloth" }, amount: 100, stripe: "" },
   { id: "c11", img: "/gifts/c11.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Machine à pâtes", en: "Pasta maker" }, amount: 50, stripe: "" },
+  { id: "c12", img: "/gifts/c12.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Coravin", en: "Coravin" }, amount: 300, stripe: "" },
 
   { id: "m1",  img: "/gifts/m1.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Draps", en: "Bed sheets" }, amount: 150, stripe: "" },
   { id: "m2",  img: "/gifts/m2.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Serviettes", en: "Towels" }, amount: 100, stripe: "" },
