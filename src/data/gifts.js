@@ -6,7 +6,7 @@ export const GIFTS = [
   { id: "c3",  img: "/gifts/c3.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Set casseroles", en: "Saucepan set" }, amount: 150, stripe: "" },
   { id: "c4",  img: "/gifts/c4.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Set poêles", en: "Frying pan set" }, amount: 150, stripe: "" },
   { id: "c5",  img: "/gifts/c5.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Assemblage set verres à vin & eau", en: "Wine & water glasses set" }, amount: 200, stripe: "" },
-  { id: "c6",  img: "/gifts/c6.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Broc à eau", en: "Water carafe" }, amount: 100, stripe: "" },
+  { id: "c6",  img: "/gifts/c6.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Carafe à eau", en: "Water carafe" }, amount: 100, stripe: "" },
   { id: "c7",  img: "/gifts/c7.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Lave vaisselle", en: "Dishwasher" }, amount: 500, stripe: "" },
   { id: "c8",  img: "/gifts/c8.webp",  cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Cave à vin", en: "Wine fridge" }, amount: 600, stripe: "" },
   { id: "c9",  img: "/gifts/c9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Vase", en: "Vase" }, amount: 70, stripe: "" },
@@ -23,14 +23,15 @@ export const GIFTS = [
 
   { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski pour Louis", en: "Ski boots for Louis" }, amount: 300, stripe: "" },
   { id: "sp2", img: "/gifts/sp2.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Chaussures de ski pour Oriane", en: "Ski boots for Oriane" }, amount: 250, stripe: "" },
+  { id: "sp3", img: "/gifts/sp3.webp", cat: { fr: "Sport", icon: "⛷️" }, catEn: "Sport", name: { fr: "Tente Trek", en: "Trekking tent" }, amount: 500, stripe: "" },
 
-  { id: "hc1", img: "/gifts/hc1.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "TV OLED", en: "OLED TV" }, amount: 1500, stripe: "" },
-  { id: "hc2", img: "/gifts/hc2.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Ampli AV", en: "AV receiver" }, amount: 750, stripe: "" },
-  { id: "hc3", img: "/gifts/hc3.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceintes frontales", en: "Front speakers" }, amount: 1000, stripe: "" },
-  { id: "hc4", img: "/gifts/hc4.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceinte centrale", en: "Centre speaker" }, amount: 350, stripe: "" },
-  { id: "hc5", img: "/gifts/hc5.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceintes surround", en: "Surround speakers" }, amount: 330, stripe: "" },
-  { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700, stripe: "" },
-  { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Home cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400, stripe: "" },
+  { id: "hc1", img: "/gifts/hc1.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "TV OLED", en: "OLED TV" }, amount: 1500, stripe: "" },
+  { id: "hc2", img: "/gifts/hc2.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Ampli AV", en: "AV receiver" }, amount: 750, stripe: "" },
+  { id: "hc3", img: "/gifts/hc3.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceintes frontales", en: "Front speakers" }, amount: 1000, stripe: "" },
+  { id: "hc4", img: "/gifts/hc4.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceinte centrale", en: "Centre speaker" }, amount: 350, stripe: "" },
+  { id: "hc5", img: "/gifts/hc5.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceintes surround", en: "Surround speakers" }, amount: 330, stripe: "" },
+  { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700, stripe: "" },
+  { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400, stripe: "" },
 
   { id: "no1", img: "/gifts/no1.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Étable Crèche", en: "Nativity stable" }, amount: 55, stripe: "" },
   { id: "no2", img: "/gifts/no2.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Santons", en: "Nativity figurines" }, amount: 150, stripe: "" },
@@ -42,6 +43,8 @@ export const GIFTS = [
   { id: "in2", img: "/gifts/in2.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Abonnement Peuple Bleu & Blanc 2027/2028", en: "Peuple Bleu & Blanc season ticket 2027/2028" }, amount: 60, stripe: "" },
   { id: "in3", img: "/gifts/in3.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - La Famiglia", en: "Board Game - La Famiglia" }, amount: 80, stripe: "" },
   { id: "in4", img: "/gifts/in4.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - Trône de Fer extension", en: "Board Game - Game of Thrones expansion" }, amount: 50, stripe: "" },
+  { id: "in5", img: "/gifts/in5.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Magnum année de mariage", en: "Magnum wedding vintage" }, amount: 80, stripe: "" },
+  { id: "in6", img: "/gifts/in6.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Caisse de vin 2027", en: "2027 wine case" }, amount: 240, stripe: "" },
 ];
 
 /** Nom de catégorie d'un cadeau dans la langue courante. */
