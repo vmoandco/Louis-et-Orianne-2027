@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
-import { supabase } from "../lib/supabase";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
 import { GIFTS, catName } from "../data/gifts";
 import { ADMIN_EMAIL } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
@@ -146,7 +146,12 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
   const [editPrices, setEditPrices] = useState({});
 
   // Reprend une session ouverte lors d'une visite précédente.
+  // Les hooks sont enregistrés pendant le rendu, donc cet effet s'exécute même
+  // quand le composant sort plus bas par le retour anticipé « non configuré » :
+  // sans cette garde, `supabase` valant null y provoquait un plantage.
   useEffect(() => {
+    if (!supabase) return undefined;
+
     let cancelled = false;
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!cancelled && session) setAuthed(true);
@@ -192,6 +197,25 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
     onPriceSaved(id, price);
     showToast(ta.priceSaved);
   };
+
+  // Sans configuration Supabase, mieux vaut un diagnostic lisible qu'un
+  // formulaire de connexion qui echouerait sans expliquer pourquoi.
+  if (!isSupabaseConfigured) {
+    return (
+      <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 20px" }}>
+        <SectionTitle title={ta.title} />
+        <div style={{ backgroundColor: C.cream, borderRadius: 12, padding: "20px 24px", fontSize: 14, lineHeight: 1.8, color: C.greenMid }}>
+          <strong style={{ color: C.green }}>{ta.notConfigured}</strong>
+          <br />
+          {ta.notConfiguredHelp}
+          <br />
+          <code style={{ fontFamily: "monospace", fontSize: 13, color: C.green }}>VITE_SUPABASE_URL</code>
+          {" · "}
+          <code style={{ fontFamily: "monospace", fontSize: 13, color: C.green }}>VITE_SUPABASE_KEY</code>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth: 720, margin: "0 auto", padding: "60px 20px" }}>
