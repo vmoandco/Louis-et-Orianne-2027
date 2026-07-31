@@ -591,7 +591,18 @@ function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, 
       </div>
 
       <div style={{ padding: compact ? "11px 12px 12px" : "16px 18px" }}>
-        <div style={{ display: compact ? "block" : "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: compact ? 6 : 10 }}>
+        <div
+          style={{
+            display: compact ? "block" : "flex",
+            justifyContent: "space-between",
+            alignItems: "baseline",
+            gap: 10,
+            marginBottom: compact ? 6 : 10,
+            // Vignette etroite : nom et prix centres sous le visuel plutot
+            // qu'alignes a gauche, ou ils paraissaient decroches.
+            textAlign: compact ? "center" : undefined,
+          }}
+        >
           <h3
             style={{
               fontFamily: SERIF,
@@ -609,7 +620,18 @@ function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, 
             {full && <span style={{ color: C.success }}>✓ </span>}
             {gift.name[lang]}
           </h3>
-          <span style={{ fontFamily: SERIF, fontSize: compact ? 17 : 18, color: C.gold, flexShrink: 0 }}>{price} €</span>
+          <span
+            style={{
+              fontFamily: SERIF,
+              fontSize: compact ? 17 : 18,
+              color: C.gold,
+              flexShrink: 0,
+              display: compact ? "block" : "inline",
+              marginTop: compact ? 3 : 0,
+            }}
+          >
+            {price} €
+          </span>
         </div>
 
         <div style={{ marginBottom: compact ? 9 : 12 }}>
