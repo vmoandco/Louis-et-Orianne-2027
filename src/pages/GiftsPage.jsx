@@ -316,7 +316,7 @@ function AmountStep({ range, amount, setAmount, onNext, tg, f }) {
 // directement dans la fenetre de participation (mobile, ou tout est deja
 // centre a l'ecran : un popup dans un popup y serait illisible).
 
-function WeroBody({ amount, sending, onConfirm, onClose, tg, f, nameField }) {
+function WeroBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
   return (
     <>
       <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.weroText}</p>
@@ -325,11 +325,15 @@ function WeroBody({ amount, sending, onConfirm, onClose, tg, f, nameField }) {
         <CopyRow value={WERO_TEL} mono big tg={tg} f={f} />
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 9, gap: 12 }}>
+        <span style={{ color: C.muted, flexShrink: 0, fontSize: f(12) }}>{tg.ibanRef}</span>
+        <span style={{ color: C.green, fontSize: f(13), textAlign: "right" }}>{gift.name[lang]}</span>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 18 }}>
         <span style={{ fontSize: f(12), color: C.muted }}>{tg.amountRecap}</span>
         <span style={{ fontFamily: SERIF, fontSize: f(24), color: C.gold }}>{amount} €</span>
       </div>
-      <p style={{ fontSize: f(11), color: C.muted, fontStyle: "italic", marginBottom: 18 }}>{tg.weroNote}</p>
 
       {nameField}
 
@@ -365,12 +369,10 @@ function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
         </div>
       ))}
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14, paddingTop: 12, borderTop: `1px solid ${C.border}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginTop: 14, marginBottom: 18, paddingTop: 12, borderTop: `1px solid ${C.border}` }}>
         <span style={{ fontSize: f(12), color: C.muted }}>{tg.amountRecap}</span>
         <span style={{ fontFamily: SERIF, fontSize: f(24), color: C.gold }}>{amount} €</span>
       </div>
-      <p style={{ fontSize: f(11), color: C.muted, fontStyle: "italic", margin: "8px 0 18px" }}>{tg.ibanNote}</p>
-
       {nameField}
 
       <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
@@ -450,7 +452,6 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
         type="text"
         value={guestName}
         onChange={(e) => setGuestName(e.target.value)}
-        placeholder={tg.guestNamePlaceholder}
         maxLength={60}
         autoComplete="name"
         style={{
@@ -470,7 +471,7 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
   const body = (
     <>
       {payMethod === "wero" && (
-        <WeroBody amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} f={f} nameField={nameField} />
+        <WeroBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} />
       )}
       {payMethod === "iban" && (
         <IbanBody
