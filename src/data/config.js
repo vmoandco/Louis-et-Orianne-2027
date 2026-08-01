@@ -18,9 +18,8 @@ export const IBAN_INFO = {
 // d'un bloc pour être collé tel quel dans l'application.
 export const WERO_TEL = "06 08 12 43 27";
 
-// ⚠️ ENCORE FICTIF — le pseudo Revolut, qui forme le lien revolut.me/<pseudo>.
-// À remplacer par le vrai avant d'annoncer le site.
-export const REVOLUT_TAG = "louissigaud";
+// Pseudo Revolut d'Oriane, qui forme le lien revolut.me/<pseudo>.
+export const REVOLUT_TAG = "orianeyr7p";
 
 // Compte utilisé pour l'espace admin (auth Supabase).
 export const ADMIN_EMAIL = "losigaud@gmail.com";
