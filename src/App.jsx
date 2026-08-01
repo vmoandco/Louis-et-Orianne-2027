@@ -11,6 +11,7 @@ import Header from "./components/Header";
 import MobileBottomNav from "./components/MobileBottomNav";
 import LanguageGate from "./components/LanguageGate";
 import Toast from "./components/Toast";
+import ThankYou from "./components/ThankYou";
 import ChunkErrorBoundary from "./components/ChunkErrorBoundary";
 
 import HomePage from "./pages/HomePage";
@@ -46,6 +47,7 @@ export default function App() {
   const [payMethod, setPayMethod] = useState(null);
 
   const [toast, setToast] = useState(null);
+  const [thanks, setThanks] = useState(false);
 
   const t = TR[lang];
 
@@ -110,7 +112,7 @@ export default function App() {
         const amounts = {};
         for (const row of rows) amounts[row.id] = Number(row.amount);
         setContribs((prev) => ({ ...prev, ...amounts }));
-        showToast(TR[lang].gifts.thanks);
+        setThanks(true);
       })
       .catch((error) => console.error(error));
 
@@ -118,7 +120,6 @@ export default function App() {
       cancelled = true;
     };
     // Au montage seulement : le paramètre disparaît juste après.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Remonter en haut à chaque changement d'onglet, y compris via le bouton retour.
@@ -189,6 +190,7 @@ export default function App() {
             setPayMethod={setPayMethod}
             onDeclared={handleDeclared}
             showToast={showToast}
+            onThanks={() => setThanks(true)}
             t={t}
             lang={lang}
           />
@@ -232,6 +234,7 @@ export default function App() {
 
       {!langChosen && <LanguageGate t={t} onChoose={chooseLang} />}
       {toast && <Toast message={toast} />}
+      {thanks && <ThankYou t={t} onClose={() => setThanks(false)} />}
     </div>
   );
 }

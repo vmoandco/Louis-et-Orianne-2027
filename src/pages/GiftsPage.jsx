@@ -531,7 +531,7 @@ const METHOD_TITLE = { wero: "weroTitle", revolut: "revolutTitle", iban: "ibanTi
 
 /* ─── Etape 2 : le moyen de paiement ──────────────────────────────────── */
 
-function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared, showToast, onDone, t, lang, f, inlineDetails }) {
+function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared, showToast, onThanks, onDone, t, lang, f, inlineDetails }) {
   const tg = t.gifts;
   const [sending, setSending] = useState(false);
   // Servent à recouper les virements reçus avec les participations declarees,
@@ -553,7 +553,7 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
       onDeclared(gift.id, total);
       setPayMethod(null);
       onDone();
-      showToast(tg.thanks);
+      onThanks();
     } catch (error) {
       console.error(error);
       showToast(tg.declareError);
@@ -719,7 +719,7 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
   );
 }
 
-function PaymentFlow({ gift, price, contrib, payMethod, setPayMethod, onDeclared, showToast, onDone, t, lang, f, inlineDetails }) {
+function PaymentFlow({ gift, price, contrib, payMethod, setPayMethod, onDeclared, showToast, onThanks, onDone, t, lang, f, inlineDetails }) {
   const range = giftRange(price, contrib);
   const [amount, setAmount] = useState(range.initial);
   const [step, setStep] = useState("amount");
@@ -740,6 +740,7 @@ function PaymentFlow({ gift, price, contrib, payMethod, setPayMethod, onDeclared
       setPayMethod={setPayMethod}
       onDeclared={onDeclared}
       showToast={showToast}
+      onThanks={onThanks}
       onDone={onDone}
       t={t}
       lang={lang}
@@ -760,7 +761,7 @@ const HONEYMOON_PRESETS = [50, 100, 200, 500];
  * libre —, ce qui court-circuite l'étape du curseur : on ouvre donc la fenêtre
  * sur le choix du moyen de paiement.
  */
-function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, lang, isMobile }) {
+function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, onThanks, t, lang, isMobile }) {
   const tg = t.gifts;
   const f = scaler(isMobile);
   const [amount, setAmount] = useState(null);
@@ -882,6 +883,7 @@ function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, la
             setPayMethod={setPayMethod}
             onDeclared={onDeclared}
             showToast={showToast}
+            onThanks={onThanks}
             onDone={close}
             t={t}
             lang={lang}
@@ -896,7 +898,7 @@ function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, la
 
 /* ─── Carte cadeau et page ────────────────────────────────────────────── */
 
-function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, setPayMethod, onDeclared, showToast, t, lang, isMobile }) {
+function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, setPayMethod, onDeclared, showToast, onThanks, t, lang, isMobile }) {
   const tg = t.gifts;
   const f = scaler(isMobile);
   const pct = Math.min(100, Math.round((contrib / price) * 100));
@@ -915,6 +917,7 @@ function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, 
       setPayMethod={setPayMethod}
       onDeclared={onDeclared}
       showToast={showToast}
+      onThanks={onThanks}
       onDone={onClose}
       t={t}
       lang={lang}
@@ -1045,7 +1048,7 @@ function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, 
   );
 }
 
-export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenGift, payMethod, setPayMethod, onDeclared, showToast, t, lang }) {
+export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenGift, payMethod, setPayMethod, onDeclared, showToast, onThanks, t, lang }) {
   const isMobile = useIsMobile();
   const tg = t.gifts;
   const priceOf = (gift) => prices[gift.id] ?? gift.amount;
@@ -1067,6 +1070,7 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
         setPayMethod={setPayMethod}
         onDeclared={onDeclared}
         showToast={showToast}
+        onThanks={onThanks}
         t={t}
         lang={lang}
         isMobile={isMobile}
@@ -1096,6 +1100,7 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
                   setPayMethod={setPayMethod}
                   onDeclared={onDeclared}
                   showToast={showToast}
+                  onThanks={onThanks}
                   t={t}
                   lang={lang}
                   isMobile={isMobile}
