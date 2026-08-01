@@ -346,7 +346,6 @@ function WeroBody({ amount, sending, onConfirm, onClose, tg, f, nameField }) {
 function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
   const rows = [
     [tg.ibanBene, IBAN_INFO.nom, false],
-    ["BIC / SWIFT", IBAN_INFO.bic, true],
     [tg.ibanRef, gift.name[lang], false],
   ];
 

@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import { declareContribution } from "../lib/api";
 import { GIFTS, HONEYMOON, catName } from "../data/gifts";
 import { ADMIN_EMAIL } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
@@ -84,6 +85,95 @@ function TotalsBar({ totalPrice, totalCollected, ta }) {
         </div>
       </div>
     </div>
+  );
+}
+
+/**
+ * Saisie manuelle d'une participation (cheque, especes, invite qui a oublie
+ * de la declarer…).
+ *
+ * Passe par la meme fonction SQL que les invites plutot que d'inserer
+ * directement : le journal et la jauge du cadeau restent ainsi cohérents,
+ * sans avoir à corriger le montant collecté à la main ensuite.
+ */
+// Bornes imposees par `declare_contribution` : on les reprend ici pour que le
+// formulaire refuse avant l'appel plutot qu'apres une erreur de la base.
+const MIN_DECLARE = 5;
+const MAX_DECLARE = 5000;
+
+function AddDeclaration({ onAdd, ta, lang }) {
+  const [name, setName] = useState("");
+  const [giftId, setGiftId] = useState(HONEYMOON.id);
+  const [amount, setAmount] = useState("");
+  const [method, setMethod] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const submit = async (event) => {
+    event.preventDefault();
+    const value = Math.floor(Number(amount));
+    if (!Number.isFinite(value) || value < MIN_DECLARE || value > MAX_DECLARE) return;
+
+    setSending(true);
+    const ok = await onAdd({ giftId, amount: value, name: name.trim(), method: method.trim() });
+    setSending(false);
+    if (ok) {
+      setName("");
+      setAmount("");
+      setMethod("");
+    }
+  };
+
+  const field = { padding: "9px 10px", border: `1px solid ${C.border}`, borderRadius: 7, fontSize: 14, backgroundColor: C.card, color: C.green };
+
+  return (
+    <form onSubmit={submit} style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "flex-end", marginBottom: 16 }}>
+      <div style={{ flex: "1 1 140px", minWidth: 120 }}>
+        <label htmlFor="add-name" style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 4 }}>{ta.logAddName}</label>
+        <input id="add-name" type="text" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} style={{ ...field, width: "100%", boxSizing: "border-box" }} />
+      </div>
+
+      <div style={{ flex: "2 1 180px", minWidth: 150 }}>
+        <label htmlFor="add-gift" style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 4 }}>{ta.logAddGift}</label>
+        <select id="add-gift" value={giftId} onChange={(e) => setGiftId(e.target.value)} style={{ ...field, width: "100%", boxSizing: "border-box" }}>
+          <option value={HONEYMOON.id}>{HONEYMOON.name[lang]}</option>
+          {GIFTS.map((g) => (
+            <option key={g.id} value={g.id}>
+              {g.name[lang]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div style={{ flex: "0 1 100px", minWidth: 90 }}>
+        <label htmlFor="add-amount" style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 4 }}>{ta.logAddAmount}</label>
+        <input id="add-amount" type="number" min={MIN_DECLARE} max={MAX_DECLARE} step="1" value={amount} onChange={(e) => setAmount(e.target.value)} required style={{ ...field, width: "100%", boxSizing: "border-box" }} />
+      </div>
+
+      <div style={{ flex: "1 1 130px", minWidth: 110 }}>
+        <label htmlFor="add-method" style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 4 }}>{ta.logAddMethod}</label>
+        <input id="add-method" type="text" value={method} onChange={(e) => setMethod(e.target.value)} placeholder={ta.logAddMethodHint} maxLength={20} style={{ ...field, width: "100%", boxSizing: "border-box" }} />
+      </div>
+
+      <button
+        type="submit"
+        disabled={sending}
+        style={{
+          padding: "10px 18px",
+          backgroundColor: C.green,
+          color: C.offWhite,
+          border: "none",
+          borderRadius: 7,
+          cursor: sending ? "not-allowed" : "pointer",
+          opacity: sending ? 0.6 : 1,
+          fontFamily: SANS,
+          fontSize: 11,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+        }}
+      >
+        {ta.logAddSubmit}
+      </button>
+    </form>
   );
 }
 
@@ -228,26 +318,51 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
 
   // Le journal n'est lisible que par un compte connecte : on le charge donc
   // apres l'authentification, pas au montage du composant.
-  useEffect(() => {
-    if (!authed || !supabase) return;
-    let cancelled = false;
-    supabase
+  // Lit le journal sans toucher a l'etat : l'appelant decide quoi en faire,
+  // ce qui evite d'ecrire dans le state depuis un effet.
+  const fetchDeclarations = useCallback(async () => {
+    if (!supabase) return null;
+    const { data, error } = await supabase
       .from("declarations")
       .select("id,gift_id,amount,guest_name,method,created_at")
-      .order("created_at", { ascending: false })
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (error) {
-          // La table peut ne pas exister encore : inutile d'alarmer.
-          console.error("Journal des participations indisponible :", error.message);
-          return;
-        }
-        setDeclarations(data ?? []);
-      });
+      .order("created_at", { ascending: false });
+    if (error) {
+      // La table peut ne pas exister encore : inutile d'alarmer.
+      console.error("Journal des participations indisponible :", error.message);
+      return null;
+    }
+    return data ?? [];
+  }, []);
+
+  // Le journal n'est lisible que par un compte connecte : on le charge donc
+  // apres l'authentification, pas au montage du composant.
+  useEffect(() => {
+    if (!authed) return undefined;
+    let cancelled = false;
+    fetchDeclarations().then((rows) => {
+      if (!cancelled && rows) setDeclarations(rows);
+    });
     return () => {
       cancelled = true;
     };
-  }, [authed]);
+  }, [authed, fetchDeclarations]);
+
+  // Saisie manuelle : meme chemin que les invites, pour que la jauge du cadeau
+  // suive sans intervention supplementaire.
+  const addDeclaration = async ({ giftId, amount, name, method }) => {
+    try {
+      const total = await declareContribution(giftId, amount, name, method);
+      onSaved(giftId, total);
+      const rows = await fetchDeclarations();
+      if (rows) setDeclarations(rows);
+      showToast(ta.logAdded);
+      return true;
+    } catch (error) {
+      console.error(error);
+      showToast(ta.saveError);
+      return false;
+    }
+  };
 
   const deleteDeclaration = async (id) => {
     const { error } = await supabase.from("declarations").delete().eq("id", id);
@@ -334,6 +449,11 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
             totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0) + (contribs[HONEYMOON.id] || 0)}
             ta={ta}
           />
+
+          <div style={{ marginBottom: 40 }}>
+            <h3 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 500, color: C.green, marginBottom: 14 }}>{ta.logAdd}</h3>
+            <AddDeclaration onAdd={addDeclaration} ta={ta} lang={lang} />
+          </div>
 
           <DeclarationLog rows={declarations} onDelete={deleteDeclaration} ta={ta} lang={lang} />
 

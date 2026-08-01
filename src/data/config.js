@@ -2,12 +2,13 @@
 export const DATE_MARIAGE = new Date("2027-06-19T14:00:00");
 
 // ⚠️ COORDONNÉES FICTIVES — à remplacer par les vraies avant d'annoncer le site.
+// L'IBAN seul suffit : depuis le reglement SEPA de 2016, le BIC n'est plus
+// exige pour un virement en euros dans la zone SEPA.
 // Le format est valide (l'IBAN est l'exemple de documentation de la Banque de
 // France) pour que l'affichage soit réaliste, mais aucun de ces comptes
 // n'existe : un virement envoyé ici n'arrivera nulle part.
 export const IBAN_INFO = {
   iban: "FR76 3000 6000 0112 3456 7890 189",
-  bic: "AGRIFRPP889",
   nom: "Louis SIGAUD",
 };
 
