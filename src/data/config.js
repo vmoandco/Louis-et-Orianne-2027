@@ -14,6 +14,9 @@ export const IBAN_INFO = {
 
 export const WERO_TEL = "+33 6 12 34 56 78";
 
+// ⚠️ FICTIF également — le pseudo Revolut, qui forme le lien revolut.me/<pseudo>.
+export const REVOLUT_TAG = "louissigaud";
+
 // Compte utilisé pour l'espace admin (auth Supabase).
 export const ADMIN_EMAIL = "losigaud@gmail.com";
 

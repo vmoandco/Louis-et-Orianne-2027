@@ -3,7 +3,7 @@ import { C, SERIF, SANS } from "../lib/theme";
 import { useIsMobile } from "../lib/useIsMobile";
 import { declareContribution } from "../lib/api";
 import { GIFTS, HONEYMOON, giftCategories, catName } from "../data/gifts";
-import { IBAN_INFO, WERO_TEL } from "../data/config";
+import { IBAN_INFO, WERO_TEL, REVOLUT_TAG } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
 
 // Bornes de la jauge : elle part de 0 et avance de 5 en 5.
@@ -129,6 +129,36 @@ function CardBadges({ f }) {
         </span>
       ))}
     </div>
+  );
+}
+
+/**
+ * Repere Revolut : un « R » dessine en CSS.
+ *
+ * On evite volontairement de reproduire le logo officiel de la marque, qui est
+ * protege ; cette lettre suffit a identifier l'option a cote des emojis des
+ * autres moyens.
+ */
+function RevolutMark({ f }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: f(22),
+        height: f(22),
+        borderRadius: "50%",
+        backgroundColor: C.green,
+        color: C.offWhite,
+        fontFamily: SERIF,
+        fontSize: f(14),
+        fontWeight: 600,
+        lineHeight: 1,
+      }}
+    >
+      R
+    </span>
   );
 }
 
@@ -347,6 +377,58 @@ function WeroBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
   );
 }
 
+function RevolutBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
+  const link = `https://revolut.me/${REVOLUT_TAG}`;
+
+  return (
+    <>
+      <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.revolutText}</p>
+
+      <div style={{ backgroundColor: C.cream, borderRadius: 12, padding: "20px 16px", marginBottom: 12 }}>
+        <CopyRow value={`@${REVOLUT_TAG}`} mono big tg={tg} f={f} />
+      </div>
+
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "block",
+          textAlign: "center",
+          fontSize: f(12),
+          color: C.gold,
+          textDecoration: "none",
+          borderBottom: `1px solid ${C.gold}`,
+          width: "fit-content",
+          margin: "0 auto 16px",
+          paddingBottom: 1,
+        }}
+      >
+        {tg.revolutOpen} ↗
+      </a>
+
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 9, gap: 12 }}>
+        <span style={{ color: C.muted, flexShrink: 0, fontSize: f(12) }}>{tg.ibanRef}</span>
+        <span style={{ color: C.green, fontSize: f(13), textAlign: "right" }}>{gift.name[lang]}</span>
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 18 }}>
+        <span style={{ fontSize: f(12), color: C.muted }}>{tg.amountRecap}</span>
+        <span style={{ fontFamily: SERIF, fontSize: f(24), color: C.gold }}>{amount} €</span>
+      </div>
+
+      {nameField}
+
+      <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
+        {sending ? tg.sending : tg.doneRevolut}
+      </button>
+      <button onClick={onClose} style={cancelBtn(f)}>
+        {tg.cancel}
+      </button>
+    </>
+  );
+}
+
 function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
   const rows = [
     [tg.ibanBene, IBAN_INFO.nom, false],
@@ -414,7 +496,7 @@ function CardBody({ gift, amount, onClose, tg, f }) {
   );
 }
 
-const METHOD_TITLE = { wero: "weroTitle", iban: "ibanTitle", card: "cardTitle" };
+const METHOD_TITLE = { wero: "weroTitle", revolut: "revolutTitle", iban: "ibanTitle", card: "cardTitle" };
 
 /* ─── Etape 2 : le moyen de paiement ──────────────────────────────────── */
 
@@ -497,6 +579,9 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
       {payMethod === "wero" && (
         <WeroBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} />
       )}
+      {payMethod === "revolut" && (
+        <RevolutBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} />
+      )}
       {payMethod === "iban" && (
         <IbanBody
           gift={gift}
@@ -560,6 +645,7 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
       <p style={{ ...detailTitle(f), color: C.success, marginBottom: 9 }}>{tg.groupFree}</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
         <MethodBtn icon="📱" label={tg.weroLabel} sub={tg.weroSub} onClick={() => setPayMethod("wero")} f={f} />
+        <MethodBtn icon={<RevolutMark f={f} />} label={tg.revolutLabel} sub={tg.revolutSub} onClick={() => setPayMethod("revolut")} f={f} />
         <MethodBtn icon="🏦" label={tg.ibanLabel} sub={tg.ibanSub} onClick={() => setPayMethod("iban")} f={f} />
       </div>
 
