@@ -136,12 +136,18 @@ function CardBadges({ f }) {
   );
 }
 
-/** Valeur mise en avant, avec copie en un clic. */
+/**
+ * Valeur mise en avant, avec copie en un clic.
+ *
+ * L'affichage est espacé pour rester lisible, mais c'est la version compacte
+ * qui part dans le presse-papier : les applications bancaires et Wero
+ * n'acceptent pas toujours les espaces dans un IBAN ou un numéro.
+ */
 function CopyRow({ value, mono, big, tg, f }) {
   const [done, setDone] = useState(false);
 
   const copy = () => {
-    navigator.clipboard?.writeText(value).then(
+    navigator.clipboard?.writeText(value.replace(/\s+/g, "")).then(
       () => {
         setDone(true);
         setTimeout(() => setDone(false), 1800);

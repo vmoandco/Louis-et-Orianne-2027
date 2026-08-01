@@ -1,20 +1,25 @@
 // ─── Réglages du mariage ──────────────────────────────────────────────
 export const DATE_MARIAGE = new Date("2027-06-19T14:00:00");
 
-// ⚠️ COORDONNÉES FICTIVES — à remplacer par les vraies avant d'annoncer le site.
-// L'IBAN seul suffit : depuis le reglement SEPA de 2016, le BIC n'est plus
-// exige pour un virement en euros dans la zone SEPA.
-// Le format est valide (l'IBAN est l'exemple de documentation de la Banque de
-// France) pour que l'affichage soit réaliste, mais aucun de ces comptes
-// n'existe : un virement envoyé ici n'arrivera nulle part.
+// Coordonnées réelles du bénéficiaire.
+//
+// `nom` doit reprendre exactement l'orthographe tenue par la banque : depuis
+// octobre 2025, les banques européennes vérifient que le nom correspond à
+// l'IBAN et avertissent le payeur en cas d'écart.
+//
+// L'IBAN seul suffit : depuis le règlement SEPA de 2016, le BIC n'est plus
+// exigé pour un virement en euros dans la zone SEPA.
 export const IBAN_INFO = {
-  iban: "FR76 3000 6000 0112 3456 7890 189",
-  nom: "Louis SIGAUD",
+  iban: "FR09 3000 2084 3300 0019 8865 J63",
+  nom: "SIGAUD LOUIS",
 };
 
-export const WERO_TEL = "+33 6 12 34 56 78";
+// Numéro rattaché au compte Wero. Affiché espacé pour être lisible, copié
+// d'un bloc pour être collé tel quel dans l'application.
+export const WERO_TEL = "06 08 12 43 27";
 
-// ⚠️ FICTIF également — le pseudo Revolut, qui forme le lien revolut.me/<pseudo>.
+// ⚠️ ENCORE FICTIF — le pseudo Revolut, qui forme le lien revolut.me/<pseudo>.
+// À remplacer par le vrai avant d'annoncer le site.
 export const REVOLUT_TAG = "louissigaud";
 
 // Compte utilisé pour l'espace admin (auth Supabase).
