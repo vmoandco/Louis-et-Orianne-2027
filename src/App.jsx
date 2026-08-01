@@ -89,6 +89,36 @@ export default function App() {
     [goTo]
   );
 
+  // Retour d'une page de paiement Stripe réussie : on remercie, puis on nettoie
+  // l'URL pour que le message ne réapparaisse pas à chaque rechargement.
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has("paid")) return undefined;
+
+    // Nettoie l'URL tout de suite : le message ne doit pas réapparaître à
+    // chaque rechargement. Ce n'est pas de l'état React.
+    window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+
+    let cancelled = false;
+    // Le paiement vient d'être encaissé : on relit les jauges, puis on
+    // remercie. Le webhook Stripe peut n'avoir pas encore été traité, auquel
+    // cas la jauge se mettra à jour au prochain passage.
+    fetchContributions()
+      .then((rows) => {
+        if (cancelled) return;
+        const amounts = {};
+        for (const row of rows) amounts[row.id] = Number(row.amount);
+        setContribs((prev) => ({ ...prev, ...amounts }));
+        showToast(TR[lang].gifts.thanks);
+      })
+      .catch((error) => console.error(error));
+
+    return () => {
+      cancelled = true;
+    };
+    // Au montage seulement : le paramètre disparaît juste après.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Remonter en haut à chaque changement d'onglet, y compris via le bouton retour.
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });

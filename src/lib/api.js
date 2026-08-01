@@ -27,6 +27,36 @@ const select = (columns) =>
  * `supabase/declare-contribution.sql`) : la table reste fermée en écriture aux
  * visiteurs, seul cet ajout borné leur est ouvert.
  */
+/**
+ * Demande au serveur une page de paiement Stripe et renvoie son adresse.
+ *
+ * Le montant est revalidé côté serveur : ce que le navigateur envoie ici n'est
+ * qu'une intention. La participation, elle, n'est enregistrée qu'une fois le
+ * paiement confirmé par Stripe, via le webhook.
+ */
+export async function createCheckoutSession({ giftId, giftName, amount, guestName, message }) {
+  const response = await fetch("/api/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      giftId,
+      giftName,
+      amount,
+      guestName: guestName || "",
+      message: message || "",
+      origin: window.location.href,
+    }),
+  });
+
+  if (!response.ok) {
+    const detail = await response.json().catch(() => ({}));
+    throw new Error(detail.error || `HTTP ${response.status}`);
+  }
+  const { url } = await response.json();
+  if (!url) throw new Error("missing_url");
+  return url;
+}
+
 const callDeclare = (body) =>
   fetch(`${SUPABASE_URL}/rest/v1/rpc/declare_contribution`, {
     method: "POST",

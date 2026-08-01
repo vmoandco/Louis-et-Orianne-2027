@@ -18,4 +18,10 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // `api/` et `scripts/` tournent sur Node, pas dans le navigateur : ils ont
+    // donc accès à `process`, `Buffer` et consorts.
+    files: ['api/**/*.js', 'scripts/**/*.mjs'],
+    languageOptions: { globals: globals.node },
+  },
 ])

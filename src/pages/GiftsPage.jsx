@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
 import { useIsMobile } from "../lib/useIsMobile";
-import { declareContribution } from "../lib/api";
+import { declareContribution, createCheckoutSession } from "../lib/api";
 import { GIFTS, HONEYMOON, giftCategories, catName } from "../data/gifts";
 import { IBAN_INFO, WERO_TEL, REVOLUT_TAG } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
@@ -467,28 +467,70 @@ function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
   );
 }
 
-function CardBody({ gift, amount, onClose, tg, f }) {
+/**
+ * Paiement par carte.
+ *
+ * Aucune participation n'est enregistrée ici : c'est le webhook Stripe qui
+ * fait foi, une fois l'argent réellement encaissé. Le navigateur se contente
+ * de demander une page de paiement puis d'y envoyer l'invité.
+ */
+function CardBody({ gift, amount, onClose, tg, lang, f, nameField, guestName, message }) {
+  const [sending, setSending] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  const pay = async () => {
+    setSending(true);
+    setFailed(false);
+    try {
+      const url = await createCheckoutSession({
+        giftId: gift.id,
+        giftName: gift.name[lang],
+        amount,
+        guestName,
+        message,
+      });
+      window.location.href = url;
+    } catch (error) {
+      // Clefs Stripe absentes ou service indisponible : on le dit plutôt que
+      // de laisser l'invité devant un bouton qui ne répond pas.
+      console.error(error);
+      setFailed(true);
+      setSending(false);
+    }
+  };
+
+  if (failed) {
+    return (
+      <>
+        <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.75, marginBottom: 20, textAlign: "center" }}>{tg.cardSoon}</p>
+        <button onClick={onClose} style={cancelBtn(f)}>
+          {tg.cancel}
+        </button>
+      </>
+    );
+  }
+
   return (
     <>
-      {gift.stripe ? (
-        <>
-          <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.cardText}</p>
-          <div style={{ display: "flex", justifyContent: "center", marginBottom: 20 }}>
-            <CardBadges f={f} />
-          </div>
-          <button
-            onClick={() => {
-              window.open(gift.stripe, "_blank", "noopener,noreferrer");
-              onClose();
-            }}
-            style={{ ...greenBtn(f), backgroundColor: C.green }}
-          >
-            {tg.cardGo.replace("{n}", amount)}
-          </button>
-        </>
-      ) : (
-        <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.75, marginBottom: 20, textAlign: "center" }}>{tg.cardSoon}</p>
-      )}
+      <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.7, marginBottom: 14, textAlign: "center" }}>{tg.cardText}</p>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}>
+        <CardBadges f={f} />
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 9, gap: 12 }}>
+        <span style={{ color: C.muted, flexShrink: 0, fontSize: f(12) }}>{tg.ibanRef}</span>
+        <span style={{ color: C.green, fontSize: f(13), textAlign: "right" }}>{gift.name[lang]}</span>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 18 }}>
+        <span style={{ fontSize: f(12), color: C.muted }}>{tg.amountRecap}</span>
+        <span style={{ fontFamily: SERIF, fontSize: f(24), color: C.gold }}>{amount} €</span>
+      </div>
+
+      {nameField}
+
+      <button onClick={pay} disabled={sending} style={{ ...greenBtn(f), backgroundColor: C.green, opacity: sending ? 0.6 : 1 }}>
+        {sending ? tg.sending : tg.cardGo.replace("{n}", amount)}
+      </button>
       <button onClick={onClose} style={cancelBtn(f)}>
         {tg.cancel}
       </button>
@@ -595,7 +637,10 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
           nameField={nameField}
         />
       )}
-      {payMethod === "card" && <CardBody gift={gift} amount={amount} onClose={close} tg={tg} f={f} />}
+      {payMethod === "card" && (
+        <CardBody gift={gift} amount={amount} onClose={close} tg={tg} lang={lang} f={f}
+          nameField={nameField} guestName={guestName} message={message} />
+      )}
     </>
   );
 
