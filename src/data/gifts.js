@@ -15,6 +15,8 @@ export const GIFTS = [
   { id: "c11", img: "/gifts/c11.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Machine à pâtes", en: "Pasta maker" }, amount: 50 },
   { id: "c12", img: "/gifts/c12.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Coravin", en: "Coravin" }, amount: 300 },
   { id: "c13", img: "/gifts/c13.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Cocotte en fonte", en: "Cast iron dutch oven" }, amount: 400 },
+  { id: "c14", img: "/gifts/c14.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Four", en: "Oven" }, amount: 800 },
+  { id: "c15", img: "/gifts/c15.webp", cat: { fr: "Cuisine", icon: "🍳" }, catEn: "Kitchen", name: { fr: "Saladier en Céramique", en: "Ceramic salad bowl" }, amount: 100 },
 
   { id: "m1",  img: "/gifts/m1.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Draps", en: "Bed sheets" }, amount: 150 },
   { id: "m2",  img: "/gifts/m2.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Serviettes", en: "Towels" }, amount: 100 },
@@ -24,6 +26,7 @@ export const GIFTS = [
   { id: "m5",  img: "/gifts/m5.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Table de salle à manger", en: "Dining table" }, amount: 500 },
   { id: "m6",  img: "/gifts/m6.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Perceuse / visseuse", en: "Drill / screwdriver" }, amount: 80 },
   { id: "m7",  img: "/gifts/m7.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Kit d'outils", en: "Tool kit" }, amount: 50 },
+  { id: "m9",  img: "/gifts/m9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Duo de Coussins", en: "Cushion duo" }, amount: 120 },
 
   { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Chaussures de ski pour Louis", en: "Ski boots for Louis" }, amount: 300 },
   { id: "sp2", img: "/gifts/sp2.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Chaussures de ski pour Oriane", en: "Ski boots for Oriane" }, amount: 250 },
@@ -45,11 +48,11 @@ export const GIFTS = [
   { id: "no5", img: "/gifts/no5.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Verres", en: "Glasses" }, amount: 90 },
 
   { id: "in1", img: "/gifts/in1.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Maillot de l'OM pour Oriane", en: "OM football shirt for Oriane" }, amount: 50 },
-  { id: "in2", img: "/gifts/in2.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Abonnement Peuple Bleu & Blanc 2027/2028", en: "Peuple Bleu & Blanc season ticket 2027/2028" }, amount: 60 },
   { id: "in3", img: "/gifts/in3.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - La Famiglia", en: "Board Game - La Famiglia" }, amount: 80 },
   { id: "in4", img: "/gifts/in4.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Jeu de Société - Trône de Fer extension", en: "Board Game - Game of Thrones expansion" }, amount: 50 },
   { id: "in5", img: "/gifts/in5.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Magnum année de mariage", en: "Magnum wedding vintage" }, amount: 80 },
   { id: "in6", img: "/gifts/in6.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Caisse de vin année de mariage", en: "Wedding vintage wine case" }, amount: 240 },
+  { id: "in7", img: "/gifts/in7.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "1 an de cinéma pour 2", en: "1 year of cinema for 2" }, amount: 400 },
 ];
 
 /**
