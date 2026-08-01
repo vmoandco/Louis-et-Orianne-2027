@@ -78,7 +78,7 @@ const cancelBtn = (f) => ({
 
 /* ─── Briques d'interface ─────────────────────────────────────────────── */
 
-function MethodBtn({ icon, label, sub, onClick, f, children }) {
+function MethodBtn({ icon, iconSrc, label, sub, onClick, f, children }) {
   return (
     <button
       onClick={onClick}
@@ -96,10 +96,14 @@ function MethodBtn({ icon, label, sub, onClick, f, children }) {
         transition: "all 0.15s",
       }}
     >
-      <span style={{ fontSize: f(20) }}>{icon}</span>
+      {iconSrc ? (
+        <img src={iconSrc} alt="" style={{ width: f(26), height: f(26), borderRadius: 6, objectFit: "cover", flexShrink: 0 }} />
+      ) : (
+        <span style={{ fontSize: f(20) }}>{icon}</span>
+      )}
       <div style={{ flex: 1 }}>
         <div style={{ fontFamily: SANS, fontSize: f(13), color: C.green }}>{label}</div>
-        <div style={{ fontSize: f(11), color: C.muted, marginTop: 2 }}>{sub}</div>
+        {sub && <div style={{ fontSize: f(11), color: C.muted, marginTop: 2 }}>{sub}</div>}
         {children}
       </div>
       <span style={{ fontSize: f(13), color: C.light }}>›</span>
@@ -129,36 +133,6 @@ function CardBadges({ f }) {
         </span>
       ))}
     </div>
-  );
-}
-
-/**
- * Repere Revolut : un « R » dessine en CSS.
- *
- * On evite volontairement de reproduire le logo officiel de la marque, qui est
- * protege ; cette lettre suffit a identifier l'option a cote des emojis des
- * autres moyens.
- */
-function RevolutMark({ f }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: f(22),
-        height: f(22),
-        borderRadius: "50%",
-        backgroundColor: C.green,
-        color: C.offWhite,
-        fontFamily: SERIF,
-        fontSize: f(14),
-        fontWeight: 600,
-        lineHeight: 1,
-      }}
-    >
-      R
-    </span>
   );
 }
 
@@ -687,11 +661,11 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
 
       <p style={{ fontSize: f(13), color: C.muted, marginBottom: 18, lineHeight: 1.65 }}>{tg.payIntro}</p>
 
-      <p style={{ ...detailTitle(f), color: C.success, marginBottom: 9 }}>{tg.groupFree}</p>
+      <p style={{ ...detailTitle(f), fontSize: f(13), color: C.success, marginBottom: 9 }}>{tg.groupFree}</p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 22 }}>
-        <MethodBtn icon="📱" label={tg.weroLabel} sub={tg.weroSub} onClick={() => setPayMethod("wero")} f={f} />
-        <MethodBtn icon={<RevolutMark f={f} />} label={tg.revolutLabel} sub={tg.revolutSub} onClick={() => setPayMethod("revolut")} f={f} />
-        <MethodBtn icon="🏦" label={tg.ibanLabel} sub={tg.ibanSub} onClick={() => setPayMethod("iban")} f={f} />
+        <MethodBtn iconSrc="/payments/wero.webp" label={tg.weroLabel} onClick={() => setPayMethod("wero")} f={f} />
+        <MethodBtn iconSrc="/payments/revolut.webp" label={tg.revolutLabel} onClick={() => setPayMethod("revolut")} f={f} />
+        <MethodBtn icon="🏦" label={tg.ibanLabel} onClick={() => setPayMethod("iban")} f={f} />
       </div>
 
       <p style={{ ...detailTitle(f), marginBottom: 9 }}>{tg.groupCard}</p>
