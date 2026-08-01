@@ -27,16 +27,32 @@ const select = (columns) =>
  * `supabase/declare-contribution.sql`) : la table reste fermée en écriture aux
  * visiteurs, seul cet ajout borné leur est ouvert.
  */
-export async function declareContribution(giftId, amount) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/declare_contribution`, {
+const callDeclare = (body) =>
+  fetch(`${SUPABASE_URL}/rest/v1/rpc/declare_contribution`, {
     method: "POST",
     headers: {
       apikey: SUPABASE_KEY,
       Authorization: `Bearer ${SUPABASE_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ gift_id: giftId, delta: amount }),
+    body: JSON.stringify(body),
   });
+
+export async function declareContribution(giftId, amount, guestName, method) {
+  let response = await callDeclare({
+    gift_id: giftId,
+    delta: amount,
+    guest_name: guestName || null,
+    method: method || null,
+  });
+
+  // Le prénom et le moyen de paiement sont arrivés après la mise en ligne :
+  // tant que `supabase/declarations.sql` n'a pas été joué, la fonction n'accepte
+  // que deux arguments et PostgREST répond 404. On réessaie sans le détail
+  // plutôt que de perdre la participation de l'invité.
+  if (response.status === 404) {
+    response = await callDeclare({ gift_id: giftId, delta: amount });
+  }
 
   if (!response.ok) {
     throw new Error(`Déclaration de participation échouée (HTTP ${response.status})`);

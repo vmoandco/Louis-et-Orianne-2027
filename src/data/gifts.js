@@ -51,6 +51,20 @@ export const GIFTS = [
   { id: "in6", img: "/gifts/in6.webp", cat: { fr: "Insolite", icon: "✨" }, catEn: "Something Fun", name: { fr: "Caisse de vin année de mariage", en: "Wedding vintage wine case" }, amount: 240, stripe: "" },
 ];
 
+/**
+ * Cadeau mis en avant en tête de liste, hors catégorie.
+ *
+ * Volontairement sans `amount` : il n'a pas de prix cible, donc pas de jauge
+ * ni de plafond. Les participations s'additionnent librement — la fonction
+ * `declare_contribution` ne plafonne que lorsqu'un prix est enregistré.
+ */
+export const HONEYMOON = {
+  id: "voyage",
+  img: "/gifts/voyage.webp",
+  name: { fr: "Voyage de noces", en: "Honeymoon" },
+  stripe: "",
+};
+
 /** Nom de catégorie d'un cadeau dans la langue courante. */
 export const catName = (gift, lang) => (lang === "fr" ? gift.cat.fr : gift.catEn);
 

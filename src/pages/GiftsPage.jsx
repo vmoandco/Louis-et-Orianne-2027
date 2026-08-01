@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
 import { useIsMobile } from "../lib/useIsMobile";
 import { declareContribution } from "../lib/api";
-import { GIFTS, giftCategories, catName } from "../data/gifts";
+import { GIFTS, HONEYMOON, giftCategories, catName } from "../data/gifts";
 import { IBAN_INFO, WERO_TEL } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
 
@@ -316,7 +316,7 @@ function AmountStep({ range, amount, setAmount, onNext, tg, f }) {
 // directement dans la fenetre de participation (mobile, ou tout est deja
 // centre a l'ecran : un popup dans un popup y serait illisible).
 
-function WeroBody({ amount, sending, onConfirm, onClose, tg, f }) {
+function WeroBody({ amount, sending, onConfirm, onClose, tg, f, nameField }) {
   return (
     <>
       <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.weroText}</p>
@@ -329,7 +329,9 @@ function WeroBody({ amount, sending, onConfirm, onClose, tg, f }) {
         <span style={{ fontSize: f(12), color: C.muted }}>{tg.amountRecap}</span>
         <span style={{ fontFamily: SERIF, fontSize: f(24), color: C.gold }}>{amount} €</span>
       </div>
-      <p style={{ fontSize: f(11), color: C.muted, fontStyle: "italic", marginBottom: 22 }}>{tg.weroNote}</p>
+      <p style={{ fontSize: f(11), color: C.muted, fontStyle: "italic", marginBottom: 18 }}>{tg.weroNote}</p>
+
+      {nameField}
 
       <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
         {sending ? tg.sending : tg.doneWero}
@@ -341,7 +343,7 @@ function WeroBody({ amount, sending, onConfirm, onClose, tg, f }) {
   );
 }
 
-function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f }) {
+function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
   const rows = [
     [tg.ibanBene, IBAN_INFO.nom, false],
     ["BIC / SWIFT", IBAN_INFO.bic, true],
@@ -368,7 +370,9 @@ function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f }) {
         <span style={{ fontSize: f(12), color: C.muted }}>{tg.amountRecap}</span>
         <span style={{ fontFamily: SERIF, fontSize: f(24), color: C.gold }}>{amount} €</span>
       </div>
-      <p style={{ fontSize: f(11), color: C.muted, fontStyle: "italic", margin: "8px 0 22px" }}>{tg.ibanNote}</p>
+      <p style={{ fontSize: f(11), color: C.muted, fontStyle: "italic", margin: "8px 0 18px" }}>{tg.ibanNote}</p>
+
+      {nameField}
 
       <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
         {sending ? tg.sending : tg.doneIban}
@@ -416,11 +420,13 @@ const METHOD_TITLE = { wero: "weroTitle", iban: "ibanTitle", card: "cardTitle" }
 function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared, showToast, onDone, t, lang, f, inlineDetails }) {
   const tg = t.gifts;
   const [sending, setSending] = useState(false);
+  // Sert à recouper les virements reçus avec les participations declarees.
+  const [guestName, setGuestName] = useState("");
 
   const confirm = async () => {
     setSending(true);
     try {
-      const total = await declareContribution(gift.id, amount);
+      const total = await declareContribution(gift.id, amount, guestName, payMethod);
       onDeclared(gift.id, total);
       setPayMethod(null);
       onDone();
@@ -435,11 +441,50 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
 
   const close = () => setPayMethod(null);
 
+  const nameField = (
+    <div style={{ marginBottom: 16 }}>
+      <label htmlFor={`guest-${gift.id}`} style={{ display: "block", fontSize: f(11), color: C.muted, marginBottom: 6 }}>
+        {tg.guestName}
+      </label>
+      <input
+        id={`guest-${gift.id}`}
+        type="text"
+        value={guestName}
+        onChange={(e) => setGuestName(e.target.value)}
+        placeholder={tg.guestNamePlaceholder}
+        maxLength={60}
+        autoComplete="name"
+        style={{
+          width: "100%",
+          padding: "11px 13px",
+          border: `1px solid ${C.border}`,
+          borderRadius: 8,
+          fontSize: f(13),
+          backgroundColor: C.card,
+          color: C.green,
+          boxSizing: "border-box",
+        }}
+      />
+    </div>
+  );
+
   const body = (
     <>
-      {payMethod === "wero" && <WeroBody amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} f={f} />}
+      {payMethod === "wero" && (
+        <WeroBody amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} f={f} nameField={nameField} />
+      )}
       {payMethod === "iban" && (
-        <IbanBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} />
+        <IbanBody
+          gift={gift}
+          amount={amount}
+          sending={sending}
+          onConfirm={confirm}
+          onClose={close}
+          tg={tg}
+          lang={lang}
+          f={f}
+          nameField={nameField}
+        />
       )}
       {payMethod === "card" && <CardBody gift={gift} amount={amount} onClose={close} tg={tg} f={f} />}
     </>
@@ -536,6 +581,142 @@ function PaymentFlow({ gift, price, contrib, payMethod, setPayMethod, onDeclared
       f={f}
       inlineDetails={inlineDetails}
     />
+  );
+}
+
+/* ─── Bandeau du voyage de noces ──────────────────────────────────────── */
+
+const HONEYMOON_PRESETS = [50, 100, 200, 500];
+
+/**
+ * Cadeau en tête de liste, sans catégorie ni jauge.
+ *
+ * Le montant est choisi directement sur le bandeau — par palier ou en saisie
+ * libre —, ce qui court-circuite l'étape du curseur : on ouvre donc la fenêtre
+ * sur le choix du moyen de paiement.
+ */
+function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, lang, isMobile }) {
+  const tg = t.gifts;
+  const f = scaler(isMobile);
+  const [amount, setAmount] = useState(null);
+  const [custom, setCustom] = useState("");
+
+  const close = () => {
+    setAmount(null);
+    setPayMethod(null);
+  };
+
+  const submitCustom = (event) => {
+    event.preventDefault();
+    const value = Math.floor(Number(custom));
+    if (Number.isFinite(value) && value >= MIN_DECLARE) {
+      setPayMethod(null);
+      setAmount(value);
+    }
+  };
+
+  const chip = (active) => ({
+    padding: isMobile ? "9px 12px" : "10px 18px",
+    backgroundColor: active ? C.gold : "rgba(250,248,243,0.12)",
+    color: C.offWhite,
+    border: `1px solid ${active ? C.gold : "rgba(250,248,243,0.45)"}`,
+    borderRadius: 8,
+    cursor: "pointer",
+    fontFamily: SANS,
+    fontSize: f(13),
+    letterSpacing: "0.06em",
+    whiteSpace: "nowrap",
+    transition: "all 0.15s",
+  });
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        borderRadius: 14,
+        overflow: "hidden",
+        marginBottom: 48,
+        backgroundImage: `url(${HONEYMOON.img})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Voile vert : le texte reste lisible quelle que soit la zone de la photo. */}
+      <div
+        style={{
+          backgroundColor: "rgba(28,51,32,0.62)",
+          padding: isMobile ? "26px 18px" : "34px 32px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 16,
+        }}
+      >
+        <span
+          style={{
+            fontFamily: SERIF,
+            fontSize: f(isMobile ? 24 : 30),
+            fontWeight: 400,
+            color: C.offWhite,
+            letterSpacing: "0.08em",
+            textAlign: "center",
+          }}
+        >
+          {tg.honeymoon}
+        </span>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", alignItems: "center" }}>
+          {HONEYMOON_PRESETS.map((value) => (
+            <button key={value} onClick={() => { setPayMethod(null); setAmount(value); }} style={chip(false)}>
+              {value} €
+            </button>
+          ))}
+
+          <form onSubmit={submitCustom} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <input
+              type="number"
+              min={MIN_DECLARE}
+              step="1"
+              value={custom}
+              onChange={(e) => setCustom(e.target.value)}
+              placeholder={tg.honeymoonFree}
+              aria-label={tg.honeymoonFree}
+              style={{
+                width: isMobile ? 78 : 92,
+                padding: isMobile ? "9px 10px" : "10px 12px",
+                borderRadius: 8,
+                border: "1px solid rgba(250,248,243,0.45)",
+                backgroundColor: "rgba(250,248,243,0.12)",
+                color: C.offWhite,
+                fontSize: f(13),
+              }}
+            />
+            <button type="submit" style={{ ...chip(true), padding: isMobile ? "9px 12px" : "10px 16px" }}>
+              {tg.honeymoonGo}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {amount !== null && (
+        <Modal title={tg.honeymoon} onClose={close} f={f}>
+          <MethodStep
+            gift={HONEYMOON}
+            amount={amount}
+            onBack={close}
+            payMethod={payMethod}
+            setPayMethod={setPayMethod}
+            onDeclared={onDeclared}
+            showToast={showToast}
+            onDone={close}
+            t={t}
+            lang={lang}
+            f={f}
+            inlineDetails
+          />
+        </Modal>
+      )}
+    </div>
   );
 }
 
@@ -706,6 +887,16 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
   return (
     <div style={{ padding: isMobile ? "8px 0" : "40px 0" }}>
       <SectionTitle title={tg.title} subtitle={tg.subtitle} />
+
+      <HoneymoonBanner
+        payMethod={payMethod}
+        setPayMethod={setPayMethod}
+        onDeclared={onDeclared}
+        showToast={showToast}
+        t={t}
+        lang={lang}
+        isMobile={isMobile}
+      />
 
       {giftCategories(lang).map((cat) => {
         const gifts = GIFTS.filter((g) => catName(g, lang) === cat.name);

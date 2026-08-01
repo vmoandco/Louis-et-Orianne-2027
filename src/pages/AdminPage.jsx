@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { C, SERIF, SANS } from "../lib/theme";
 import { supabase, isSupabaseConfigured } from "../lib/supabase";
-import { GIFTS, catName } from "../data/gifts";
+import { GIFTS, HONEYMOON, catName } from "../data/gifts";
 import { ADMIN_EMAIL } from "../data/config";
 import SectionTitle from "../components/SectionTitle";
 
@@ -87,6 +87,70 @@ function TotalsBar({ totalPrice, totalCollected, ta }) {
   );
 }
 
+/** Journal des participations declarees par les invites, la plus recente en tete. */
+function DeclarationLog({ rows, onDelete, ta, lang }) {
+  const nameOf = (giftId) => {
+    if (giftId === HONEYMOON.id) return HONEYMOON.name[lang];
+    const gift = GIFTS.find((g) => g.id === giftId);
+    return gift ? gift.name[lang] : giftId;
+  };
+
+  return (
+    <div style={{ marginBottom: 40 }}>
+      <h3 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 500, color: C.green, marginBottom: 14 }}>
+        {ta.log} {rows.length > 0 && <span style={{ fontSize: 14, color: C.muted }}>({rows.length})</span>}
+      </h3>
+
+      {rows.length === 0 ? (
+        <p style={{ fontSize: 14, color: C.muted, fontStyle: "italic" }}>{ta.logEmpty}</p>
+      ) : (
+        <div style={{ border: `1px solid ${C.border}`, borderRadius: 12, overflow: "hidden" }}>
+          {rows.map((row, i) => (
+            <div
+              key={row.id}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 12,
+                padding: "12px 14px",
+                borderTop: i === 0 ? "none" : `1px solid ${C.border}`,
+                backgroundColor: i % 2 ? C.offWhite : C.card,
+              }}
+            >
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, color: C.green, fontWeight: 500 }}>
+                  {row.guest_name || <span style={{ color: C.light, fontStyle: "italic" }}>{ta.logAnon}</span>}
+                </div>
+                <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>
+                  {nameOf(row.gift_id)}
+                  {row.method && ` · ${row.method}`}
+                  {" · "}
+                  {new Date(row.created_at).toLocaleString(lang === "fr" ? "fr-FR" : "en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "2-digit",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </div>
+              </div>
+              <span style={{ fontFamily: SERIF, fontSize: 18, color: C.gold, flexShrink: 0 }}>{Math.round(row.amount)} €</span>
+              <button
+                onClick={() => onDelete(row.id)}
+                aria-label={ta.logDelete}
+                title={ta.logDelete}
+                style={{ background: "none", border: "none", cursor: "pointer", color: C.light, fontSize: 16, padding: "2px 4px", flexShrink: 0 }}
+              >
+                ×
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function GiftRow({ gift, price, current, editVal, editPrice, setEditVals, setEditPrices, onSave, onSavePrice, ta, lang }) {
   const pct = Math.min(100, Math.round((current / price) * 100));
 
@@ -144,6 +208,7 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
   const [pwd, setPwd] = useState("");
   const [editVals, setEditVals] = useState({});
   const [editPrices, setEditPrices] = useState({});
+  const [declarations, setDeclarations] = useState([]);
 
   // Reprend une session ouverte lors d'une visite précédente.
   // Les hooks sont enregistrés pendant le rendu, donc cet effet s'exécute même
@@ -160,6 +225,39 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
       cancelled = true;
     };
   }, []);
+
+  // Le journal n'est lisible que par un compte connecte : on le charge donc
+  // apres l'authentification, pas au montage du composant.
+  useEffect(() => {
+    if (!authed || !supabase) return;
+    let cancelled = false;
+    supabase
+      .from("declarations")
+      .select("id,gift_id,amount,guest_name,method,created_at")
+      .order("created_at", { ascending: false })
+      .then(({ data, error }) => {
+        if (cancelled) return;
+        if (error) {
+          // La table peut ne pas exister encore : inutile d'alarmer.
+          console.error("Journal des participations indisponible :", error.message);
+          return;
+        }
+        setDeclarations(data ?? []);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [authed]);
+
+  const deleteDeclaration = async (id) => {
+    const { error } = await supabase.from("declarations").delete().eq("id", id);
+    if (error) {
+      showToast(ta.saveError);
+      return;
+    }
+    setDeclarations((prev) => prev.filter((row) => row.id !== id));
+    showToast(ta.logDeleted);
+  };
 
   const signIn = async () => {
     const { error } = await supabase.auth.signInWithPassword({ email: ADMIN_EMAIL, password: pwd });
@@ -233,9 +331,11 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
 
           <TotalsBar
             totalPrice={GIFTS.reduce((sum, g) => sum + (prices[g.id] ?? g.amount), 0)}
-            totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0)}
+            totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0) + (contribs[HONEYMOON.id] || 0)}
             ta={ta}
           />
+
+          <DeclarationLog rows={declarations} onDelete={deleteDeclaration} ta={ta} lang={lang} />
 
           <div style={{ backgroundColor: C.cream, borderRadius: 12, padding: "16px 20px", marginBottom: 32, fontSize: 14, lineHeight: 1.75, color: C.greenMid }}>
             {ta.note}
