@@ -34,7 +34,7 @@ const select = (columns) =>
  * qu'une intention. La participation, elle, n'est enregistrée qu'une fois le
  * paiement confirmé par Stripe, via le webhook.
  */
-export async function createCheckoutSession({ giftId, giftName, amount, guestName, message }) {
+export async function createCheckoutSession({ giftId, giftName, amount, guestName, guestEmail, message }) {
   const response = await fetch("/api/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -43,6 +43,7 @@ export async function createCheckoutSession({ giftId, giftName, amount, guestNam
       giftName,
       amount,
       guestName: guestName || "",
+      guestEmail: guestEmail || "",
       message: message || "",
       origin: window.location.href,
     }),
@@ -68,7 +69,7 @@ const callDeclare = (body) =>
     body: JSON.stringify(body),
   });
 
-export async function declareContribution(giftId, amount, guestName, method, message) {
+export async function declareContribution(giftId, amount, guestName, method, message, guestEmail) {
   const base = { gift_id: giftId, delta: amount };
   const withName = { ...base, guest_name: guestName || null, method: method || null };
 
@@ -76,7 +77,12 @@ export async function declareContribution(giftId, amount, guestName, method, mes
   // quand la fonction en base n'accepte pas encore tous ces arguments : on
   // retente alors avec moins de détail, plutôt que de perdre la participation
   // de l'invité parce qu'un script n'a pas été joué.
-  const attempts = [{ ...withName, message: message || null }, withName, base];
+  const attempts = [
+    { ...withName, message: message || null, guest_email: guestEmail || null },
+    { ...withName, message: message || null },
+    withName,
+    base,
+  ];
 
   let response;
   for (const body of attempts) {

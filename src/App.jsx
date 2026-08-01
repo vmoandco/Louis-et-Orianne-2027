@@ -6,7 +6,6 @@ import { useIsMobile } from "./lib/useIsMobile";
 import { useHashRoute } from "./lib/useHashRoute";
 import { TR } from "./data/translations";
 import { GIFTS } from "./data/gifts";
-import { LANG_MEMORY_MS } from "./data/config";
 
 import Header from "./components/Header";
 import MobileBottomNav from "./components/MobileBottomNav";
@@ -22,17 +21,20 @@ import InfoPage from "./pages/InfoPage";
 // L'admin embarque le SDK Supabase : on ne le charge qu'à l'ouverture de l'onglet.
 const AdminPage = lazy(() => import("./pages/AdminPage"));
 
-const langWasChosenRecently = () => {
-  const saved = localStorage.getItem("langChosenAt");
-  return saved ? Date.now() - Number(saved) < LANG_MEMORY_MS : false;
+// Le choix de langue est definitif : l'ecran d'accueil ne doit pas se
+// representer a chaque visite. On memorise la langue elle-meme, pas seulement
+// la date du choix — sinon un anglophone revenait sur la version francaise.
+const savedLang = () => {
+  const saved = localStorage.getItem("lang");
+  return saved === "fr" || saved === "en" ? saved : null;
 };
 
 export default function App() {
   const isMobile = useIsMobile();
   const [tab, goTo] = useHashRoute();
 
-  const [lang, setLang] = useState("fr");
-  const [langChosen, setLangChosen] = useState(langWasChosenRecently);
+  const [lang, setLang] = useState(() => savedLang() ?? "fr");
+  const [langChosen, setLangChosen] = useState(() => savedLang() !== null);
 
   const [contribs, setContribs] = useState({});
   // Prix courants : ceux de gifts.js, ecrases par la colonne `price` en base
@@ -131,7 +133,7 @@ export default function App() {
 
   const chooseLang = useCallback((code) => {
     setLang(code);
-    localStorage.setItem("langChosenAt", String(Date.now()));
+    localStorage.setItem("lang", code);
     setLangChosen(true);
   }, []);
 

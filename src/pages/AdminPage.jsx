@@ -198,10 +198,11 @@ const csvCell = (value) => {
 
 /** Telecharge le journal complet, ouvrable tel quel dans Google Sheets. */
 function downloadCsv(rows, ta, lang) {
-  const header = [ta.logAddName, ta.logAddGift, ta.logAddAmount, ta.logAddMethod, ta.logMessage, "Date"];
+  const header = [ta.logAddName, ta.logEmail, ta.logAddGift, ta.logAddAmount, ta.logAddMethod, ta.logMessage, "Date"];
   const lines = rows.map((row) =>
     [
       row.guest_name ?? "",
+      row.guest_email ?? "",
       giftLabel(row.gift_id, lang),
       Math.round(row.amount),
       row.method ?? "",
@@ -273,6 +274,9 @@ function DeclarationLog({ rows, onDelete, ta, lang }) {
                 <div style={{ fontSize: 14, color: C.green, fontWeight: 500 }}>
                   {row.guest_name || <span style={{ color: C.light, fontStyle: "italic" }}>{ta.logAnon}</span>}
                 </div>
+                {row.guest_email && (
+                  <div style={{ fontSize: 12, color: C.greenMid, marginTop: 1 }}>{row.guest_email}</div>
+                )}
                 <div style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>
                   {nameOf(row.gift_id)}
                   {row.method && ` · ${row.method}`}
@@ -391,7 +395,7 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
     if (!supabase) return null;
     const { data, error } = await supabase
       .from("declarations")
-      .select("id,gift_id,amount,guest_name,method,message,created_at")
+      .select("id,gift_id,amount,guest_name,guest_email,method,message,created_at")
       .order("created_at", { ascending: false });
     if (error) {
       // La table peut ne pas exister encore : inutile d'alarmer.

@@ -19,6 +19,3 @@ export const REVOLUT_TAG = "louissigaud";
 
 // Compte utilisé pour l'espace admin (auth Supabase).
 export const ADMIN_EMAIL = "losigaud@gmail.com";
-
-// Durée pendant laquelle le choix de langue est mémorisé.
-export const LANG_MEMORY_MS = 24 * 60 * 60 * 1000;

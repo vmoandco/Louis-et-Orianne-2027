@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     return res.status(503).json({ error: "stripe_not_configured" });
   }
 
-  const { giftId, giftName, amount, guestName, message, origin } = req.body ?? {};
+  const { giftId, giftName, amount, guestName, guestEmail, message, origin } = req.body ?? {};
 
   const value = Math.floor(Number(amount));
   if (!Number.isFinite(value) || value < MIN_AMOUNT || value > MAX_AMOUNT) {
@@ -62,8 +62,12 @@ export default async function handler(req, res) {
       metadata: {
         gift_id: giftId,
         guest_name: clean(guestName, 60),
+        guest_email: clean(guestEmail, 120),
         message: clean(message, 500),
       },
+      // Évite à l'invité de ressaisir son adresse, et c'est elle qui recevra
+      // le reçu Stripe.
+      ...(clean(guestEmail, 120) ? { customer_email: clean(guestEmail, 120) } : {}),
       success_url: `${back.split("#")[0]}?paid=1#/gifts`,
       cancel_url: `${back.split("#")[0]}#/gifts`,
     });

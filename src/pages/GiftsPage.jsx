@@ -320,7 +320,7 @@ function AmountStep({ range, amount, setAmount, onNext, tg, f }) {
 // directement dans la fenetre de participation (mobile, ou tout est deja
 // centre a l'ecran : un popup dans un popup y serait illisible).
 
-function WeroBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
+function WeroBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField, blocked }) {
   return (
     <>
       <p style={{ fontSize: f(13), color: C.muted, lineHeight: 1.7, marginBottom: 18, textAlign: "center" }}>{tg.weroText}</p>
@@ -341,7 +341,9 @@ function WeroBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
 
       {nameField}
 
-      <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
+      <button onClick={onConfirm} disabled={sending || blocked}
+        style={{ ...greenBtn(f), opacity: sending || blocked ? 0.5 : 1,
+                 cursor: sending || blocked ? "not-allowed" : "pointer" }}>
         {sending ? tg.sending : tg.doneWero}
       </button>
       <button onClick={onClose} style={cancelBtn(f)}>
@@ -351,7 +353,7 @@ function WeroBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
   );
 }
 
-function RevolutBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
+function RevolutBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField, blocked }) {
   const link = `https://revolut.me/${REVOLUT_TAG}`;
 
   return (
@@ -393,7 +395,9 @@ function RevolutBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, n
 
       {nameField}
 
-      <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
+      <button onClick={onConfirm} disabled={sending || blocked}
+        style={{ ...greenBtn(f), opacity: sending || blocked ? 0.5 : 1,
+                 cursor: sending || blocked ? "not-allowed" : "pointer" }}>
         {sending ? tg.sending : tg.doneRevolut}
       </button>
       <button onClick={onClose} style={cancelBtn(f)}>
@@ -403,7 +407,7 @@ function RevolutBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, n
   );
 }
 
-function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField }) {
+function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, nameField, blocked }) {
   const rows = [
     [tg.ibanBene, IBAN_INFO.nom, false],
     [tg.ibanRef, gift.name[lang], false],
@@ -431,7 +435,9 @@ function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
       </div>
       {nameField}
 
-      <button onClick={onConfirm} disabled={sending} style={{ ...greenBtn(f), opacity: sending ? 0.6 : 1 }}>
+      <button onClick={onConfirm} disabled={sending || blocked}
+        style={{ ...greenBtn(f), opacity: sending || blocked ? 0.5 : 1,
+                 cursor: sending || blocked ? "not-allowed" : "pointer" }}>
         {sending ? tg.sending : tg.doneIban}
       </button>
       <button onClick={onClose} style={cancelBtn(f)}>
@@ -448,7 +454,7 @@ function IbanBody({ gift, amount, sending, onConfirm, onClose, tg, lang, f, name
  * fait foi, une fois l'argent réellement encaissé. Le navigateur se contente
  * de demander une page de paiement puis d'y envoyer l'invité.
  */
-function CardBody({ gift, amount, onClose, tg, lang, f, nameField, guestName, message }) {
+function CardBody({ gift, amount, onClose, tg, lang, f, nameField, guestName, guestEmail, message, blocked }) {
   const [sending, setSending] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -461,6 +467,7 @@ function CardBody({ gift, amount, onClose, tg, lang, f, nameField, guestName, me
         giftName: gift.name[lang],
         amount,
         guestName,
+        guestEmail,
         message,
       });
       window.location.href = url;
@@ -502,7 +509,9 @@ function CardBody({ gift, amount, onClose, tg, lang, f, nameField, guestName, me
 
       {nameField}
 
-      <button onClick={pay} disabled={sending} style={{ ...greenBtn(f), backgroundColor: C.green, opacity: sending ? 0.6 : 1 }}>
+      <button onClick={pay} disabled={sending || blocked}
+        style={{ ...greenBtn(f), backgroundColor: C.green, opacity: sending || blocked ? 0.5 : 1,
+                 cursor: sending || blocked ? "not-allowed" : "pointer" }}>
         {sending ? tg.sending : tg.cardGo.replace("{n}", amount)}
       </button>
       <button onClick={onClose} style={cancelBtn(f)}>
@@ -519,14 +528,22 @@ const METHOD_TITLE = { wero: "weroTitle", revolut: "revolutTitle", iban: "ibanTi
 function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared, showToast, onDone, t, lang, f, inlineDetails }) {
   const tg = t.gifts;
   const [sending, setSending] = useState(false);
-  // Sert à recouper les virements reçus avec les participations declarees.
+  // Servent à recouper les virements reçus avec les participations declarees,
+  // et à remercier chaque invité.
   const [guestName, setGuestName] = useState("");
+  const [guestEmail, setGuestEmail] = useState("");
   const [message, setMessage] = useState("");
 
+  // Validation volontairement large : le but est d'attraper une faute de
+  // frappe évidente, pas de refuser une adresse exotique mais valide.
+  const emailLooksValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(guestEmail.trim());
+  const identityMissing = guestName.trim().length === 0 || !emailLooksValid;
+
   const confirm = async () => {
+    if (identityMissing) return;
     setSending(true);
     try {
-      const total = await declareContribution(gift.id, amount, guestName, payMethod, message);
+      const total = await declareContribution(gift.id, amount, guestName, payMethod, message, guestEmail);
       onDeclared(gift.id, total);
       setPayMethod(null);
       onDone();
@@ -541,10 +558,23 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
 
   const close = () => setPayMethod(null);
 
+  const inputStyle = {
+    width: "100%",
+    padding: "11px 13px",
+    border: `1px solid ${C.border}`,
+    borderRadius: 8,
+    fontSize: f(13),
+    backgroundColor: C.card,
+    color: C.green,
+    boxSizing: "border-box",
+  };
+  const required = <span style={{ color: "#B4453C" }} aria-hidden="true"> *</span>;
+
   const nameField = (
     <div style={{ marginBottom: 16 }}>
       <label htmlFor={`guest-${gift.id}`} style={{ display: "block", fontSize: f(11), color: C.muted, marginBottom: 6 }}>
         {tg.guestName}
+        {required}
       </label>
       <input
         id={`guest-${gift.id}`}
@@ -553,16 +583,26 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
         onChange={(e) => setGuestName(e.target.value)}
         maxLength={60}
         autoComplete="name"
-        style={{
-          width: "100%",
-          padding: "11px 13px",
-          border: `1px solid ${C.border}`,
-          borderRadius: 8,
-          fontSize: f(13),
-          backgroundColor: C.card,
-          color: C.green,
-          boxSizing: "border-box",
-        }}
+        required
+        aria-required="true"
+        style={inputStyle}
+      />
+
+      <label htmlFor={`mail-${gift.id}`} style={{ display: "block", fontSize: f(11), color: C.muted, margin: "12px 0 6px" }}>
+        {tg.guestEmail}
+        {required}
+      </label>
+      <input
+        id={`mail-${gift.id}`}
+        type="email"
+        value={guestEmail}
+        onChange={(e) => setGuestEmail(e.target.value)}
+        maxLength={120}
+        autoComplete="email"
+        inputMode="email"
+        required
+        aria-required="true"
+        style={inputStyle}
       />
 
       <label htmlFor={`msg-${gift.id}`} style={{ display: "block", fontSize: f(11), color: C.muted, margin: "12px 0 6px" }}>
@@ -574,18 +614,7 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
         onChange={(e) => setMessage(e.target.value)}
         maxLength={500}
         rows={3}
-        style={{
-          width: "100%",
-          padding: "11px 13px",
-          border: `1px solid ${C.border}`,
-          borderRadius: 8,
-          fontSize: f(13),
-          fontFamily: "inherit",
-          backgroundColor: C.card,
-          color: C.green,
-          boxSizing: "border-box",
-          resize: "vertical",
-        }}
+        style={{ ...inputStyle, fontFamily: "inherit", resize: "vertical" }}
       />
     </div>
   );
@@ -593,10 +622,10 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
   const body = (
     <>
       {payMethod === "wero" && (
-        <WeroBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} />
+        <WeroBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} blocked={identityMissing} />
       )}
       {payMethod === "revolut" && (
-        <RevolutBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} />
+        <RevolutBody gift={gift} amount={amount} sending={sending} onConfirm={confirm} onClose={close} tg={tg} lang={lang} f={f} nameField={nameField} blocked={identityMissing} />
       )}
       {payMethod === "iban" && (
         <IbanBody
@@ -609,11 +638,12 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
           lang={lang}
           f={f}
           nameField={nameField}
+          blocked={identityMissing}
         />
       )}
       {payMethod === "card" && (
         <CardBody gift={gift} amount={amount} onClose={close} tg={tg} lang={lang} f={f}
-          nameField={nameField} guestName={guestName} message={message} />
+          nameField={nameField} guestName={guestName} guestEmail={guestEmail} message={message} blocked={identityMissing} />
       )}
     </>
   );

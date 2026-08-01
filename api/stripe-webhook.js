@@ -89,6 +89,7 @@ export default async function handler(req, res) {
         delta: amount,
         guest_name: meta.guest_name || session.customer_details?.name || null,
         message: meta.message || null,
+        guest_email: meta.guest_email || session.customer_details?.email || null,
       }),
     });
 
