@@ -423,11 +423,12 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
   const [sending, setSending] = useState(false);
   // Sert à recouper les virements reçus avec les participations declarees.
   const [guestName, setGuestName] = useState("");
+  const [message, setMessage] = useState("");
 
   const confirm = async () => {
     setSending(true);
     try {
-      const total = await declareContribution(gift.id, amount, guestName, payMethod);
+      const total = await declareContribution(gift.id, amount, guestName, payMethod, message);
       onDeclared(gift.id, total);
       setPayMethod(null);
       onDone();
@@ -463,6 +464,29 @@ function MethodStep({ gift, amount, onBack, payMethod, setPayMethod, onDeclared,
           backgroundColor: C.card,
           color: C.green,
           boxSizing: "border-box",
+        }}
+      />
+
+      <label htmlFor={`msg-${gift.id}`} style={{ display: "block", fontSize: f(11), color: C.muted, margin: "12px 0 6px" }}>
+        {tg.guestMessage}
+      </label>
+      <textarea
+        id={`msg-${gift.id}`}
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        maxLength={500}
+        rows={3}
+        style={{
+          width: "100%",
+          padding: "11px 13px",
+          border: `1px solid ${C.border}`,
+          borderRadius: 8,
+          fontSize: f(13),
+          fontFamily: "inherit",
+          backgroundColor: C.card,
+          color: C.green,
+          boxSizing: "border-box",
+          resize: "vertical",
         }}
       />
     </div>

@@ -38,20 +38,20 @@ const callDeclare = (body) =>
     body: JSON.stringify(body),
   });
 
-export async function declareContribution(giftId, amount, guestName, method) {
-  let response = await callDeclare({
-    gift_id: giftId,
-    delta: amount,
-    guest_name: guestName || null,
-    method: method || null,
-  });
+export async function declareContribution(giftId, amount, guestName, method, message) {
+  const base = { gift_id: giftId, delta: amount };
+  const withName = { ...base, guest_name: guestName || null, method: method || null };
 
-  // Le prénom et le moyen de paiement sont arrivés après la mise en ligne :
-  // tant que `supabase/declarations.sql` n'a pas été joué, la fonction n'accepte
-  // que deux arguments et PostgREST répond 404. On réessaie sans le détail
-  // plutôt que de perdre la participation de l'invité.
-  if (response.status === 404) {
-    response = await callDeclare({ gift_id: giftId, delta: amount });
+  // Le détail s'est enrichi au fil des migrations SQL. PostgREST répond 404
+  // quand la fonction en base n'accepte pas encore tous ces arguments : on
+  // retente alors avec moins de détail, plutôt que de perdre la participation
+  // de l'invité parce qu'un script n'a pas été joué.
+  const attempts = [{ ...withName, message: message || null }, withName, base];
+
+  let response;
+  for (const body of attempts) {
+    response = await callDeclare(body);
+    if (response.status !== 404) break;
   }
 
   if (!response.ok) {

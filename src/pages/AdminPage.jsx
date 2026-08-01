@@ -177,19 +177,81 @@ function AddDeclaration({ onAdd, ta, lang }) {
   );
 }
 
+const giftLabel = (giftId, lang) => {
+  if (giftId === HONEYMOON.id) return HONEYMOON.name[lang];
+  const gift = GIFTS.find((g) => g.id === giftId);
+  return gift ? gift.name[lang] : giftId;
+};
+
+/**
+ * Une cellule CSV.
+ *
+ * Les prenoms et messages viennent du public : une valeur commencant par
+ * `=`, `+`, `-` ou `@` serait interpretee comme une formule par Sheets et
+ * Excel. On la prefixe donc d'une apostrophe pour la neutraliser.
+ */
+const csvCell = (value) => {
+  const text = String(value ?? "");
+  const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+  return `"${safe.replace(/"/g, '""')}"`;
+};
+
+/** Telecharge le journal complet, ouvrable tel quel dans Google Sheets. */
+function downloadCsv(rows, ta, lang) {
+  const header = [ta.logAddName, ta.logAddGift, ta.logAddAmount, ta.logAddMethod, ta.logMessage, "Date"];
+  const lines = rows.map((row) =>
+    [
+      row.guest_name ?? "",
+      giftLabel(row.gift_id, lang),
+      Math.round(row.amount),
+      row.method ?? "",
+      row.message ?? "",
+      new Date(row.created_at).toISOString().slice(0, 16).replace("T", " "),
+    ]
+      .map(csvCell)
+      .join(",")
+  );
+
+  // Le BOM force Excel et Sheets a lire l'UTF-8 : sans lui, les accents cassent.
+  const blob = new Blob(["\uFEFF" + [header.map(csvCell).join(","), ...lines].join("\r\n")], {
+    type: "text/csv;charset=utf-8;",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `participations-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 /** Journal des participations declarees par les invites, la plus recente en tete. */
 function DeclarationLog({ rows, onDelete, ta, lang }) {
-  const nameOf = (giftId) => {
-    if (giftId === HONEYMOON.id) return HONEYMOON.name[lang];
-    const gift = GIFTS.find((g) => g.id === giftId);
-    return gift ? gift.name[lang] : giftId;
-  };
+  const nameOf = (giftId) => giftLabel(giftId, lang);
 
   return (
     <div style={{ marginBottom: 40 }}>
-      <h3 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 500, color: C.green, marginBottom: 14 }}>
-        {ta.log} {rows.length > 0 && <span style={{ fontSize: 14, color: C.muted }}>({rows.length})</span>}
-      </h3>
+      <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 14, flexWrap: "wrap" }}>
+        <h3 style={{ fontFamily: SERIF, fontSize: 22, fontWeight: 500, color: C.green, margin: 0 }}>
+          {ta.log} {rows.length > 0 && <span style={{ fontSize: 14, color: C.muted }}>({rows.length})</span>}
+        </h3>
+        {rows.length > 0 && (
+          <button
+            onClick={() => downloadCsv(rows, ta, lang)}
+            style={{
+              marginLeft: "auto",
+              background: "none",
+              border: `1px solid ${C.border}`,
+              borderRadius: 6,
+              padding: "7px 14px",
+              fontSize: 12,
+              color: C.greenMid,
+              cursor: "pointer",
+            }}
+          >
+            ↓ {ta.logExport}
+          </button>
+        )}
+      </div>
 
       {rows.length === 0 ? (
         <p style={{ fontSize: 14, color: C.muted, fontStyle: "italic" }}>{ta.logEmpty}</p>
@@ -223,6 +285,11 @@ function DeclarationLog({ rows, onDelete, ta, lang }) {
                     minute: "2-digit",
                   })}
                 </div>
+                {row.message && (
+                  <div style={{ fontSize: 13, color: C.greenMid, marginTop: 6, fontStyle: "italic", whiteSpace: "pre-line" }}>
+                    « {row.message} »
+                  </div>
+                )}
               </div>
               <span style={{ fontFamily: SERIF, fontSize: 18, color: C.gold, flexShrink: 0 }}>{Math.round(row.amount)} €</span>
               <button
@@ -324,7 +391,7 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
     if (!supabase) return null;
     const { data, error } = await supabase
       .from("declarations")
-      .select("id,gift_id,amount,guest_name,method,created_at")
+      .select("id,gift_id,amount,guest_name,method,message,created_at")
       .order("created_at", { ascending: false });
     if (error) {
       // La table peut ne pas exister encore : inutile d'alarmer.
