@@ -696,17 +696,21 @@ function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, la
             </button>
           ))}
 
-          <form onSubmit={submitCustom} style={{ display: "flex", gap: 6, alignItems: "center" }}>
+          {/* `noValidate` : sans lui, le pas de 50 rendrait invalide tout montant
+              saisi qui n'en serait pas un multiple. Les flèches avancent donc de
+              50 en 50, mais la saisie reste libre — c'est le contrôle en
+              JavaScript, plus bas, qui fait foi. */}
+          <form onSubmit={submitCustom} noValidate style={{ display: "flex", gap: 6, alignItems: "center" }}>
             <input
               type="number"
-              min={MIN_DECLARE}
-              step="1"
+              min={0}
+              step={50}
               value={custom}
               onChange={(e) => setCustom(e.target.value)}
               placeholder={tg.honeymoonFree}
               aria-label={tg.honeymoonFree}
               style={{
-                width: isMobile ? 78 : 92,
+                width: isMobile ? 120 : 140,
                 padding: isMobile ? "9px 10px" : "10px 12px",
                 borderRadius: 8,
                 border: "1px solid rgba(250,248,243,0.45)",
