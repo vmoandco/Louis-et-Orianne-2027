@@ -744,15 +744,20 @@ function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, la
     }
   };
 
+  // Volontairement independant de `f()` : cette echelle agrandit le parcours
+  // de participation pour le rendre lisible, mais ici elle faisait deborder
+  // les montants et « Montant libre » du bandeau, deja compact sur mobile.
+  const chipFontSize = isMobile ? 11 : f(13);
+
   const chip = (active) => ({
-    padding: isMobile ? "9px 12px" : "10px 18px",
+    padding: isMobile ? "8px 11px" : "10px 18px",
     backgroundColor: active ? C.gold : "rgba(250,248,243,0.12)",
     color: C.offWhite,
     border: `1px solid ${active ? C.gold : "rgba(250,248,243,0.45)"}`,
     borderRadius: 8,
     cursor: "pointer",
     fontFamily: SANS,
-    fontSize: f(13),
+    fontSize: chipFontSize,
     letterSpacing: "0.06em",
     whiteSpace: "nowrap",
     transition: "all 0.15s",
@@ -815,13 +820,13 @@ function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, t, la
               placeholder={tg.honeymoonFree}
               aria-label={tg.honeymoonFree}
               style={{
-                width: isMobile ? 120 : 140,
-                padding: isMobile ? "9px 10px" : "10px 12px",
+                width: isMobile ? 110 : 140,
+                padding: isMobile ? "8px 9px" : "10px 12px",
                 borderRadius: 8,
                 border: "1px solid rgba(250,248,243,0.45)",
                 backgroundColor: "rgba(250,248,243,0.12)",
                 color: C.offWhite,
-                fontSize: f(13),
+                fontSize: chipFontSize,
               }}
             />
             <button type="submit" style={{ ...chip(true), padding: isMobile ? "9px 12px" : "10px 16px" }}>
