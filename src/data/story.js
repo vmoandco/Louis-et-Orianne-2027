@@ -32,9 +32,9 @@ const EVENTS = [
   { date: { fr: "Janvier 2026 - Venise", en: "January 2026 - Venice" }, photo: "/histoire-16.webp", text: { fr: "Découverte de la ville des amoureux ❤️ 🇮🇹", en: "Discovering the city of love ❤️ 🇮🇹" }, ratio: "3:4" },
 
   { type: "year", year: { fr: "Et après un fabuleux voyage en Arménie et en Géorgie...", en: "And after a fabulous trip to Armenia and Georgia..." }, mosaic: true },
-  { date: { fr: "Photo 1", en: "Photo 1" }, photo: "/histoire-17.webp", text: { fr: "À compléter ✍️", en: "To be completed ✍️" }, ratio: "3:4" },
-  { date: { fr: "Photo 2", en: "Photo 2" }, photo: "/histoire-18.webp", text: { fr: "À compléter ✍️", en: "To be completed ✍️" }, ratio: "3:4" },
-  { date: { fr: "Photo 3", en: "Photo 3" }, photo: "/histoire-19.webp", text: { fr: "À compléter ✍️", en: "To be completed ✍️" }, ratio: "3:4" },
+  { date: { fr: "Photo 1", en: "Photo 1" }, photo: "/histoire-17.webp", ratio: "3:4" },
+  { date: { fr: "Photo 2", en: "Photo 2" }, photo: "/histoire-18.webp", ratio: "3:4" },
+  { date: { fr: "Photo 3", en: "Photo 3" }, photo: "/histoire-19.webp", ratio: "3:4", hideOnMobile: true },
   { date: { fr: "Photo 4", en: "Photo 4" }, photo: "/histoire-20.webp", ratio: "3:4", fullWidth: true },
   { type: "text", text: { fr: "... ils se sont dit OUI", en: "... they said YES" } },
   { date: { fr: "Photo 5", en: "Photo 5" }, photo: "/histoire-21.webp", ratio: "3:4", fullWidth: true },

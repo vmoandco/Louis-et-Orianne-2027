@@ -94,6 +94,9 @@ function MosaicSection({ blocks, lang, isMobile }) {
     <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 12 : 16 }}>
       {blocks.map((block, i) => {
         if (block.type === "grid") {
+          // La grille passe à deux colonnes sur téléphone : une troisième
+          // vignette y resterait seule sur sa ligne, d'où `hideOnMobile`.
+          const items = isMobile ? block.items.filter((item) => !item.hideOnMobile) : block.items;
           return (
             <div
               key={i}
@@ -104,7 +107,7 @@ function MosaicSection({ blocks, lang, isMobile }) {
                 gap: isMobile ? 8 : 12,
               }}
             >
-              {block.items.map((item) => (
+              {items.map((item) => (
                 <MosaicItem key={item.photo} event={item} lang={lang} />
               ))}
             </div>
@@ -112,7 +115,19 @@ function MosaicSection({ blocks, lang, isMobile }) {
         }
         if (block.type === "full") {
           return (
-            <div key={i} style={{ width: "100%", borderRadius: 12, overflow: "hidden", aspectRatio: isMobile ? "4/3" : "3/2" }}>
+            <div
+              key={i}
+              style={{
+                // Sur téléphone, ces photos débordent un peu de la marge de la
+                // page pour gagner en présence.
+                width: isMobile ? "calc(100% + 24px)" : "100%",
+                marginLeft: isMobile ? -12 : 0,
+                marginRight: isMobile ? -12 : 0,
+                borderRadius: 12,
+                overflow: "hidden",
+                aspectRatio: isMobile ? "4/3" : "3/2",
+              }}
+            >
               <Photo src={block.item.photo} alt={localize(block.item.date, lang)} />
             </div>
           );
