@@ -901,7 +901,7 @@ function HoneymoonBanner({ payMethod, setPayMethod, onDeclared, showToast, onTha
 function GiftCard({ gift, price, contrib, isOpen, onToggle, onClose, payMethod, setPayMethod, onDeclared, showToast, onThanks, t, lang, isMobile }) {
   const tg = t.gifts;
   const f = scaler(isMobile);
-  const pct = Math.min(100, Math.round((contrib / price) * 100));
+  const pct = price > 0 ? Math.min(100, Math.round((contrib / price) * 100)) : 0;
   const full = pct >= 100;
   // Sur telephone la carte reste toujours compacte : le parcours de
   // participation s'ouvre dans une fenetre centree, sans agrandir la vignette

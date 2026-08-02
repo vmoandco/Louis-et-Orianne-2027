@@ -313,7 +313,7 @@ function DeclarationLog({ rows, onDelete, ta, lang }) {
 }
 
 function GiftRow({ gift, price, current, editVal, editPrice, setEditVals, setEditPrices, onSave, onSavePrice, ta, lang }) {
-  const pct = Math.min(100, Math.round((current / price) * 100));
+  const pct = price > 0 ? Math.min(100, Math.round((current / price) * 100)) : 0;
 
   return (
     <div style={{ padding: "18px 0", borderBottom: `1px solid ${C.border}` }}>
