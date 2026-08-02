@@ -22,6 +22,7 @@ export const GIFTS = [
 
   { id: "m9",  img: "/gifts/m9.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Duo de Coussins", en: "Cushion duo" }, amount: 120 },
   { id: "c10", img: "/gifts/c10.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Nappe", en: "Tablecloth" }, amount: 100 },
+  { id: "m5",  img: "/gifts/m5.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Canapé", en: "Sofa" }, amount: 400 },
   { id: "m1",  img: "/gifts/m1.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Draps", en: "Bed sheets" }, amount: 150 },
   { id: "m2",  img: "/gifts/m2.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Serviettes", en: "Towels" }, amount: 100 },
   { id: "m3",  img: "/gifts/m3.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Peignoirs", en: "Bathrobes" }, amount: 200 },
