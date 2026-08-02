@@ -69,7 +69,7 @@ function EditField({ id, label, value, onChange, onSave, suffix, ariaLabel }) {
 }
 
 /** Bandeau des totaux, recalcule a chaque rendu depuis GIFTS + prices/contribs. */
-function TotalsBar({ totalPrice, totalCollected, honeymoonCollected, editHoneymoon, setEditHoneymoon, onSaveHoneymoon, ta }) {
+function TotalsBar({ totalPrice, totalCollected, honeymoonCollected, ta }) {
   const pct = totalPrice > 0 ? Math.min(100, Math.round((totalCollected / totalPrice) * 100)) : 0;
 
   return (
@@ -86,16 +86,7 @@ function TotalsBar({ totalPrice, totalCollected, honeymoonCollected, editHoneymo
       </div>
       <div style={{ flex: 1, minWidth: 200, backgroundColor: C.cream, borderRadius: 12, padding: "16px 20px" }}>
         <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: C.greenMid, marginBottom: 6 }}>{ta.totalHoneymoon}</div>
-        <div style={{ fontFamily: SERIF, fontSize: 28, color: C.gold, marginBottom: 10 }}>{Math.round(honeymoonCollected)} €</div>
-        <EditField
-          id="honeymoon-amount"
-          label={ta.amount}
-          value={editHoneymoon}
-          onChange={setEditHoneymoon}
-          onSave={onSaveHoneymoon}
-          suffix="€"
-          ariaLabel={`${ta.amount} ${ta.totalHoneymoon}`}
-        />
+        <div style={{ fontFamily: SERIF, fontSize: 28, color: C.gold }}>{Math.round(honeymoonCollected)} €</div>
       </div>
     </div>
   );
@@ -456,18 +447,35 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
     return data ?? [];
   }, []);
 
+  // Le voyage de noces n'a pas de prix cible ni de saisie manuelle : son total
+  // est toujours la somme des lignes du journal qui le concernent. On la
+  // recalcule et on la reecrit dans `contributions` (source de la jauge
+  // publique) a chaque changement, plutot que de la laisser deriver.
+  const syncHoneymoonTotal = useCallback(
+    async (rows) => {
+      if (!supabase) return;
+      const total = rows.filter((r) => r.gift_id === HONEYMOON.id).reduce((sum, r) => sum + Number(r.amount), 0);
+      const { error } = await supabase.from("contributions").upsert({ id: HONEYMOON.id, amount: total });
+      if (!error) onSaved(HONEYMOON.id, total);
+    },
+    [onSaved]
+  );
+
   // Le journal n'est lisible que par un compte connecte : on le charge donc
   // apres l'authentification, pas au montage du composant.
   useEffect(() => {
     if (!authed) return undefined;
     let cancelled = false;
     fetchDeclarations().then((rows) => {
-      if (!cancelled && rows) setDeclarations(rows);
+      if (!cancelled && rows) {
+        setDeclarations(rows);
+        syncHoneymoonTotal(rows);
+      }
     });
     return () => {
       cancelled = true;
     };
-  }, [authed, fetchDeclarations]);
+  }, [authed, fetchDeclarations, syncHoneymoonTotal]);
 
   // Saisie manuelle : meme chemin que les invites, pour que la jauge du cadeau
   // suive sans intervention supplementaire.
@@ -476,7 +484,10 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
       const total = await declareContribution(giftId, amount, name, method, undefined, email);
       onSaved(giftId, total);
       const rows = await fetchDeclarations();
-      if (rows) setDeclarations(rows);
+      if (rows) {
+        setDeclarations(rows);
+        if (giftId === HONEYMOON.id) await syncHoneymoonTotal(rows);
+      }
       showToast(ta.logAdded);
       return true;
     } catch (error) {
@@ -495,9 +506,12 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
       showToast(ta.saveError);
       return;
     }
-    setDeclarations((prev) => prev.filter((r) => r.id !== id));
+    const remaining = declarations.filter((r) => r.id !== id);
+    setDeclarations(remaining);
 
-    if (row) {
+    if (row && row.gift_id === HONEYMOON.id) {
+      await syncHoneymoonTotal(remaining);
+    } else if (row) {
       const updated = Math.max(0, (contribs[row.gift_id] || 0) - row.amount);
       const { error: contribError } = await supabase.from("contributions").upsert({ id: row.gift_id, amount: updated });
       if (!contribError) onSaved(row.gift_id, updated);
@@ -579,10 +593,7 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
           <TotalsBar
             totalPrice={GIFTS.reduce((sum, g) => sum + (prices[g.id] ?? g.amount), 0)}
             totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0)}
-            honeymoonCollected={contribs[HONEYMOON.id] || 0}
-            editHoneymoon={editVals[HONEYMOON.id] !== undefined ? editVals[HONEYMOON.id] : (contribs[HONEYMOON.id] || 0)}
-            setEditHoneymoon={(v) => setEditVals((prev) => ({ ...prev, [HONEYMOON.id]: v }))}
-            onSaveHoneymoon={() => save(HONEYMOON.id, editVals[HONEYMOON.id] !== undefined ? editVals[HONEYMOON.id] : (contribs[HONEYMOON.id] || 0))}
+            honeymoonCollected={declarations.filter((r) => r.gift_id === HONEYMOON.id).reduce((sum, r) => sum + Number(r.amount), 0)}
             ta={ta}
           />
 
