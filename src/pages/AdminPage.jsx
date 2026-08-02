@@ -68,8 +68,8 @@ function EditField({ id, label, value, onChange, onSave, suffix, ariaLabel }) {
   );
 }
 
-/** Bandeau des deux totaux, recalcule a chaque rendu depuis GIFTS + prices/contribs. */
-function TotalsBar({ totalPrice, totalCollected, ta }) {
+/** Bandeau des totaux, recalcule a chaque rendu depuis GIFTS + prices/contribs. */
+function TotalsBar({ totalPrice, totalCollected, honeymoonCollected, editHoneymoon, setEditHoneymoon, onSaveHoneymoon, ta }) {
   const pct = totalPrice > 0 ? Math.min(100, Math.round((totalCollected / totalPrice) * 100)) : 0;
 
   return (
@@ -83,6 +83,19 @@ function TotalsBar({ totalPrice, totalCollected, ta }) {
         <div style={{ fontFamily: SERIF, fontSize: 28, color: C.gold }}>
           {Math.round(totalCollected)} € <span style={{ fontSize: 15, color: C.muted }}>({pct}%)</span>
         </div>
+      </div>
+      <div style={{ flex: 1, minWidth: 200, backgroundColor: C.cream, borderRadius: 12, padding: "16px 20px" }}>
+        <div style={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: C.greenMid, marginBottom: 6 }}>{ta.totalHoneymoon}</div>
+        <div style={{ fontFamily: SERIF, fontSize: 28, color: C.gold, marginBottom: 10 }}>{Math.round(honeymoonCollected)} €</div>
+        <EditField
+          id="honeymoon-amount"
+          label={ta.amount}
+          value={editHoneymoon}
+          onChange={setEditHoneymoon}
+          onSave={onSaveHoneymoon}
+          suffix="€"
+          ariaLabel={`${ta.amount} ${ta.totalHoneymoon}`}
+        />
       </div>
     </div>
   );
@@ -103,6 +116,7 @@ const MAX_DECLARE = 5000;
 
 function AddDeclaration({ onAdd, ta, lang }) {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [giftId, setGiftId] = useState(HONEYMOON.id);
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("");
@@ -114,10 +128,11 @@ function AddDeclaration({ onAdd, ta, lang }) {
     if (!Number.isFinite(value) || value < MIN_DECLARE || value > MAX_DECLARE) return;
 
     setSending(true);
-    const ok = await onAdd({ giftId, amount: value, name: name.trim(), method: method.trim() });
+    const ok = await onAdd({ giftId, amount: value, name: name.trim(), method: method.trim(), email: email.trim() });
     setSending(false);
     if (ok) {
       setName("");
+      setEmail("");
       setAmount("");
       setMethod("");
     }
@@ -130,6 +145,11 @@ function AddDeclaration({ onAdd, ta, lang }) {
       <div style={{ flex: "1 1 140px", minWidth: 120 }}>
         <label htmlFor="add-name" style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 4 }}>{ta.logAddName}</label>
         <input id="add-name" type="text" value={name} onChange={(e) => setName(e.target.value)} maxLength={60} style={{ ...field, width: "100%", boxSizing: "border-box" }} />
+      </div>
+
+      <div style={{ flex: "1 1 160px", minWidth: 140 }}>
+        <label htmlFor="add-email" style={{ display: "block", fontSize: 11, color: C.muted, marginBottom: 4 }}>{ta.logEmail}</label>
+        <input id="add-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} maxLength={120} style={{ ...field, width: "100%", boxSizing: "border-box" }} />
       </div>
 
       <div style={{ flex: "2 1 180px", minWidth: 150 }}>
@@ -225,6 +245,16 @@ function downloadCsv(rows, ta, lang) {
   URL.revokeObjectURL(url);
 }
 
+/** Lien mailto: prefilli avec un mot de remerciement pour ce don. */
+const mailtoHref = (row, ta, lang) => {
+  const subject = ta.logMailSubject;
+  const body = ta.logMailBody
+    .replace("{name}", row.guest_name || "")
+    .replace("{amount}", Math.round(row.amount))
+    .replace("{gift}", giftLabel(row.gift_id, lang));
+  return `mailto:${row.guest_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+};
+
 /** Journal des participations declarees par les invites, la plus recente en tete. */
 function DeclarationLog({ rows, onDelete, ta, lang }) {
   const nameOf = (giftId) => giftLabel(giftId, lang);
@@ -296,6 +326,27 @@ function DeclarationLog({ rows, onDelete, ta, lang }) {
                 )}
               </div>
               <span style={{ fontFamily: SERIF, fontSize: 18, color: C.gold, flexShrink: 0 }}>{Math.round(row.amount)} €</span>
+              {row.guest_email && (
+                <a
+                  href={mailtoHref(row, ta, lang)}
+                  aria-label={ta.logMailButton}
+                  title={ta.logMailButton}
+                  style={{
+                    background: "none",
+                    border: `1px solid ${C.border}`,
+                    borderRadius: 6,
+                    padding: "6px 8px",
+                    cursor: "pointer",
+                    color: C.greenMid,
+                    fontSize: 14,
+                    flexShrink: 0,
+                    textDecoration: "none",
+                    lineHeight: 1,
+                  }}
+                >
+                  ✉
+                </a>
+              )}
               <button
                 onClick={() => onDelete(row.id)}
                 aria-label={ta.logDelete}
@@ -420,9 +471,9 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
 
   // Saisie manuelle : meme chemin que les invites, pour que la jauge du cadeau
   // suive sans intervention supplementaire.
-  const addDeclaration = async ({ giftId, amount, name, method }) => {
+  const addDeclaration = async ({ giftId, amount, name, method, email }) => {
     try {
-      const total = await declareContribution(giftId, amount, name, method);
+      const total = await declareContribution(giftId, amount, name, method, undefined, email);
       onSaved(giftId, total);
       const rows = await fetchDeclarations();
       if (rows) setDeclarations(rows);
@@ -435,13 +486,23 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
     }
   };
 
+  // Supprimer une ligne du journal ne doit pas laisser son montant dans la
+  // jauge du cadeau : la table `contributions` est corrigee dans la foulee.
   const deleteDeclaration = async (id) => {
+    const row = declarations.find((r) => r.id === id);
     const { error } = await supabase.from("declarations").delete().eq("id", id);
     if (error) {
       showToast(ta.saveError);
       return;
     }
-    setDeclarations((prev) => prev.filter((row) => row.id !== id));
+    setDeclarations((prev) => prev.filter((r) => r.id !== id));
+
+    if (row) {
+      const updated = Math.max(0, (contribs[row.gift_id] || 0) - row.amount);
+      const { error: contribError } = await supabase.from("contributions").upsert({ id: row.gift_id, amount: updated });
+      if (!contribError) onSaved(row.gift_id, updated);
+    }
+
     showToast(ta.logDeleted);
   };
 
@@ -517,7 +578,11 @@ export default function AdminPage({ contribs, prices, onSaved, onPriceSaved, onC
 
           <TotalsBar
             totalPrice={GIFTS.reduce((sum, g) => sum + (prices[g.id] ?? g.amount), 0)}
-            totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0) + (contribs[HONEYMOON.id] || 0)}
+            totalCollected={GIFTS.reduce((sum, g) => sum + (contribs[g.id] || 0), 0)}
+            honeymoonCollected={contribs[HONEYMOON.id] || 0}
+            editHoneymoon={editVals[HONEYMOON.id] !== undefined ? editVals[HONEYMOON.id] : (contribs[HONEYMOON.id] || 0)}
+            setEditHoneymoon={(v) => setEditVals((prev) => ({ ...prev, [HONEYMOON.id]: v }))}
+            onSaveHoneymoon={() => save(HONEYMOON.id, editVals[HONEYMOON.id] !== undefined ? editVals[HONEYMOON.id] : (contribs[HONEYMOON.id] || 0))}
             ta={ta}
           />
 
