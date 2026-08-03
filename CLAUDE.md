@@ -33,6 +33,11 @@ curl -s -o /dev/null -w '%{http_code} %{size_download}\n' \
 Signaler à Louis si le merge embarque des commits plus anciens que ceux de la
 session : ils partent en prod eux aussi.
 
+**Exception : ajout d'un cadeau.** Pour un simple ajout d'objet à la liste
+(nouvelle ligne dans `gifts.js` + visuel), pas besoin de demander confirmation
+avant de pousser en prod — commit et push direct, en suivant quand même la
+séquence et la vérification ci-dessus.
+
 ## Points à ne pas oublier
 
 - **Jamais de photo brute committée.** Toute image ajoutée dans `public/`
