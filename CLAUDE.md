@@ -43,15 +43,17 @@ séquence et la vérification ci-dessus.
 - **Jamais de photo brute committée.** Toute image ajoutée dans `public/`
   passe par `node scripts/optimize-images.mjs <dossier-source>` (voir README
   § Optimiser les images). Les visuels de cadeaux sortent en WebP 700 px.
-  Le script ne lit que `.jpg`/`.png` : convertir un `.webp` source d'abord
-  (`sips -s format png src.webp --out dest.png`).
+  Le script ne lit que `.jpg`/`.png` : convertir un `.webp` ou `.avif` source
+  d'abord (`sips -s format png src.avif --out dest.png`).
 - Un nouveau cadeau = une ligne dans `src/data/gifts.js` (`id`, `img`, `cat`,
   `catEn`, `name.fr`/`name.en`, `amount`, `stripe`) + le visuel dans
   `public/gifts/`.
-- Les images que Louis colle dans la conversation ne sont pas enregistrées sur
-  le disque : les retrouver dans `~/Downloads` (`ls -lat`, les plus récentes)
-  et **toujours les ouvrir pour vérifier** qu'on traite la bonne avant de
-  remplacer un visuel.
+- **Quand Louis demande d'ajouter ou de remplacer un objet, aller voir
+  `~/Downloads` (`ls -lat`) sans qu'il ait besoin de le redemander à chaque
+  fois.** Les images qu'il colle dans la conversation ne sont pas enregistrées
+  sur le disque : le visuel attendu est presque toujours le fichier le plus
+  récent du dossier. **Toujours l'ouvrir pour vérifier** qu'on traite la bonne
+  image avant de l'utiliser.
 - Messages de commit : français, à l'impératif, sans accents.
 - La base Supabase est verrouillée (RLS actif, `supabase/setup.sql` déjà
   exécuté le 31/07/2026) : lecture publique, écriture réservée aux comptes

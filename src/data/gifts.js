@@ -24,6 +24,7 @@ export const GIFTS = [
   { id: "m10", img: "/gifts/m10.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Grand Coussin", en: "Large cushion" }, amount: 135 },
   { id: "c10", img: "/gifts/c10.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Nappe", en: "Tablecloth" }, amount: 100 },
   { id: "m5",  img: "/gifts/m5.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Canapé", en: "Sofa" }, amount: 400 },
+  { id: "m12", img: "/gifts/m12.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Tabouret de Piano", en: "Piano stool" }, amount: 120 },
   { id: "m1",  img: "/gifts/m1.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Draps", en: "Bed sheets" }, amount: 150 },
   { id: "m2",  img: "/gifts/m2.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Serviettes", en: "Towels" }, amount: 100 },
   { id: "m3",  img: "/gifts/m3.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Peignoir pour Louis", en: "Bathrobe for Louis" }, amount: 150 },
