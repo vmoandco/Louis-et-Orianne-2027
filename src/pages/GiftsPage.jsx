@@ -1086,7 +1086,7 @@ export default function GiftsPage({ contribs, prices, loaded, openGift, setOpenG
               <h2 style={{ fontFamily: SERIF, fontSize: isMobile ? 26 : 34, fontWeight: 400, margin: 0, color: C.green }}>{cat.name}</h2>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: isMobile ? 12 : 24, alignItems: "start" }}>
+            <div className="grid grid-cols-2 lg:grid-cols-4" style={{ gap: isMobile ? 12 : 24, alignItems: "start" }}>
               {gifts.map((gift) => (
                 <GiftCard
                   key={gift.id}
