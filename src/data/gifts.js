@@ -40,7 +40,7 @@ export const GIFTS = [
   { id: "hc1", img: "/gifts/hc1.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "TV OLED", en: "OLED TV" }, amount: 1500 },
   { id: "hc2", img: "/gifts/hc2.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Ampli AV", en: "AV receiver" }, amount: 750 },
   { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700 },
-  { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400 },
+  { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 250 },
 
   { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Chaussures de ski pour Louis", en: "Ski boots for Louis" }, amount: 300 },
   { id: "sp2", img: "/gifts/sp2.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Chaussures de ski pour Oriane", en: "Ski boots for Oriane" }, amount: 250 },
