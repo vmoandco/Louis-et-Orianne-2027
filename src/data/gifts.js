@@ -37,19 +37,15 @@ export const GIFTS = [
   { id: "m4",  img: "/gifts/m4.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Sèche linge", en: "Tumble dryer" }, amount: 600 },
   { id: "m6",  img: "/gifts/m6.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Perceuse / visseuse", en: "Drill / screwdriver" }, amount: 80 },
   { id: "m7",  img: "/gifts/m7.webp",  cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Kit d'outils", en: "Tool kit" }, amount: 50 },
+  { id: "hc1", img: "/gifts/hc1.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "TV OLED", en: "OLED TV" }, amount: 1500 },
+  { id: "hc2", img: "/gifts/hc2.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Ampli AV", en: "AV receiver" }, amount: 750 },
+  { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700 },
+  { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Maison", icon: "🏡" }, catEn: "Home", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400 },
 
   { id: "sp1", img: "/gifts/sp1.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Chaussures de ski pour Louis", en: "Ski boots for Louis" }, amount: 300 },
   { id: "sp2", img: "/gifts/sp2.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Chaussures de ski pour Oriane", en: "Ski boots for Oriane" }, amount: 250 },
   { id: "sp3", img: "/gifts/sp3.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Tente Trek", en: "Trekking tent" }, amount: 500 },
   { id: "sp4", img: "/gifts/sp4.webp", cat: { fr: "Sports & Voyages", icon: "⛷️" }, catEn: "Sports & Travel", name: { fr: "Valise Cabine", en: "Cabin suitcase" }, amount: 200 },
-
-  { id: "hc1", img: "/gifts/hc1.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "TV OLED", en: "OLED TV" }, amount: 1500 },
-  { id: "hc2", img: "/gifts/hc2.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Ampli AV", en: "AV receiver" }, amount: 750 },
-  { id: "hc3", img: "/gifts/hc3.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceintes frontales", en: "Front speakers" }, amount: 1000 },
-  { id: "hc4", img: "/gifts/hc4.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceinte centrale", en: "Centre speaker" }, amount: 350 },
-  { id: "hc5", img: "/gifts/hc5.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Enceintes surround", en: "Surround speakers" }, amount: 330 },
-  { id: "hc6", img: "/gifts/hc6.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Caisson de basse", en: "Subwoofer" }, amount: 700 },
-  { id: "hc7", img: "/gifts/hc7.webp", cat: { fr: "Salon Home Cinéma", icon: "🎬" }, catEn: "Home Cinema", name: { fr: "Lecteur Blu-ray", en: "Blu-ray player" }, amount: 400 },
 
   { id: "no1", img: "/gifts/no1.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Étable Crèche", en: "Nativity stable" }, amount: 55 },
   { id: "no2", img: "/gifts/no2.webp", cat: { fr: "Noël", icon: "🎄" }, catEn: "Christmas", name: { fr: "Santons", en: "Nativity figurines" }, amount: 150 },
